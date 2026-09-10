@@ -1,6 +1,28 @@
-# generaldemos
+# dotCMS demo sites
 
-Docker stack plus the Next.js frontends for the dotCMS demo sites.
+Docker stack plus the Next.js frontends for a set of headless dotCMS demo sites,
+and a verified guide for building more.
+
+Repo: https://github.com/nunofigueiredo-dotcms/dotcms-demo-sites
+
+## First-time setup
+
+```bash
+git clone https://github.com/nunofigueiredo-dotcms/dotcms-demo-sites.git
+cd dotcms-demo-sites
+
+# bank.com's frontend is a separate repository
+git clone https://github.com/nunofigueiredo-dotcms/my-banking-site.git frontend
+
+docker compose up -d          # dotCMS on :8082, first boot takes a few minutes
+npm install                   # one hoisted node_modules for every frontend
+
+# Then per frontend: copy .env.local.example to .env.local and add a token.
+# Generate one in dotCMS: System > Users > admin > API Access Tokens.
+```
+
+`.env.local` files are gitignored — they hold live API tokens and must never be
+committed.
 
 ## Layout
 
