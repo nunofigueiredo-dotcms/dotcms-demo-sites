@@ -1,0 +1,39 @@
+# Secrets — these hold live dotCMS API tokens. Never commit.
+.env
+.env.local
+.env.*.local
+**/.env.local
+**/.env.*.local
+
+# Dependencies (npm workspace: one hoisted node_modules at the root)
+node_modules/
+**/node_modules/
+
+# Next.js build output
+.next/
+**/.next/
+out/
+**/out/
+build/
+dist/
+
+# Logs and debug
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# bank.com's frontend is its own repository:
+#   https://github.com/nunofigueiredo-dotcms/my-banking-site
+# (itself a fork of dotCMS/dotcms-learning-nextjs). Excluded so its history,
+# remote and upstream link stay intact. Clone it separately into ./frontend.
+frontend/
