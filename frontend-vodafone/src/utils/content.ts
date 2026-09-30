@@ -14,12 +14,6 @@ export function parseLines(value: string | undefined, parts: number): string[][]
     });
 }
 
-/** "Order" fields are text; items without one go last. */
-export function byDisplayOrder<T extends { displayOrder?: string }>(a: T, b: T): number {
-  const n = (item: T) => Number(item.displayOrder) || Number.MAX_SAFE_INTEGER;
-  return n(a) - n(b);
-}
-
 /**
  * Checkbox fields arrive as "a,b", as a list of strings, or as a list of
  * { key, value } objects, depending on the API. Always returns the values.

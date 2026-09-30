@@ -7,10 +7,13 @@ import { fetchPlans } from "@/lib/queries";
 import type { Contentlet } from "@/lib/types";
 import { PlanCard } from "./plan-card";
 
-/** VodafonePlanList: every published plan in one family. */
+/** VodafonePlanList: its Plans relationship arrives as identifiers, in the editor's order. */
 export function PlanList({ contentlet }: { contentlet: Contentlet }) {
-  const family = String(contentlet.family ?? "red");
-  const load = useCallback(() => fetchPlans(family), [family]);
+  const ids = (Array.isArray(contentlet.plans) ? contentlet.plans : []).map((p) =>
+    typeof p === "string" ? p : String((p as { identifier?: string }).identifier)
+  );
+  const key = ids.join(",");
+  const load = useCallback(() => fetchPlans(key ? key.split(",") : []), [key]);
   const { data: plans = [] } = useDotCMS(load);
   return (
     <View style={styles.section}>

@@ -1,4 +1,5 @@
 import { ComponentType } from "react";
+import VodafoneDeviceList from "./VodafoneDeviceList";
 import VodafoneFaq from "./VodafoneFaq";
 import VodafoneFeatureGrid from "./VodafoneFeatureGrid";
 import VodafoneFeatureSplit from "./VodafoneFeatureSplit";
@@ -18,6 +19,7 @@ import WebPageContent from "./WebPageContent";
 // prop is typed with `ComponentType<any>` for this reason.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const pageComponents: Record<string, ComponentType<any>> = {
+  VodafoneDeviceList,
   VodafoneFaq,
   VodafoneFeatureGrid,
   VodafoneFeatureSplit,

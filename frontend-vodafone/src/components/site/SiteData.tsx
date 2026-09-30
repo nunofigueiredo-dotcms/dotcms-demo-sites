@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
-import type { HeroSlide, Plan, Store } from "@/types/page";
+import type { Device, HeroSlide, Plan, Store } from "@/types/page";
 
 /**
  * Collections loaded with every page (see utils/queries.ts). Hero carousels,
@@ -10,10 +10,11 @@ import type { HeroSlide, Plan, Store } from "@/types/page";
 interface SiteData {
   slides: HeroSlide[];
   plans: Plan[];
+  devices: Device[];
   stores: Store[];
 }
 
-const SiteDataContext = createContext<SiteData>({ slides: [], plans: [], stores: [] });
+const SiteDataContext = createContext<SiteData>({ slides: [], plans: [], devices: [], stores: [] });
 
 export function SiteDataProvider({ children, ...data }: SiteData & { children: ReactNode }) {
   return <SiteDataContext.Provider value={data}>{children}</SiteDataContext.Provider>;

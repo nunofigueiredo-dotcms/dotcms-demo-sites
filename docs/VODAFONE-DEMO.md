@@ -29,9 +29,11 @@ Both see Site, Content and Digital Assets only.
 5. **Add the carousel widget**: **+** below the banner → Content → search
    "offers" → add **Home — offers carousel** (a *Vodafone Hero Carousel*).
    It rotates the three slides picked in its **Slides** field; edit the
-   carousel to add, remove or drag-reorder slides. Slides are reusable
-   content, so a slide edit goes through review and its own publish
-   (**Edit this slide** opens it).
+   carousel to add, remove or drag-reorder slides (**Edit this slide** opens
+   one).
+6. **Publish** the page (as admin or reviewer): the page *and* its
+   unpublished Vodafone sections go live together — a custom step on the
+   System Workflow's Publish (`docs/install-publish-page-sections.py`).
 
 **Media**
 - Site Browser → `/images/{hero,home,cash,red}`: every image is a file in the
@@ -72,6 +74,8 @@ Workflow (the page type is shared by every site on the instance). Set up by
   *Subscriptions included* (e.g. ADVANCE+: choose 5 of 7). Open a plan to show
   the relationship field; open a subscription to see the plans that offer it.
 - The website and app plan cards read the relationship ("Choose 5 of 7").
+- A **Vodafone Plan List** picks its plans too (relationship **Plans**, in
+  drag order): add a Plan List to a page, then pick plans in its Plans field.
 
 **Retrieve them as JSON** — three ways, all anonymous (published content only):
 
@@ -104,6 +108,42 @@ Workflow (the page type is shared by every site on the instance). Set up by
    ```
 
 ---
+
+## 3. Personalization
+
+Three personas (dotCMS → Marketing → Personas), each with its own home-page
+**hero** and **Offers for you** row (the row right below the quick links).
+Everything else on the page is shared. Prices are illustrative.
+
+| Persona (key tag) | Trigger | Hero | Offers |
+|---|---|---|---|
+| Tourist / Visitor to Egypt (`VodafoneTourist`) | outside Egypt · `utm_campaign` contains `airport` or `visit-egypt` · `utm_source=travel` | "Welcome to Egypt. Stay connected." | Tourist SIM 7 / 15 days, Travel eSIM 30 days |
+| Young Social-First Prepaid (`VodafoneSocialPrepaid`) | `utm_source=tiktok` / `instagram` / `facebook` · `utm_campaign` contains `social-unlimited` | "Scroll, post, repeat with Social Unlimited" | Social Unlimited add-on, Flex Youth 120 / 200 |
+| Device Shopper (`VodafoneDeviceShopper`) | browsed `/devices` this visit · `utm_campaign` contains `device-instalments` | "Your new phone, 0% instalments" | RED ESSENTIAL+ / ADVANCE+ / PRIME+ with a new phone |
+
+**In the editor** — open the home page, pick a persona in the **persona
+dropdown** (top right, "Default Visitor"): hero and offers swap; edit either
+for that persona only.
+
+**As a visitor** (live site; a fresh private window per journey):
+```
+/?utm_campaign=airport          tourist            (stays for the visit)
+/?utm_source=tiktok             young social-first prepaid
+/devices  → then /              device shopper
+/?persona=VodafoneTourist       force a persona (demo driving)
+/?persona=reset                 back to the default page
+```
+A dark badge at the bottom says which persona the page is personalized for.
+
+**The rules** (Marketing → Rules on telcodemo.com) show the same triggers as
+dotCMS configuration, including **Visitor's country is not Egypt** — show
+this screen for the location story. The headless site resolves the triggers
+itself (dotCMS rules only run for pages dotCMS serves):
+`frontend-vodafone/src/utils/personaTargeting.ts` + `src/proxy.ts`. Location
+targeting is off on the site (so a demo from abroad still shows the default
+page); set `PERSONA_GEO=true` on Vercel to turn it on.
+
+Set up by `docs/vodafone-personalization.py`.
 
 ## Rebuilding
 

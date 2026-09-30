@@ -12,11 +12,13 @@ export type PageMode = "LIVE" | "EDIT" | "PREVIEW";
  * returns draft content and the Style editor schemas, which it leaves out of
  * a live request.
  */
-export const getDotCMSPage = cache(async (path: string, mode: PageMode = "LIVE") => {
+export const getDotCMSPage = cache(async (path: string, mode: PageMode = "LIVE", persona?: string) => {
   try {
     return await dotCMSClient.page.get<{ content: DotCMSPageContent }>(path, {
       languageId: 1,
       mode,
+      // A persona key tag: dotCMS returns that persona's version of the page.
+      ...(persona && { personaId: persona }),
       graphql: pageContentQuery(mode !== "LIVE"),
     });
   } catch (e) {

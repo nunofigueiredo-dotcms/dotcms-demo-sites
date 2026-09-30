@@ -41,6 +41,7 @@ frontend/
 # Generated passwords for provisioned franchisee test users.
 docs/franchisee-users.local.csv
 docs/vodafone-users.local.csv
+docs/vodafone-placements-backup.local.json
 
 # Python bytecode
 __pycache__/
