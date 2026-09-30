@@ -1,0 +1,705 @@
+@import "tailwindcss";
+
+/* Vodafone Egypt brand tokens, taken from web.vodafone.com.eg's stylesheet. */
+:root {
+  --brand-red: #e60000; /* primary: buttons, links, icons */
+  --brand-red-dark: #990000; /* hover, gradient start */
+  --brand-charcoal: #333333; /* body copy, top bar, footer */
+  --brand-grey: #4a4d4e; /* secondary copy */
+  --brand-silver: #afafaf; /* carousel arrows and dots */
+  --brand-mist: #f4f4f4; /* page background */
+  --brand-rule: #ebebeb;
+  --brand-turquoise: #00b0ca; /* "you are here" marker */
+
+  --background: var(--brand-mist);
+  --foreground: var(--brand-charcoal);
+}
+
+@theme inline {
+  --font-sans: var(--font-vodafone), "Helvetica Neue", Arial, sans-serif;
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-dark: var(--brand-red-dark);
+  --color-brand-charcoal: var(--brand-charcoal);
+  --color-brand-grey: var(--brand-grey);
+  --color-brand-mist: var(--brand-mist);
+}
+
+@layer base {
+  body {
+    @apply bg-(--background) text-(--foreground) font-sans antialiased;
+    line-height: 1.5;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.15;
+  }
+}
+
+/* DotCMSLayoutBody wraps each row in .dot-row-container (plus the row's
+   class from the dotCMS template). Rows run full width so section
+   backgrounds reach the edges; sections constrain their own content. */
+.dot-row-container {
+  max-width: none;
+  margin: 0;
+}
+
+/* Home page tiles: two columns of cards inside the page width. */
+.vf-row--tiles {
+  @apply mx-auto max-w-[1140px] px-4 pt-8;
+}
+.vf-row--tiles > div {
+  @apply gap-x-8;
+}
+.vf-row--tiles [data-dot="column"] > div,
+.vf-row--tiles [data-dot="column"] > div > div {
+  @apply flex h-full flex-col gap-8;
+}
+
+@media (max-width: 767px) {
+  /* Stack template columns on phones. The SDK's column classes are hashed
+     CSS-module names, so match its data attribute instead. */
+  .dot-row-container [data-dot="column"] {
+    grid-column: 1 / -1 !important;
+  }
+  .vf-row--tiles > div {
+    @apply gap-y-8;
+  }
+}
+
+@layer components {
+  .container-vf {
+    @apply mx-auto w-full max-w-[1140px] px-4;
+  }
+
+  /* ── Buttons ─ */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border px-5 py-3 text-base whitespace-nowrap transition-colors;
+  }
+  .btn--primary {
+    @apply border-brand-red bg-brand-red text-white hover:border-brand-red-dark hover:bg-brand-red-dark;
+  }
+  .btn--outline {
+    @apply border-brand-charcoal bg-white text-brand-charcoal hover:border-brand-red hover:text-brand-red disabled:opacity-60;
+  }
+  .btn--outline-light {
+    @apply border-white text-white hover:bg-white hover:text-brand-charcoal;
+  }
+  .link-red {
+    @apply inline-flex items-center gap-1 text-brand-red hover:underline;
+  }
+  .editor-note {
+    @apply m-4 rounded-md border border-dashed border-brand-red bg-white p-6 text-center text-brand-grey;
+  }
+
+  /* ── Header ─ */
+  .site-header {
+    @apply sticky top-0 z-50;
+  }
+  .switcher {
+    @apply hidden bg-brand-charcoal text-[13px] lg:block;
+  }
+  .switcher__inner {
+    @apply flex items-center justify-between;
+  }
+  .switcher ul {
+    @apply flex;
+  }
+  .switcher__link {
+    @apply block px-5 py-1 text-[#ccc] transition-colors hover:bg-white hover:text-brand-charcoal;
+  }
+  .switcher__link.is-active {
+    @apply bg-white text-brand-charcoal;
+  }
+  .switcher__lang {
+    @apply min-w-[200px] cursor-default text-right hover:bg-[#292929] hover:text-[#ccc];
+  }
+  .nav-header {
+    @apply bg-white shadow-sm;
+  }
+  .nav-header__inner {
+    @apply flex h-16 items-center gap-6 lg:h-[72px];
+  }
+  .nav-header__menu {
+    @apply hidden h-full flex-1 items-stretch lg:flex;
+  }
+  .nav-link {
+    @apply relative flex items-center px-4 text-xl text-brand-charcoal transition-colors hover:text-brand-red;
+  }
+  .nav-link::after {
+    content: "";
+    @apply absolute bottom-0 left-1/2 h-1 w-0 -translate-x-1/2 bg-brand-red transition-all;
+  }
+  .nav-link:hover::after,
+  .nav-link.is-active::after {
+    @apply w-full;
+  }
+  .nav-header__actions {
+    @apply ml-auto flex items-center gap-1;
+  }
+  .icon-button {
+    @apply grid h-11 w-11 place-items-center rounded-full text-brand-charcoal hover:text-brand-red;
+  }
+  .mobile-menu {
+    @apply flex flex-col border-t border-(--brand-rule) bg-white px-4 pb-4;
+  }
+  .mobile-menu a {
+    @apply flex items-center justify-between border-b border-(--brand-rule) py-4 text-lg;
+  }
+  .mobile-menu a.mobile-menu__secondary {
+    @apply py-3 text-base text-brand-grey;
+  }
+
+  /* ── Hero banners ─
+     A Vodafone Hero Slide on a page is one banner (.hero-banner). A Vodafone
+     Hero Carousel rotates several slides, showing one at a time. */
+  .hero-banner {
+    @apply bg-white;
+  }
+  .hero-carousel {
+    @apply relative bg-white pb-10;
+  }
+  .hero-carousel__slide {
+    @apply relative hidden;
+  }
+  .hero-carousel__slide.is-active {
+    @apply block;
+    animation: vf-fade 0.8s ease;
+  }
+  .hero-carousel__edit {
+    @apply absolute left-4 top-4 z-10 flex items-center gap-2 rounded-md border border-dashed border-[#006ce7] bg-white/95 px-3 py-2 text-sm text-[#006ce7] shadow-sm hover:bg-white;
+  }
+  .hero-slide {
+    @apply grid h-full items-center bg-white lg:grid-cols-2;
+  }
+  .hero-slide__content {
+    @apply order-1 px-4 py-6 text-center lg:order-none lg:px-16 lg:py-10 lg:text-left;
+  }
+  .hero-slide__content h2 {
+    @apply mb-2 text-2xl lg:text-[3.55rem];
+  }
+  .hero-slide__text {
+    @apply mb-6 text-base text-brand-grey lg:text-xl;
+  }
+  .hero-slide__content .btn {
+    @apply w-full sm:w-auto sm:min-w-[200px];
+  }
+  .hero-slide__image {
+    @apply relative aspect-[16/10] w-full;
+  }
+  .hero-slide__image img {
+    @apply object-cover;
+  }
+  .hero-carousel__arrow {
+    @apply absolute top-1/2 z-10 hidden -translate-y-1/2 cursor-pointer bg-(--brand-silver) p-4 text-lg text-white transition-colors hover:bg-brand-red lg:block;
+  }
+  .hero-carousel__arrow--prev {
+    @apply left-0;
+  }
+  .hero-carousel__arrow--next {
+    @apply right-0;
+  }
+  .hero-carousel__dots {
+    @apply absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-4;
+  }
+  .hero-carousel__dots button {
+    @apply h-2.5 w-2.5 rounded-full bg-(--brand-silver) transition-colors;
+  }
+  .hero-carousel__dots button.is-active {
+    @apply bg-brand-red;
+  }
+
+  /* Hero slide style editor options (VodafoneHeroSlide.tsx). */
+  .hero-slide--image-left .hero-slide__content {
+    @apply lg:order-2;
+  }
+  .hero-slide--center .hero-slide__content {
+    @apply lg:text-center;
+  }
+  .hero-slide--font-serif h2 {
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .hero-slide--font-condensed h2 {
+    font-family: "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+    font-stretch: condensed;
+  }
+  .hero-slide--title-md h2 {
+    @apply lg:text-4xl;
+  }
+  .hero-slide--title-lg h2 {
+    @apply lg:text-5xl;
+  }
+  .hero-slide--title-xl h2 {
+    @apply lg:text-[3.55rem];
+  }
+  .hero-slide--uppercase h2 {
+    @apply uppercase;
+  }
+  .hero-slide--italic h2 {
+    @apply italic;
+  }
+  .hero-slide--light h2 strong {
+    @apply font-normal;
+  }
+  .hero-slide--bg-grey {
+    @apply bg-brand-mist;
+  }
+  .hero-slide--bg-dark {
+    @apply bg-brand-charcoal text-white;
+  }
+  .hero-slide--bg-red {
+    background-image: linear-gradient(to right top, var(--brand-red-dark), var(--brand-red));
+    @apply text-white;
+  }
+  .hero-slide--bg-dark .hero-slide__text,
+  .hero-slide--bg-red .hero-slide__text {
+    @apply text-white/85;
+  }
+  .hero-slide--bg-red h2 .text-brand-red {
+    @apply text-white underline decoration-4 underline-offset-8;
+  }
+  .btn--outline-red {
+    @apply border-brand-red bg-transparent text-brand-red hover:bg-brand-red hover:text-white;
+  }
+  .btn--white {
+    @apply border-white bg-white text-brand-red hover:bg-brand-mist;
+  }
+
+  /* ── Quick links: the red strip ─ */
+  .quick-links {
+    background-image: linear-gradient(to right top, var(--brand-red-dark), var(--brand-red));
+    @apply text-white;
+  }
+  .quick-links ul {
+    @apply grid grid-cols-2 md:grid-cols-4;
+  }
+  .quick-link {
+    @apply flex flex-col items-center gap-3 py-5 text-center text-base transition-opacity hover:opacity-80 md:text-xl;
+  }
+
+  /* ── Tiles ─ */
+  .tile {
+    @apply flex overflow-hidden rounded-md bg-white p-4 text-brand-charcoal shadow-sm;
+  }
+  .tile--large {
+    @apply h-full flex-col;
+  }
+  .tile--compact {
+    @apply flex-1 flex-row-reverse items-start gap-4;
+  }
+  .tile__image {
+    @apply relative shrink-0 overflow-hidden rounded-md;
+  }
+  .tile--large .tile__image {
+    @apply mb-4 aspect-[16/9] w-full;
+  }
+  .tile--compact .tile__image {
+    @apply aspect-square w-1/3 max-w-[160px];
+  }
+  .tile__image img {
+    @apply object-cover;
+  }
+  .tile__body {
+    @apply flex flex-1 flex-col gap-3;
+  }
+  .tile h3 {
+    @apply text-2xl lg:text-[1.75rem];
+  }
+  .tile p {
+    @apply text-brand-grey;
+  }
+  .tile .link-red {
+    @apply mt-auto;
+  }
+
+  /* ── Sections ─ */
+  .section {
+    @apply py-10 lg:py-14;
+  }
+  .section--light {
+    @apply bg-white;
+  }
+  .section--grey {
+    @apply bg-brand-mist;
+  }
+  .section--dark {
+    @apply bg-brand-charcoal text-white;
+  }
+  .section--red {
+    background-image: linear-gradient(to right top, var(--brand-red-dark), var(--brand-red));
+    @apply text-white;
+  }
+  .section__title {
+    @apply mb-3 text-3xl lg:text-4xl;
+  }
+  .section__intro {
+    @apply mb-8 max-w-3xl text-lg text-brand-grey;
+  }
+  .section--dark .section__intro,
+  .section--red .section__intro {
+    @apply text-white/80;
+  }
+
+  /* ── Other services ─ */
+  .service-row {
+    @apply -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4 pt-2;
+  }
+  .service-card {
+    @apply flex w-64 shrink-0 snap-start flex-col gap-3 rounded-md bg-white p-6 shadow-sm;
+  }
+  .service-card h3 {
+    @apply text-xl;
+  }
+  .service-card p {
+    @apply flex-1 text-brand-grey;
+  }
+
+  /* ── Page banner ─ */
+  .page-banner {
+    @apply relative overflow-hidden text-white;
+  }
+  .page-banner__inner {
+    @apply relative flex min-h-[260px] items-center gap-8 py-12 lg:min-h-[340px];
+  }
+  .page-banner__text {
+    @apply max-w-xl;
+  }
+  .page-banner h1 {
+    @apply mb-4 text-4xl lg:text-5xl;
+  }
+  .page-banner p {
+    @apply mb-6 text-lg text-white/85;
+  }
+  .page-banner--overlay {
+    @apply bg-black;
+  }
+  .page-banner__bg {
+    @apply object-cover object-right opacity-70;
+  }
+  .page-banner--overlay .page-banner__inner::before {
+    content: "";
+    @apply absolute inset-y-0 -left-[50vw] right-1/3 -z-0 bg-linear-to-r from-black/80 to-transparent;
+  }
+  .page-banner--overlay .page-banner__text {
+    @apply relative;
+  }
+  .page-banner--split {
+    background: radial-gradient(circle at 80% 30%, #4a4d4e, #262626 70%);
+  }
+  .page-banner__image {
+    @apply relative ml-auto hidden aspect-square w-[360px] shrink-0 overflow-hidden rounded-md md:block;
+  }
+  .page-banner__image img {
+    @apply object-cover;
+  }
+  .page-banner--red {
+    background-image: linear-gradient(to right top, var(--brand-red-dark), var(--brand-red));
+  }
+  .page-banner--red .page-banner__inner {
+    @apply min-h-[200px] lg:min-h-[240px];
+  }
+
+  /* ── Plans ─ */
+  .plan-row {
+    @apply -mx-4 flex snap-x gap-5 overflow-x-auto px-4 pb-6 pt-4;
+  }
+  .plan-card {
+    @apply relative flex w-[290px] shrink-0 snap-start flex-col rounded-md border-t-4 border-brand-red bg-white p-6 shadow-sm;
+  }
+  .plan-card__badge {
+    @apply absolute -top-3.5 right-4 rounded-full bg-brand-charcoal px-3 py-1 text-xs text-white;
+  }
+  .plan-card h3 {
+    @apply mb-4 text-2xl text-brand-red;
+  }
+  .plan-card__allowance {
+    @apply mb-4 grid grid-cols-2 gap-3 border-b border-(--brand-rule) pb-4;
+  }
+  .plan-card__allowance dd {
+    @apply text-2xl;
+  }
+  .plan-card__allowance dt {
+    @apply order-2 text-xs text-brand-grey;
+  }
+  .plan-card__allowance div {
+    @apply flex flex-col-reverse;
+  }
+  .plan-card__price {
+    @apply text-3xl;
+  }
+  .plan-card__currency {
+    @apply text-base;
+  }
+  .plan-card__period {
+    @apply text-base text-brand-grey;
+  }
+  .plan-card__note {
+    @apply mb-4 text-xs text-brand-grey;
+  }
+  .plan-card__subscriptions {
+    @apply mb-4;
+  }
+  .plan-card__subscriptions h4 {
+    @apply mb-2 text-base;
+  }
+  .plan-card__subscriptions ul {
+    @apply flex flex-wrap gap-1.5;
+  }
+  .plan-card__subscriptions li {
+    @apply rounded-full border border-brand-red/30 bg-brand-red/5 px-2.5 py-0.5 text-xs text-brand-red;
+  }
+  .plan-card__benefits {
+    @apply mb-6 flex-1;
+  }
+  .plan-card__benefits h4 {
+    @apply mb-2 text-base;
+  }
+  .plan-card__benefits ul {
+    @apply mb-2 flex flex-col gap-2 text-sm text-brand-grey;
+  }
+  .plan-card__benefits li {
+    @apply flex gap-2;
+  }
+  .plan-card__benefits li svg {
+    @apply mt-0.5;
+  }
+  .plan-card__benefits .link-red {
+    @apply text-sm;
+  }
+  .plan-card__cta {
+    @apply w-full;
+  }
+
+  /* ── Feature split ─ */
+  .feature-split {
+    @apply grid items-center gap-8 md:grid-cols-2 lg:gap-14;
+  }
+  .feature-split--image-right .feature-split__image {
+    @apply md:order-2;
+  }
+  .feature-split__image {
+    @apply relative aspect-[3/2] overflow-hidden rounded-md;
+  }
+  .feature-split__image img {
+    @apply object-cover;
+  }
+  .feature-split h2 {
+    @apply mb-4 text-3xl lg:text-4xl;
+  }
+  .feature-split p {
+    @apply mb-6 text-lg text-brand-grey;
+  }
+  .section--dark .feature-split p {
+    @apply text-white/80;
+  }
+
+  /* ── Feature grid ─ */
+  .feature-grid {
+    @apply grid gap-5 sm:grid-cols-2 lg:grid-cols-4;
+  }
+  .feature-grid--cards li,
+  .feature-grid--steps li {
+    @apply flex flex-col gap-3 rounded-md bg-white p-6 shadow-sm;
+  }
+  .section--light .feature-grid--cards li {
+    @apply bg-brand-mist shadow-none;
+  }
+  .feature-grid h3 {
+    @apply text-xl;
+  }
+  .feature-grid p {
+    @apply text-brand-grey;
+  }
+  .feature-grid--steps,
+  .feature-grid--thirds {
+    @apply lg:grid-cols-3;
+  }
+  .feature-grid__number {
+    @apply grid h-12 w-12 place-items-center rounded-full bg-brand-red text-2xl text-white;
+  }
+  .feature-grid--stats {
+    @apply sm:grid-cols-2 lg:grid-cols-2;
+  }
+  .feature-grid--stats li {
+    @apply flex flex-col gap-1 rounded-md bg-white/10 p-8 text-center;
+  }
+  .feature-grid--stats strong {
+    @apply text-4xl font-normal lg:text-5xl;
+  }
+  .feature-grid--stats span {
+    @apply text-white/85;
+  }
+
+  /* ── FAQ ─ */
+  .faq__list {
+    @apply divide-y divide-(--brand-rule) border-y border-(--brand-rule);
+  }
+  .faq summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg hover:text-brand-red;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq__chevron {
+    @apply shrink-0 text-brand-red transition-transform;
+  }
+  .faq details[open] .faq__chevron {
+    @apply rotate-180;
+  }
+  .faq details p {
+    @apply max-w-3xl pb-5 text-brand-grey;
+  }
+
+  /* ── Store locator ─ */
+  .store-filters {
+    @apply mb-4 flex flex-col gap-3 rounded-md bg-white p-4 shadow-sm md:flex-row md:items-end;
+  }
+  .store-filters label {
+    @apply flex flex-1 flex-col gap-1 text-sm text-brand-grey;
+  }
+  .store-filters select {
+    @apply rounded-md border border-[#ccc] bg-white px-3 py-2.5 text-base text-brand-charcoal;
+  }
+  .store-filters__error {
+    @apply mb-4 text-sm text-brand-red;
+  }
+  .store-locator {
+    @apply grid gap-4 lg:grid-cols-[380px_1fr];
+  }
+  .store-list {
+    @apply flex max-h-[640px] flex-col overflow-hidden rounded-md bg-white shadow-sm;
+  }
+  .store-list__count {
+    @apply border-b border-(--brand-rule) px-4 py-3 text-sm text-brand-grey;
+  }
+  .store-list ul {
+    @apply overflow-y-auto;
+  }
+  .store-list li {
+    @apply border-b border-(--brand-rule);
+  }
+  .store-list__empty {
+    @apply p-6 text-center text-brand-grey;
+  }
+  .store-card {
+    @apply flex w-full flex-col gap-1.5 px-4 pt-4 pb-2 text-left transition-colors hover:bg-brand-mist;
+  }
+  .store-card.is-selected {
+    @apply bg-brand-mist shadow-[inset_4px_0_0_var(--brand-red)];
+  }
+  .store-card__type {
+    @apply text-xs tracking-wide text-brand-red uppercase;
+  }
+  .store-card strong {
+    @apply text-lg font-normal;
+  }
+  .store-card__line {
+    @apply flex gap-2 text-sm text-brand-grey;
+  }
+  .store-card__distance {
+    @apply text-sm text-brand-charcoal;
+  }
+  .store-card__services {
+    @apply mt-1 flex flex-wrap gap-1.5;
+  }
+  .store-card__services span {
+    @apply rounded-full bg-brand-mist px-2 py-0.5 text-xs text-brand-grey;
+  }
+  .store-card.is-selected .store-card__services span {
+    @apply bg-white;
+  }
+  .store-card__phone {
+    @apply inline-flex items-center gap-2 px-4 pb-4 text-sm text-brand-red hover:underline;
+  }
+  .store-map {
+    @apply z-0 h-[420px] overflow-hidden rounded-md bg-[#e5e3df] shadow-sm lg:h-[640px];
+  }
+  .store-map--loading {
+    @apply animate-pulse;
+  }
+
+  /* ── Footer ─ */
+  .site-footer {
+    @apply bg-brand-charcoal py-10 text-white;
+  }
+  .site-footer__columns {
+    @apply grid gap-8 border-b border-white/20 pb-8 sm:grid-cols-2 lg:grid-cols-4;
+  }
+  .site-footer h2 {
+    @apply mb-4 text-lg;
+  }
+  .site-footer ul {
+    @apply flex flex-col gap-2;
+  }
+  .site-footer__columns a {
+    @apply text-white/75 hover:text-white;
+  }
+  .site-footer__columns .btn {
+    @apply text-white;
+  }
+  .site-footer__switch {
+    @apply lg:text-right;
+  }
+  .site-footer__bottom {
+    @apply flex flex-col gap-4 pt-6 text-sm text-white/75 md:flex-row md:items-center md:justify-between;
+  }
+  .site-footer__bottom a {
+    @apply hover:text-white;
+  }
+  .site-footer__bottom > div {
+    @apply flex-wrap;
+  }
+  ul.site-footer__social {
+    @apply flex-row gap-4;
+  }
+
+  /* ── Rich text ─ */
+  .web-page-content h2 {
+    @apply mb-4 text-3xl;
+  }
+  .web-page-content p {
+    @apply mb-4 text-lg text-brand-grey;
+  }
+
+  /* ── 404 ─ */
+  .not-found {
+    @apply flex min-h-screen flex-col items-center justify-center gap-4 bg-white p-8 text-center;
+  }
+  .not-found h1 {
+    @apply text-4xl;
+  }
+  .not-found p {
+    @apply text-brand-grey;
+  }
+}
+
+/* Leaflet map pins in Vodafone red. */
+.map-pin span {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--brand-red);
+  border: 3px solid #fff;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+}
+.leaflet-popup-content strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.leaflet-popup-content p {
+  margin: 0 !important;
+  color: var(--brand-grey);
+}
+
+@keyframes vf-fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}

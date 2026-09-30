@@ -19,9 +19,10 @@ import sys
 HOST = os.environ.get("DOTCMS_HOST", "http://localhost:8082")
 TOKEN = os.environ.get("DOTCMS_AUTH_TOKEN", "")
 
-# The `starter` theme folder. Headless sites still need a valid theme
-# identifier on the template; SYSTEM_THEME is NOT accepted.
-STARTER_THEME = "64e0e438ca52c6e73a269141c9e8a982"
+# A theme folder identifier for templates. Headless sites still need a valid
+# one; SYSTEM_THEME is NOT accepted. The default is the local stack's
+# `starter` theme — set DOTCMS_THEME_ID for another instance.
+STARTER_THEME = os.environ.get("DOTCMS_THEME_ID", "64e0e438ca52c6e73a269141c9e8a982")
 
 
 def api(method, path, payload=None):
@@ -205,6 +206,10 @@ def place(page_id, slots):
                for u, ids in slots]
     resp = api("POST", f"/api/v1/page/{page_id}/content", payload)
     fire({"identifier": page_id, "contentType": "htmlpageasset"})
+    # Saving page content through the API can leave the page locked by the
+    # "system" user, which hides Draft (edit) mode in the Universal Visual
+    # Editor for everyone else. Release the lock explicitly.
+    api("PUT", f"/api/v1/content/_unlock/{page_id}")
     return resp
 
 

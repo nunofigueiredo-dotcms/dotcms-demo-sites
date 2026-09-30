@@ -1,0 +1,1005 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Sandler brand tokens, taken from sandler.com's theme variables. */
+:root {
+  --brand-navy: #21245c; /* primary-color1: header, footer, titles */
+  --brand-cyan: #00aded; /* primary-color2: accents, bars, icons */
+  --brand-royal: #0045c2; /* primary-color3: buttons, links */
+  --brand-slate: #50538f; /* secondary-color2: body copy */
+  --brand-sky: #e5f3ff; /* secondary-color3: tinted sections */
+  --brand-grey: #ededed; /* secondary-color4 */
+  --brand-gold: #fab040; /* secondary-color1 */
+  --brand-rule: #9092ae; /* dotted dividers */
+
+  --background: #ffffff;
+  --foreground: var(--brand-navy);
+  --primary: var(--brand-royal);
+  --primary-foreground: #ffffff;
+  --primary-dark: var(--brand-navy);
+  --muted: var(--brand-sky);
+  --muted-foreground: var(--brand-slate);
+  --accent: var(--brand-sky);
+  --accent-foreground: var(--brand-royal);
+  --card: #ffffff;
+  --border: #d6e4f0;
+  --input: #cbcbe1;
+  --ring: var(--brand-cyan);
+  --destructive: #c0392b;
+
+  --radius: 5px;
+}
+
+@theme inline {
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 3px);
+  --radius-xl: calc(var(--radius) + 7px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-brand-royal: var(--brand-royal);
+  --color-brand-slate: var(--brand-slate);
+  --color-brand-sky: var(--brand-sky);
+  --color-brand-gold: var(--brand-gold);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-semibold text-brand-navy;
+  }
+}
+
+/* DotCMSLayoutBody wraps each row in .dot-row-container. Rows run full width
+   so section backgrounds reach the edges; each section constrains its own
+   content with .section__inner. */
+.dot-row-container {
+  max-width: none;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  [class*="Column-module_col-end-"] {
+    grid-column-start: 1 !important;
+    grid-column-end: 13 !important;
+  }
+}
+
+@layer components {
+  /* ── Buttons: pill-shaped, as on sandler.com ─ */
+  .btn {
+    @apply inline-flex items-center gap-2.5 rounded-full px-7 py-3 text-[15px] font-semibold transition-colors;
+  }
+  .btn--sm {
+    @apply px-5 py-2 text-[13px] uppercase;
+  }
+  .btn--primary {
+    @apply bg-brand-royal text-white hover:bg-brand-navy;
+  }
+  .btn--white {
+    @apply bg-white text-brand-royal hover:bg-brand-cyan hover:text-white;
+  }
+  .btn--outline {
+    @apply border border-brand-royal text-brand-royal hover:bg-brand-royal hover:text-white;
+  }
+  .btn--outline-light {
+    @apply border border-white/70 text-white hover:bg-white hover:text-brand-royal;
+  }
+
+  .eyebrow {
+    @apply mb-3 text-sm font-semibold uppercase tracking-[3px] text-brand-cyan;
+  }
+
+  .chip {
+    @apply rounded-full border border-input bg-white px-4 py-1.5 text-sm font-medium text-brand-navy hover:border-brand-royal hover:text-brand-royal transition-colors;
+  }
+
+  /* ── Utility bar + location selector ─────── */
+  .utility-bar {
+    @apply bg-brand-navy text-white text-[13px] uppercase tracking-wide;
+  }
+  .utility-bar__inner {
+    @apply max-w-6xl mx-auto px-4 h-11 flex items-center justify-end md:justify-between gap-4;
+  }
+  .utility-bar__inner a {
+    @apply font-semibold hover:text-brand-cyan;
+  }
+
+  .utility-bar__actions {
+    @apply flex items-center gap-5;
+  }
+  .language-switcher {
+    @apply flex items-center gap-1;
+  }
+  .language-switcher a {
+    @apply rounded px-1.5 py-0.5 text-[12px] font-semibold text-white/70 hover:text-brand-cyan;
+  }
+  .language-switcher a[aria-current] {
+    @apply bg-white/15 text-white;
+  }
+
+  .location-selector {
+    @apply relative;
+  }
+  .location-selector__trigger {
+    @apply flex items-center gap-2 py-1 font-medium uppercase tracking-wide hover:text-brand-cyan transition-colors;
+  }
+  .location-selector__current {
+    @apply rounded-full bg-white/15 px-2.5 py-0.5 text-[12px] font-semibold normal-case tracking-normal;
+  }
+  .location-selector__panel {
+    @apply absolute right-0 top-full mt-2 z-50 w-[min(22rem,calc(100vw-2rem))] rounded-lg bg-white text-brand-navy normal-case tracking-normal text-sm shadow-2xl ring-1 ring-black/10 overflow-hidden;
+  }
+  .location-selector__search {
+    @apply flex items-center gap-2 border-b border-border px-4 py-3;
+  }
+  .location-selector__search input {
+    @apply w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground;
+  }
+  .location-selector__locate {
+    @apply flex w-full items-center gap-2 px-4 py-2.5 text-sm font-semibold text-brand-royal hover:bg-brand-sky disabled:opacity-60;
+  }
+  .location-selector__error {
+    @apply px-4 pb-2 text-xs text-destructive;
+  }
+  .location-selector__list {
+    @apply max-h-80 overflow-y-auto border-t border-border py-1;
+  }
+  .location-selector__group {
+    @apply px-4 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-[2px] text-brand-cyan;
+  }
+  .location-selector__list button {
+    @apply flex w-full items-center justify-between px-4 py-2 text-left text-sm hover:bg-brand-sky;
+  }
+  .location-selector__list button[aria-current] {
+    @apply bg-brand-sky;
+  }
+  .location-selector__footer {
+    @apply flex items-center justify-between border-t border-border px-4 py-3 text-sm;
+  }
+  .location-selector__footer a {
+    @apply font-semibold text-brand-royal hover:text-brand-navy;
+  }
+  .location-selector__footer button {
+    @apply text-muted-foreground hover:text-brand-navy;
+  }
+
+  /* ── Header ─────────────────────────────── */
+  .header {
+    @apply sticky top-0 z-40 bg-brand-navy border-b border-white/10;
+  }
+  .header__inner {
+    @apply max-w-6xl mx-auto px-4 h-18 flex items-center gap-6;
+  }
+  .header__inner > a:first-child {
+    @apply mr-auto;
+  }
+  .header nav {
+    @apply hidden md:flex items-center gap-1;
+  }
+  .header nav a {
+    @apply px-3 py-2 text-[15px] font-semibold uppercase text-white hover:text-brand-cyan transition-colors;
+  }
+
+  /* ── Mobile nav ──────────────────────────── */
+  .mobile-nav__sheet {
+    @apply bg-background border-t border-border text-brand-navy;
+  }
+  .mobile-nav__sheet nav {
+    @apply flex flex-col gap-2 mt-4 px-4 pb-6;
+  }
+  .mobile-nav__sheet nav a:not(.btn) {
+    @apply text-lg font-semibold uppercase py-2 border-b border-border;
+  }
+
+  /* ── Footer ─────────────────────────────── */
+  .footer {
+    @apply bg-brand-navy text-white/75 text-sm border-t-[5px] border-brand-cyan;
+  }
+  .footer__inner {
+    @apply max-w-6xl mx-auto px-4 py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr];
+  }
+  .footer h2 {
+    @apply mb-4 text-[15px] font-bold uppercase text-white;
+  }
+  .footer nav,
+  .footer__inner > div {
+    @apply flex flex-col gap-2;
+  }
+  .footer a {
+    @apply hover:text-brand-cyan transition-colors;
+  }
+  .footer__legal {
+    @apply max-w-6xl mx-auto px-4 py-6 border-t border-white/10 flex flex-col md:flex-row justify-between gap-4 text-xs text-white/50;
+  }
+
+  /* ── Hero ────────────────────────────────── */
+  .hero {
+    @apply relative overflow-hidden text-white;
+    background: linear-gradient(115deg, var(--brand-navy) 30%, #1b2a8c 70%, var(--brand-royal));
+  }
+  /* Heroes without their own image (center and article pages) fall back to
+     the brand fingerprint artwork under the same navy wash. */
+  .hero:not(:has(.hero__image)) {
+    background:
+      linear-gradient(90deg, rgb(33 36 92 / 0.97) 0%, rgb(33 36 92 / 0.9) 45%, rgb(22 30 120 / 0.6) 100%),
+      url("/brand/hero-pattern.jpg") right center / cover no-repeat,
+      var(--brand-navy);
+  }
+  .hero__image {
+    @apply object-cover object-right;
+  }
+  /* Navy wash over the photo, strongest behind the text, as on sandler.com. */
+  .hero:has(.hero__image)::before {
+    content: "";
+    @apply absolute inset-0 z-[1];
+    background: linear-gradient(
+      90deg,
+      rgb(33 36 92 / 0.97) 0%,
+      rgb(33 36 92 / 0.9) 40%,
+      rgb(22 30 120 / 0.55) 100%
+    );
+  }
+  .hero__inner {
+    @apply relative z-10 max-w-6xl mx-auto px-4;
+  }
+  .hero--large .hero__inner {
+    @apply py-24 md:py-32;
+  }
+  .hero--compact .hero__inner {
+    @apply py-16 md:py-20;
+  }
+  .hero :is(h1, .hero__title) {
+    @apply max-w-3xl font-semibold leading-[1.25] text-white;
+  }
+  .hero--large :is(h1, .hero__title) {
+    @apply text-[34px] md:text-[56px];
+  }
+  .hero--compact :is(h1, .hero__title) {
+    @apply text-3xl md:text-[46px];
+  }
+  .hero__subtitle {
+    @apply mt-6 max-w-2xl text-lg md:text-xl text-white/85 leading-relaxed;
+  }
+  .hero__actions {
+    @apply mt-10 flex flex-wrap items-center gap-4;
+  }
+  .hero__local {
+    @apply mt-8 flex items-center gap-2 text-sm text-white/80;
+  }
+  /* ── Hero style editor options (see dotcms/style-schemas/SandlerHero.mjs) ── */
+  .hero--center .hero__inner {
+    @apply text-center;
+  }
+  .hero--center :is(h1, .hero__title),
+  .hero--center .hero__subtitle {
+    @apply mx-auto;
+  }
+  .hero--center .hero__actions,
+  .hero--center .hero__local {
+    @apply justify-center;
+  }
+  .hero.hero--h-compact .hero__inner {
+    @apply py-12 md:py-14;
+  }
+  .hero.hero--h-standard .hero__inner {
+    @apply py-20 md:py-28;
+  }
+  .hero.hero--h-full {
+    @apply flex min-h-[calc(100dvh-7rem)] items-center;
+  }
+  .hero.hero--h-full .hero__inner {
+    @apply w-full py-20;
+  }
+  .hero--font-serif :is(h1, .hero__title) {
+    font-family: Georgia, "Times New Roman", serif;
+  }
+  .hero--font-condensed :is(h1, .hero__title) {
+    font-family: "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+    @apply font-bold tracking-tight;
+    font-stretch: condensed;
+  }
+  .hero.hero--title-md :is(h1, .hero__title) {
+    @apply text-3xl md:text-[40px];
+  }
+  .hero.hero--title-lg :is(h1, .hero__title) {
+    @apply text-4xl md:text-[56px];
+  }
+  .hero.hero--title-xl :is(h1, .hero__title) {
+    @apply text-5xl md:text-[76px] leading-[1.05];
+  }
+  .hero--italic :is(h1, .hero__title) {
+    @apply italic;
+  }
+  .hero--uppercase :is(h1, .hero__title) {
+    @apply uppercase tracking-wide;
+  }
+  .hero.hero--bg-navy {
+    background: var(--brand-navy);
+  }
+  .hero.hero--bg-gradient {
+    background: linear-gradient(120deg, var(--brand-navy) 0%, var(--brand-royal) 60%, var(--brand-cyan) 130%);
+  }
+  .hero.hero--bg-navy::after,
+  .hero.hero--bg-gradient::after,
+  .hero.hero--bg-light::after {
+    content: none;
+  }
+  .hero.hero--bg-light {
+    background: var(--brand-sky);
+    @apply text-brand-navy;
+  }
+  .hero--bg-light :is(h1, .hero__title) {
+    @apply text-brand-navy;
+  }
+  .hero--bg-light .hero__subtitle,
+  .hero--bg-light .hero__local {
+    @apply text-brand-slate;
+  }
+  .hero--bg-light .eyebrow--light {
+    @apply text-brand-royal;
+  }
+  .hero--bg-light .btn--white {
+    @apply bg-brand-royal text-white hover:bg-brand-navy;
+  }
+  .hero--bg-light .btn--outline-light {
+    @apply border-brand-royal text-brand-royal hover:bg-brand-royal hover:text-white;
+  }
+
+  .hero__selected {
+    @apply inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-3 font-semibold;
+  }
+  .eyebrow--light {
+    @apply text-brand-cyan;
+  }
+
+  /* ── Sections ────────────────────────────── */
+  .section {
+    @apply py-16 md:py-24;
+  }
+  .section--light {
+    @apply bg-white;
+  }
+  .section--muted {
+    @apply bg-brand-sky;
+  }
+  .section--dark {
+    @apply bg-brand-navy text-white;
+  }
+  .section--dark h2,
+  .section--dark h3 {
+    @apply text-white;
+  }
+  .section__inner {
+    @apply max-w-6xl mx-auto px-4;
+  }
+  .section__header {
+    @apply max-w-3xl mb-12;
+  }
+  .section__header--center {
+    @apply mx-auto text-center;
+  }
+  .section__header--split {
+    @apply max-w-none flex flex-col md:flex-row md:items-end md:justify-between gap-6;
+  }
+  .section__header h2 {
+    @apply text-[26px] md:text-[42px] leading-[1.3];
+  }
+  .section__header p:not(.eyebrow) {
+    @apply mt-4 text-lg leading-[1.7] text-brand-slate;
+  }
+  .section--dark .section__header p:not(.eyebrow) {
+    @apply text-white/75;
+  }
+  .section__cta {
+    @apply mt-12;
+  }
+
+  /* ── Feature grid ────────────────────────── */
+  .feature-grid {
+    @apply grid gap-x-8 gap-y-10;
+  }
+  .feature-grid--cards {
+    @apply sm:grid-cols-2 lg:grid-cols-4;
+  }
+  .feature-grid--cards:not(:has(> :nth-child(4))) {
+    @apply lg:grid-cols-3;
+  }
+  .feature-grid--numbered {
+    @apply md:grid-cols-3;
+  }
+  .feature-grid--numbered:has(> :nth-child(4)) {
+    @apply md:grid-cols-2 lg:grid-cols-4;
+  }
+  .feature-grid--triangle {
+    @apply md:grid-cols-3;
+  }
+  .feature-grid--stats {
+    @apply grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4;
+  }
+  .feature-grid--awards {
+    @apply sm:grid-cols-2;
+  }
+  .feature-grid--split {
+    @apply gap-0;
+  }
+
+  .feature h3 {
+    @apply text-lg md:text-[22px] font-semibold leading-[1.3];
+  }
+  .feature p:not(.eyebrow) {
+    @apply mt-2 text-brand-slate leading-[1.7];
+  }
+  .section--dark .feature p:not(.eyebrow) {
+    @apply text-white/75;
+  }
+
+  /* Cyan bar over a dotted rule — sandler.com's list-item treatment. */
+  .feature--bar {
+    @apply relative flex flex-col pl-6 border-l border-dashed border-[var(--brand-rule)];
+  }
+  .feature--bar::before {
+    content: "";
+    @apply absolute -left-[3px] top-0 h-10 w-[5px] bg-brand-cyan;
+  }
+  .feature__number {
+    @apply block mb-3 text-[40px] font-semibold leading-none text-brand-cyan;
+  }
+  .feature__link {
+    @apply mt-auto pt-6 inline-flex items-center gap-2.5 text-[15px] font-semibold text-brand-royal hover:text-brand-navy;
+  }
+  .feature__link-icon {
+    @apply h-6 w-6 rounded-sm bg-brand-royal p-1 text-white;
+  }
+
+  .feature--split {
+    @apply flex gap-4 py-6 border-b border-dashed border-[var(--brand-rule)] last:border-b-0;
+  }
+  .feature--split p:not(.eyebrow) {
+    @apply mt-1 text-[15px];
+  }
+  .feature-split {
+    @apply grid gap-12 md:grid-cols-2 md:items-center;
+  }
+  .feature-split--awards {
+    @apply md:grid-cols-[1fr_auto];
+  }
+  .feature-split__media img {
+    @apply w-full h-auto;
+  }
+  .feature-split--awards .feature-split__media img {
+    @apply w-40 md:w-52;
+  }
+
+  .feature--triangle {
+    @apply rounded-[10px] bg-white p-8 shadow-sm;
+  }
+  .feature__icon {
+    @apply mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-brand-sky text-brand-cyan;
+  }
+
+  .feature--stat {
+    @apply relative px-4 text-center;
+  }
+  .feature--stat::before {
+    content: "";
+    @apply absolute left-0 top-2 h-12 w-[4px] bg-brand-cyan;
+  }
+  .feature__stat {
+    @apply block text-[40px] md:text-[52px] font-semibold leading-tight text-brand-navy;
+  }
+  .section--dark .feature__stat {
+    @apply text-white;
+  }
+  .feature--stat p:not(.eyebrow) {
+    @apply mt-1 text-sm;
+  }
+
+  /* ── Local center + center cards ─────────── */
+  .local-center {
+    @apply grid gap-10 rounded-[10px] bg-brand-sky p-8 md:p-12 md:grid-cols-[1.2fr_1fr] md:items-center;
+  }
+  .local-center h2 {
+    @apply text-[26px] md:text-[36px] leading-[1.3];
+  }
+  .local-center > div > p:not(.eyebrow) {
+    @apply mt-4 text-lg text-brand-slate leading-[1.7];
+  }
+  .local-center__picker {
+    @apply rounded-[10px] bg-white p-6;
+  }
+
+  .center-card {
+    @apply rounded-[10px] bg-white p-6 shadow-sm ring-1 ring-border;
+  }
+  .center-card h3 {
+    @apply mb-3 text-lg;
+  }
+  .center-card h3 a {
+    @apply hover:text-brand-royal;
+  }
+  .center-card__line {
+    @apply mt-2 flex items-center gap-2 text-sm text-brand-slate;
+  }
+  .center-card__line svg {
+    @apply text-brand-cyan;
+  }
+  .center-card__line a {
+    @apply hover:text-brand-royal;
+  }
+  .center-card__programs {
+    @apply mt-4 flex flex-wrap gap-2;
+  }
+  .center-card__programs li {
+    @apply rounded-full bg-brand-sky px-3 py-1 text-xs font-medium text-brand-royal;
+  }
+
+  /* ── Locations finder (map + directory) ── */
+  .finder {
+    @apply mb-6 flex flex-col gap-3 rounded-[10px] bg-white p-4 shadow-sm ring-1 ring-border md:flex-row md:flex-wrap md:items-center;
+  }
+  .finder__field {
+    @apply flex grow items-center gap-2 rounded-full border border-input px-5 py-3;
+  }
+  .finder__field input {
+    @apply w-full bg-transparent text-[15px] outline-none placeholder:text-muted-foreground;
+  }
+  .finder__scopes {
+    @apply flex basis-full flex-wrap items-center gap-2 border-t border-border pt-3;
+  }
+  .finder__scopes legend {
+    @apply float-left mr-2 text-sm font-semibold text-brand-navy;
+  }
+  .finder__scope input {
+    @apply sr-only;
+  }
+  .finder__scope span {
+    @apply inline-flex cursor-pointer items-center rounded-full border border-input bg-white px-4 py-1.5 text-sm font-medium text-brand-navy transition-colors hover:border-brand-royal;
+  }
+  .finder__scope input:checked + span {
+    @apply border-brand-royal bg-brand-royal text-white;
+  }
+  .finder__scope input:focus-visible + span {
+    @apply ring-2 ring-brand-cyan ring-offset-1;
+  }
+  .finder .btn:disabled {
+    @apply opacity-60;
+  }
+  .finder__locate {
+    @apply flex items-center justify-center gap-2 px-2 text-sm font-semibold text-brand-royal hover:text-brand-navy disabled:opacity-60;
+  }
+  .finder__error {
+    @apply mb-4 text-sm text-destructive;
+  }
+  .finder__legend {
+    @apply mt-3 mb-12 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-brand-slate;
+  }
+  .finder__legend-pin {
+    @apply inline-block h-3 w-3 rounded-full bg-brand-cyan;
+  }
+  .finder__results-header {
+    @apply mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+  }
+  .finder__results-header h3 {
+    @apply text-2xl;
+  }
+  .finder__clear {
+    @apply flex items-center gap-1.5 text-sm font-semibold text-brand-royal hover:text-brand-navy;
+  }
+  .finder__empty {
+    @apply text-lg text-brand-slate;
+  }
+
+  .locations-map {
+    @apply relative z-0 h-[420px] w-full overflow-hidden rounded-[10px] bg-brand-sky md:h-[520px];
+  }
+  /* Muted basemap so the brand-coloured pins stand out. */
+  .locations-map .leaflet-tile-pane {
+    filter: grayscale(0.85) brightness(1.04);
+  }
+  .locations-map--loading {
+    @apply animate-pulse;
+  }
+  .map-pin span {
+    @apply absolute inset-0 rounded-[50%_50%_50%_0] border-2 border-white bg-brand-cyan shadow-md;
+    transform: rotate(-45deg) scale(0.8);
+  }
+  .map-cluster {
+    @apply flex items-center justify-center rounded-full bg-brand-royal/25;
+  }
+  .map-cluster span {
+    @apply flex h-8 w-8 items-center justify-center rounded-full bg-brand-royal text-[13px] font-semibold text-white shadow-md;
+  }
+  .map-popup {
+    @apply flex min-w-44 flex-col gap-1 font-sans text-brand-navy;
+  }
+  .map-popup strong {
+    @apply text-[15px];
+  }
+  .map-popup p {
+    @apply !m-0 text-brand-slate;
+  }
+  .map-popup a {
+    @apply text-brand-royal;
+  }
+  .map-popup .map-popup__cta {
+    @apply mt-2 self-start rounded-full bg-brand-royal px-4 py-1.5 text-xs font-semibold uppercase !text-white hover:bg-brand-navy;
+  }
+
+  /* Country accordion, as on go.sandler.com/locations */
+  .country-list__item {
+    @apply border-t border-dotted border-[var(--brand-rule)] last:border-b;
+  }
+  .country-list__toggle {
+    @apply flex w-full items-center gap-3 py-5 text-left text-xl font-semibold text-brand-navy hover:text-brand-royal;
+  }
+  .country-list__count {
+    @apply rounded-full bg-brand-sky px-2.5 py-0.5 text-sm font-semibold text-brand-royal;
+  }
+  .country-list__chevron {
+    @apply ml-auto transition-transform;
+  }
+  [aria-expanded="true"] .country-list__chevron {
+    @apply rotate-180;
+  }
+  .country-list__panel {
+    @apply pb-10;
+  }
+  .state-group + .state-group {
+    @apply mt-8;
+  }
+  .state-group h4 {
+    @apply mb-4 text-lg font-semibold text-brand-navy;
+  }
+  .location-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .location-card {
+    @apply flex flex-col gap-3 rounded-[10px] bg-white p-6 shadow-sm ring-1 ring-border;
+  }
+  .location-card__top {
+    @apply flex items-start justify-between gap-3;
+  }
+  .location-card__top strong {
+    @apply text-[17px] leading-snug text-brand-navy;
+  }
+  .location-card__top a:hover {
+    @apply text-brand-royal;
+  }
+  .location-card__distance {
+    @apply shrink-0 rounded-full bg-brand-sky px-2.5 py-0.5 text-xs font-semibold text-brand-royal;
+  }
+  .location-card address {
+    @apply flex items-center gap-2 text-sm not-italic text-brand-slate;
+  }
+  .location-card__actions {
+    @apply mt-auto flex flex-wrap items-center justify-between gap-3 pt-2;
+  }
+  .location-card__phone {
+    @apply flex items-center gap-1.5 text-sm font-medium text-brand-royal hover:text-brand-navy;
+  }
+
+  /* ── Center page ─────────────────────────── */
+  .center-hero {
+    @apply grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center;
+  }
+  .center-contact {
+    @apply rounded-[10px] bg-white p-8 text-brand-navy shadow-2xl;
+  }
+  .center-contact h2 {
+    @apply text-2xl leading-snug;
+  }
+  .center-contact__line {
+    @apply mt-4 flex items-start gap-3 text-brand-slate;
+  }
+  .center-contact__line svg {
+    @apply mt-0.5 text-brand-cyan;
+  }
+  .center-contact__line a {
+    @apply font-semibold text-brand-navy hover:text-brand-royal;
+  }
+  .center-intro {
+    @apply grid gap-12 md:grid-cols-[1.5fr_1fr] md:items-start;
+  }
+  .center-intro :is(h2, .center-intro__heading) {
+    @apply text-[26px] md:text-[38px] leading-[1.3] font-semibold text-brand-navy;
+  }
+  .center-intro__lead {
+    @apply mt-5 text-lg leading-[1.7] text-brand-slate;
+  }
+  .center-solutions {
+    @apply rounded-[10px] bg-brand-sky p-8;
+  }
+  .center-solutions h3 {
+    @apply mb-4 text-xl;
+  }
+  .center-solutions li {
+    @apply py-3 font-semibold border-b border-dashed border-[var(--brand-rule)] last:border-b-0;
+  }
+  .center-solutions li a {
+    @apply flex items-center gap-3 hover:text-brand-royal;
+  }
+
+  /* ── Center sub-navigation ───────────────── */
+  .center-nav {
+    @apply sticky top-18 z-30 bg-white border-b border-border shadow-sm;
+  }
+  .center-nav__inner {
+    @apply max-w-6xl mx-auto px-4 flex flex-col md:flex-row md:items-center gap-x-6 gap-y-1 py-2 md:py-0 md:h-14;
+  }
+  .center-nav__name {
+    @apply flex min-w-0 items-center gap-2 text-sm font-semibold text-brand-navy md:mr-auto hover:text-brand-royal;
+  }
+  .center-nav__links {
+    @apply flex items-center gap-1 overflow-x-auto md:overflow-visible -mx-2 md:mx-0;
+  }
+  .center-nav__link {
+    @apply inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-semibold uppercase text-brand-slate hover:text-brand-royal;
+  }
+  .center-nav__link--active {
+    @apply bg-brand-sky text-brand-royal;
+  }
+  .center-nav__menu {
+    @apply relative;
+  }
+  /* Solutions dropdown — styled like go.sandler.com's menus. */
+  .center-nav__dropdown {
+    @apply invisible absolute left-0 top-full z-40 w-max min-w-72 max-w-sm bg-brand-navy px-4 py-3 opacity-0 shadow-2xl transition-opacity;
+  }
+  .center-nav__menu:hover .center-nav__dropdown,
+  .center-nav__menu:focus-within .center-nav__dropdown {
+    @apply visible opacity-100;
+  }
+  .center-nav__menu:hover > .center-nav__link,
+  .center-nav__menu:focus-within > .center-nav__link {
+    @apply text-brand-cyan;
+  }
+  .center-nav__dropdown li {
+    @apply py-1;
+  }
+  .center-nav__dropdown .center-nav__link {
+    @apply flex w-full rounded-none bg-transparent px-0 py-2 text-[15px] font-semibold uppercase leading-snug tracking-wide text-white whitespace-normal hover:text-brand-cyan;
+  }
+  .center-nav__dropdown .center-nav__link--active {
+    @apply bg-transparent text-brand-cyan;
+  }
+
+  /* ── HubSpot form ────────────────────────── */
+  .hubspot-form {
+    @apply grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:items-start;
+  }
+  .hubspot-form h2 {
+    @apply text-[26px] md:text-[36px] leading-[1.3];
+  }
+  .hubspot-form__intro {
+    @apply mt-4 text-lg leading-[1.7] text-brand-slate;
+  }
+  .hubspot-form__card {
+    @apply rounded-[10px] bg-white p-8 shadow-xl;
+  }
+  .hubspot-form__grid {
+    @apply grid gap-5 sm:grid-cols-2;
+  }
+  .hubspot-form__grid label {
+    @apply flex flex-col gap-1.5 text-sm font-semibold text-brand-navy;
+  }
+  .hubspot-form__field--wide {
+    @apply sm:col-span-2;
+  }
+  .hubspot-form input:not([type="checkbox"]),
+  .hubspot-form textarea,
+  .hubspot-form select {
+    @apply w-full rounded-md border border-input bg-white px-3.5 py-2.5 text-base font-normal text-brand-navy outline-none focus:border-brand-cyan focus:ring-2 focus:ring-brand-cyan/30;
+  }
+  .hubspot-form__consent {
+    @apply mt-5 flex items-start gap-3 text-sm text-brand-slate;
+  }
+  .hubspot-form__consent input {
+    @apply mt-1 h-4 w-4 accent-brand-royal;
+  }
+  .hubspot-form__notice {
+    @apply mb-5 rounded-md bg-brand-sky px-4 py-3 text-sm text-brand-royal;
+  }
+  .hubspot-form__error {
+    @apply mt-4 text-sm text-destructive;
+  }
+  .hubspot-form__success {
+    @apply flex flex-col items-center gap-4 py-10 text-center text-lg text-brand-navy;
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* ── Testimonials ────────────────────────── */
+  .testimonial-grid {
+    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3 items-start;
+  }
+  .testimonial-grid--single {
+    @apply mx-auto max-w-2xl grid-cols-1 md:grid-cols-1 lg:grid-cols-1;
+  }
+  .testimonial {
+    @apply relative flex flex-col rounded-[10px] bg-white p-7 pt-9 shadow-sm ring-1 ring-border;
+  }
+  .testimonial__mark {
+    @apply absolute -top-4 left-7 h-9 w-9 rounded-full bg-brand-cyan p-2 text-white;
+  }
+  .testimonial__stars {
+    @apply mb-3 flex gap-0.5 text-brand-gold;
+  }
+  .testimonial h3 {
+    @apply mb-2 text-lg;
+  }
+  .testimonial blockquote {
+    @apply text-brand-slate leading-[1.7];
+  }
+  .testimonial__more {
+    @apply mt-2 self-start text-sm font-semibold text-brand-royal hover:text-brand-navy;
+  }
+  .testimonial footer {
+    @apply mt-5 flex flex-col border-t border-dashed border-[var(--brand-rule)] pt-4;
+  }
+  .testimonial footer strong {
+    @apply font-semibold text-brand-navy;
+  }
+  .testimonial footer span {
+    @apply text-sm text-brand-slate;
+  }
+  .review-stars {
+    @apply mb-5 flex items-center gap-1 text-brand-gold;
+  }
+  .review-stars legend {
+    @apply mb-2 text-sm font-semibold text-brand-navy;
+  }
+  .review-stars button {
+    @apply rounded p-0.5 hover:scale-110 transition-transform;
+  }
+
+  /* ── Events ──────────────────────────────── */
+  .event-list {
+    @apply grid gap-4;
+  }
+  .event-card {
+    @apply flex flex-col sm:flex-row gap-5 rounded-[10px] bg-white p-6 ring-1 ring-border;
+  }
+  .event-card__date {
+    @apply flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-[10px] bg-brand-navy text-white;
+  }
+  .event-card__date span {
+    @apply text-xs font-semibold uppercase tracking-[2px] text-brand-cyan;
+  }
+  .event-card__date strong {
+    @apply text-3xl font-semibold leading-none;
+  }
+  .event-card__body {
+    @apply grow;
+  }
+  .event-card__format {
+    @apply text-xs font-semibold uppercase tracking-[2px] text-brand-cyan;
+  }
+  .event-card h3 {
+    @apply mt-1 text-xl;
+  }
+  .event-card__meta {
+    @apply mt-2 flex items-center gap-2 text-sm text-brand-slate;
+  }
+  .event-card__meta svg {
+    @apply text-brand-cyan;
+  }
+  .event-card__summary {
+    @apply mt-3 text-brand-slate;
+  }
+  /* Doubled class so these win over the generic .web-page-content rules. */
+  .center-body.center-body {
+    @apply max-w-none columns-1 md:columns-2 gap-16;
+  }
+  .center-body.center-body h2 {
+    @apply text-xl md:text-[22px] leading-snug mt-0 mb-3 break-after-avoid;
+  }
+  .center-body.center-body p,
+  .center-body.center-body ul {
+    @apply mt-0 mb-10 text-base break-inside-avoid;
+  }
+  .center-body.center-body li p {
+    @apply mb-0;
+  }
+  .center-awards {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .center-awards li {
+    @apply flex items-center gap-3 rounded-[10px] border border-border p-5 font-semibold;
+  }
+
+  /* ── Articles ────────────────────────────── */
+  .article-grid {
+    @apply grid gap-8 md:grid-cols-3;
+  }
+  .article-card {
+    @apply relative flex flex-col rounded-[10px] bg-white p-7 ring-1 ring-border transition-shadow hover:shadow-lg;
+  }
+  .article-card::before {
+    content: "";
+    @apply absolute left-7 top-0 h-[5px] w-12 bg-brand-cyan;
+  }
+  .article-card__meta {
+    @apply flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[2px] text-brand-slate;
+  }
+  .article-card__meta span {
+    @apply text-brand-cyan;
+  }
+  .article-card h3 {
+    @apply mt-4 text-xl leading-snug;
+  }
+  /* Whole card is clickable via the title link. */
+  .article-card h3 a::after {
+    content: "";
+    @apply absolute inset-0;
+  }
+  .article-card > p:not(.article-card__meta) {
+    @apply mt-3 text-brand-slate line-clamp-3;
+  }
+  .article-card .feature__link {
+    @apply text-brand-royal;
+  }
+
+  /* ── Rich text (webPageContent, article body) ── */
+  .web-page-content {
+    @apply prose prose-lg max-w-3xl text-brand-slate prose-headings:font-semibold prose-headings:text-brand-navy prose-a:text-brand-royal prose-strong:text-brand-navy;
+  }
+  .web-page-content h2 {
+    @apply text-[26px] md:text-[42px] leading-[1.3] mt-0;
+  }
+  .web-page-content h3 {
+    @apply text-brand-cyan text-base uppercase tracking-[3px];
+  }
+  .article-body h2 {
+    @apply text-2xl md:text-[28px] mt-10;
+  }
+  .web-page-content li p {
+    @apply my-0;
+  }
+  .web-page-content li::marker {
+    @apply text-brand-cyan;
+  }
+
+  /* ── Not found ───────────────────────────── */
+  .not-found {
+    @apply min-h-dvh flex flex-col items-center justify-center gap-4 px-4 text-center bg-brand-navy text-white;
+  }
+  .not-found h1 {
+    @apply mt-8 text-8xl font-semibold text-brand-cyan;
+  }
+  .not-found p:first-of-type {
+    @apply text-2xl font-semibold;
+  }
+  .not-found p:last-of-type {
+    @apply text-white/70 mb-4;
+  }
+}

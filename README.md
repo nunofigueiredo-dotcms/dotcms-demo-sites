@@ -35,9 +35,20 @@ generaldemos/
 ├── frontend-spiritvoice/      # spiritvoice.com         → :3002
 ├── frontend-govconnect/       # govconnectcentral.com   → :3003
 ├── frontend-forgehub/         # forgehub.com            → :3004
+├── frontend-sandler/          # Sandler demo            → :3006 (reads awesomedemo-dev)
+├── frontend-vodafone/         # Vodafone Egypt demo     → :3007 (telcodemo.com on awesomedemo-dev)
+├── mobile-vodafone/           # Vodafone Egypt iPhone app (Expo Go) — own node_modules, not a workspace
 └── docs/
     ├── CREATING-NEW-SITES.md  # how to build another site
     ├── new-site.py            # CLI helper
+    ├── build-sandler.py       # rebuilds sandler.com's dotCMS content
+    ├── sandler-assets/        # brand images the build script uploads
+    ├── sandler-locations.json # 213 geocoded go.sandler.com offices for the map
+    ├── build-vodafone.py      # builds telcodemo.com (Vodafone Egypt) on awesomedemo-dev
+    ├── vodafone-assets/       # Vodafone Egypt brand images the build script uploads
+    ├── vodafone-stores.json   # dummy Vodafone stores for the store locator
+    ├── provision-franchisees.py  # franchisee roles, folders, users, workflow (see FRANCHISEE-PROVISIONING.md)
+    ├── franchisees.csv        # test franchisees for the script
     └── dotcms_site.py         # same module, importable name
 ```
 
@@ -56,7 +67,11 @@ npm run dev:bank              # :3000
 npm run dev:spiritvoice       # :3002
 npm run dev:govconnect        # :3003
 npm run dev:forgehub          # :3004
-npm run dev:all               # all four at once
+npm run dev:sandler           # :3006
+npm run dev:vodafone          # :3007
+npm run ios:vodafone          # iPhone app: Metro + Expo Go on the iOS simulator
+                              #   (first time: cd mobile-vodafone && npm install)
+npm run dev:all               # all of them at once
 ```
 
 ## Why a workspace
