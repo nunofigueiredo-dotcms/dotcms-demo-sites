@@ -271,14 +271,13 @@ FAMILIES = ("RED|red\r\nFlex|flex\r\nMobile Internet|internet\r\nHome DSL|dsl\r\
 
 
 def extend_plans():
-    """New plan families and a Price period, on the Plan and Plan List types."""
-    for variable in ("VodafonePlan", "VodafonePlanList"):
-        t = entity(ns.api("GET", f"/api/v1/contenttype/id/{variable}"), variable)
-        fam = next(f for f in t["fields"] if f["variable"] == "family")
-        if "tourist" not in (fam.get("values") or ""):
-            fam["values"] = FAMILIES
-            entity(ns.api("PUT", f"/api/v1/contenttype/{t['id']}/fields/id/{fam['id']}", fam),
-                   f"{variable}.family")
+    """New plan families and a Price period on the Plan type."""
+    t = entity(ns.api("GET", "/api/v1/contenttype/id/VodafonePlan"), "VodafonePlan")
+    fam = next(f for f in t["fields"] if f["variable"] == "family")
+    if "tourist" not in (fam.get("values") or ""):
+        fam["values"] = FAMILIES
+        entity(ns.api("PUT", f"/api/v1/contenttype/{t['id']}/fields/id/{fam['id']}", fam),
+               "VodafonePlan.family")
     add_field("VodafonePlan", field("ImmutableTextField", "Price period", "pricePeriod",
                                     hint="Shown after the price: /month (default), /week, one-off"))
     print("  plan families: tourist, youth, device (+ Price period)")
@@ -346,8 +345,9 @@ def offers_row():
     new = str(max(int(u) for u in uuids) + 1)
     rows.insert(2, {"styleClass": f"vf-row {OFFERS_ROW_CLASS}", "columns": [
         {"styleClass": "", "leftOffset": 1, "width": 12,
-         "containers": [{"identifier": "SYSTEM_CONTAINER", "uuid": new}]}]})
-    body = "\n".join(f'#parseContainer("SYSTEM_CONTAINER","{u}")' for u in uuids + [new])
+         "containers": [{"identifier": rows[0]["columns"][0]["containers"][0]["identifier"], "uuid": new}]}]})
+    container = rows[0]["columns"][0]["containers"][0]["identifier"]
+    body = "\n".join(f'#parseContainer("{container}","{u}")' for u in uuids + [new])
     entity(ns.api("PUT", "/api/v1/templates", {
         **{k: full[k] for k in ("identifier", "inode", "title", "friendlyName", "theme", "drawed", "layout")},
         "siteId": SITE_ID, "body": body, "drawedBody": body}), "template update")
@@ -355,6 +355,20 @@ def offers_row():
     uuid = offers_uuid()[2]
     print(f"  Vodafone Home template: Offers row after the quick links (container {uuid})")
     return uuid
+
+
+def layout_container(page_entity):
+    """The container the page's template uses (Vodafone Sections after
+    vodafone-container.py; the System Container on a fresh build)."""
+    rows = page_entity["layout"]["body"]["rows"]
+    return rows[0]["columns"][0]["containers"][0]["identifier"]
+
+
+def place(page_id, container, slots, persona=""):
+    """slots: {uuid: [content ids]} on the page's container."""
+    payload = [{"personaTag": persona, "contentletsId": ids, "identifier": container, "uuid": u}
+               for u, ids in sorted(slots.items())]
+    entity(ns.api("POST", f"/api/v1/page/{page_id}/content", payload), f"placements {persona or 'default'}")
 
 
 def page_at(folder, title, template_title, sections):
@@ -368,7 +382,11 @@ def page_at(folder, title, template_title, sections):
         pid = ns.page(SITE_ID, title, folder, tpl["identifier"])
     else:
         pid = page["identifier"]
-    ns.place(pid, [(str(i + 1), [c]) for i, c in enumerate(sections)])
+    e = entity(ns.api("GET", f"/api/v1/page/json{folder}/index?host_id={SITE_ID}&language_id=1&mode=EDIT_MODE"),
+               folder)
+    place(pid, layout_container(e), {str(i + 1): [c] for i, c in enumerate(sections)})
+    ns.fire({"identifier": pid, "contentType": "htmlpageasset"})
+    ns.api("PUT", f"/api/v1/content/_unlock/{pid}")
     return pid
 
 
@@ -387,21 +405,18 @@ def place_personas(persona_keys, slides, offers, default_offers, offers_slot):
     home = entity(ns.api("GET", f"/api/v1/page/json/index?host_id={SITE_ID}&language_id=1&mode=EDIT_MODE"),
                   "home page")
     pid = home["page"]["identifier"]
+    container = layout_container(home)
     placed = {u.replace("uuid-", ""): [x["identifier"] for x in items]
-              for c in home["containers"].values() for u, items in c["contentlets"].items()}
+              for cid, c in home["containers"].items() if cid == container
+              for u, items in c["contentlets"].items()}
     # Persona heroes and offers only ever go in their own slots.
     ours = {default_offers, *offers.values(), *slides.values()}
     default = {u: [i for i in ids if i not in ours] for u, ids in placed.items()}
     default[offers_slot] = [default_offers]
 
-    def post(tag, slots):
-        payload = [{"personaTag": tag, "contentletsId": ids, "identifier": "SYSTEM_CONTAINER", "uuid": u}
-                   for u, ids in sorted(slots.items())]
-        entity(ns.api("POST", f"/api/v1/page/{pid}/content", payload), f"placements {tag or 'default'}")
-
-    post("", default)
+    place(pid, container, default)
     for key in persona_keys:
-        post(key, {**default, HERO_SLOT: [slides[key]], offers_slot: [offers[key]]})
+        place(pid, container, {**default, HERO_SLOT: [slides[key]], offers_slot: [offers[key]]}, key)
     publish(pid, "htmlpageasset")
     ns.api("PUT", f"/api/v1/content/_unlock/{pid}")
     print(f"  home page: default + {len(persona_keys)} persona variants (hero + offers)")
@@ -440,18 +455,22 @@ def main():
     device_types(scheme)
     persona_ids = personas()
 
+    by_family = {}
     for order, p in enumerate(PLANS, start=1):
-        upsert("VodafonePlan", p["title"], family=p["family"], data=p["data"], minutes=p["minutes"],
-               price=p["price"], pricePeriod=p["pricePeriod"], priceNote=p["priceNote"],
-               badge=p.get("badge", ""), benefits="\n".join(p["benefits"]), ctaText=p["ctaText"],
-               ctaLink=p["ctaLink"], displayOrder=str(order))
+        ident = upsert("VodafonePlan", p["title"], family=p["family"], data=p["data"], minutes=p["minutes"],
+                       price=p["price"], pricePeriod=p["pricePeriod"], priceNote=p["priceNote"],
+                       badge=p.get("badge", ""), benefits="\n".join(p["benefits"]), ctaText=p["ctaText"],
+                       ctaLink=p["ctaLink"], displayOrder=str(order))
+        # The offers rows list each persona's plans, in this order.
+        by_family.setdefault(p["family"], []).append(ident)
     print(f"  {len(PLANS)} persona plans")
 
     slides = {k: upsert("VodafoneHeroSlide", s["title"], highlight=s["highlight"], text=s["text"],
                         ctaText=s["ctaText"], ctaLink=s["ctaLink"], image=image(s["image"]))
               for k, s in SLIDES.items()}
     offers = {k: upsert("VodafonePlanList", f"Home — offers ({k})", heading=o["heading"],
-                        intro=o["intro"], family=o["family"]) for k, o in OFFERS.items()}
+                        intro=o["intro"], plans=",".join(by_family[o["family"]]))
+              for k, o in OFFERS.items()}
     default_offers = upsert("VodafoneFeatureGrid", "Home — offers for you", heading="Offers for you",
                             layout="cards", theme="light", items="\n".join(DEFAULT_OFFERS))
     print("  persona hero slides and offers")

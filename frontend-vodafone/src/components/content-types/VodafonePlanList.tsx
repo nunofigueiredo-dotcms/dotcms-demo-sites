@@ -7,13 +7,17 @@ import { useSiteData } from "@/components/site/SiteData";
 import { SmartLink } from "@/components/SmartLink";
 import { useIsInEditor } from "@/hooks/useIsEditing";
 import type { Plan } from "@/types/page";
-import { byDisplayOrder, formatPrice } from "@/utils/content";
+import { formatPrice } from "@/utils/content";
 
 type VodafonePlanListProps = DotCMSBasicContentlet & {
   heading?: string;
   intro?: string;
-  /** Plan family to list, e.g. "red". */
-  family: string;
+  /**
+   * The Plans relationship, in the editor's order. The page data lists the
+   * related plans by identifier; their content comes from the plans loaded
+   * with the page (utils/queries.ts).
+   */
+  plans?: (string | { identifier: string })[];
 };
 
 /** "/month" by default; a word like "one-off" gets a space before it. */
@@ -93,12 +97,16 @@ function PlanCard({ plan }: { plan: Plan }) {
   );
 }
 
-/** Cards for every published plan in one family, in the plans' Order. */
-export default function VodafonePlanList({ heading, intro, family }: VodafonePlanListProps) {
+/**
+ * Cards for the plans picked in the list's Plans field, in that order. Each
+ * plan is its own content, so the same plan can appear in several lists.
+ */
+export default function VodafonePlanList({ heading, intro, plans: related = [] }: VodafonePlanListProps) {
   const inEditor = useIsInEditor();
-  const plans = useSiteData()
-    .plans.filter((p) => p.family === family)
-    .sort(byDisplayOrder);
+  const all = useSiteData().plans;
+  const plans = related
+    .map((r) => all.find((p) => p.identifier === (typeof r === "string" ? r : r.identifier)))
+    .filter((p): p is Plan => Boolean(p));
 
   return (
     <section className="section" id="plans">
@@ -112,7 +120,7 @@ export default function VodafonePlanList({ heading, intro, family }: VodafonePla
             ))}
           </ul>
         ) : (
-          inEditor && <p className="editor-note">No published Vodafone Plans in this family yet.</p>
+          inEditor && <p className="editor-note">This list has no published plans yet. Edit it and pick some in the Plans field.</p>
         )}
       </div>
     </section>

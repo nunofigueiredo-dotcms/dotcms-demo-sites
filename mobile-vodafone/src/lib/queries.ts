@@ -6,9 +6,6 @@ import type { Contentlet, HeroSlide, PageData, Plan, Store } from "./types";
 // is filtered to this site, and to published, non-archived content.
 const PUBLISHED = `+conHost:${DOTCMS_SITE_ID} +live:true +deleted:false +languageId:1`;
 
-const byOrder = <T extends { displayOrder?: string | null }>(a: T, b: T) =>
-  (Number(a.displayOrder) || 999) - (Number(b.displayOrder) || 999);
-
 interface PageQueryResult {
   page: {
     title: string;
@@ -77,16 +74,18 @@ export async function fetchSlides(ids: string[]): Promise<HeroSlide[]> {
   return ids.map((id) => slides.find((s) => s.identifier === id)).filter((s): s is HeroSlide => Boolean(s));
 }
 
-export async function fetchPlans(family?: string): Promise<Plan[]> {
-  const filter = family ? ` +VodafonePlan.family:${family}` : "";
+/** Published plans by identifier, in the order given (a Plan List's Plans field). */
+export async function fetchPlans(ids: string[]): Promise<Plan[]> {
+  if (!ids.length) return [];
   const data = await graphql<{ VodafonePlanCollection: Plan[] }>(`{
-    VodafonePlanCollection(query: "${PUBLISHED}${filter}", limit: 100) {
+    VodafonePlanCollection(query: "${PUBLISHED} +identifier:(${ids.join(" OR ")})", limit: ${ids.length}) {
       identifier title family data minutes price priceNote badge benefits ctaText ctaLink displayOrder
       subscriptionsIncluded
       subscriptions { title category }
     }
   }`);
-  return data.VodafonePlanCollection.sort(byOrder);
+  const plans = data.VodafonePlanCollection;
+  return ids.map((id) => plans.find((p) => p.identifier === id)).filter((p): p is Plan => Boolean(p));
 }
 
 export async function fetchStores(): Promise<Store[]> {

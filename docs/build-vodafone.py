@@ -7,7 +7,9 @@ plans and their subscription options (a many-to-many relationship), a set
 of dummy stores and the site's media library (/images), and points UVE at
 the frontend on :3007. Then it runs vodafone-editorial.py (review workflow,
 roles, demo users), vodafone-apis.py (the custom JSON endpoint) and
-vodafone-personalization.py (personas, persona content, /devices, rules).
+vodafone-personalization.py (personas, persona content, /devices, rules)
+and vodafone-container.py (moves the pages onto a Vodafone-only container,
+so the editor's palette offers only Vodafone components).
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-vodafone.py
@@ -244,14 +246,15 @@ def create_types():
             "contentTypeId": sub["id"]})
 
     create_type("VodafonePlanList", "Vodafone Plan List",
-                "Cards for every published plan in one plan family", [
+                "Cards for the plans picked in its Plans field, in that order", [
         site_field(),
         internal_name(),
         field("ImmutableTextField", "Heading", "heading"),
         field("ImmutableTextAreaField", "Intro", "intro"),
-        field("ImmutableSelectField", "Plan family", "family", required=True,
-              values=options([("RED", "red"), ("Flex", "flex"),
-                              ("Mobile Internet", "internet"), ("Home DSL", "dsl")])),
+        # Many-to-many: the same plan can appear in several lists.
+        {**field("ImmutableRelationshipField", "Plans", "plans",
+                 hint="The plans to show, in order"),
+         "relationType": "VodafonePlan", "values": "1", "indexed": True},
     ], icon="view_list")
 
     create_type("VodafoneFeatureSplit", "Vodafone Feature Split",
@@ -571,16 +574,19 @@ def create_subscriptions():
 
 
 def create_plans(subscriptions):
+    """The RED plans' identifiers, in order."""
+    ids = []
     for order, p in enumerate(RED_PLANS, start=1):
         choose, offered = PLAN_SUBSCRIPTIONS[p["title"]]
-        create("VodafonePlan", title=p["title"], family="red", data=p["data"],
+        ids.append(create("VodafonePlan", title=p["title"], family="red", data=p["data"],
                minutes=p["minutes"], price=p["price"], priceNote="Tax Exclusive",
                badge=p.get("badge", ""), benefits=lines(p["benefits"]),
                ctaText="Buy now", ctaLink="https://eshop.vodafone.com.eg/en/lines/red/numbers",
                displayOrder=str(order), subscriptionsIncluded=choose,
                # A relationship field takes a query for the related content.
-               subscriptions="+identifier:(" + " OR ".join(subscriptions[s] for s in offered) + ")")
+               subscriptions="+identifier:(" + " OR ".join(subscriptions[s] for s in offered) + ")"))
     print(f"  {len(RED_PLANS)} RED plans")
+    return ids
 
 
 def create_stores():
@@ -594,7 +600,7 @@ def create_stores():
     print(f"  {len(stores)} stores")
 
 
-def build_pages(home_tpl, page_tpl, slides):
+def build_pages(home_tpl, page_tpl, slides, red_plans):
     home = ns.page(SITE_ID, "Vodafone Egypt | Home", "/", home_tpl)
     fill(home, {
         # One banner by default; the offers carousel is ready to add.
@@ -634,7 +640,8 @@ def build_pages(home_tpl, page_tpl, slides):
                    heading="Enjoy the Latest Entertainment and Lifestyle Apps, Curated Just for You",
                    intro="Every RED plan comes with data, minutes to any network and a "
                          "bundle of subscriptions and lifestyle perks.",
-                   family="red")],
+                   # An ordered list of identifiers keeps the plans in this order.
+                   plans=",".join(red_plans))],
         3: [create("VodafoneFeatureSplit", title="Endless entertainment",
                    text="RED brings you the latest entertainment apps in the market, "
                         "tailored to your needs. Dive into endless content with YouTube "
@@ -785,15 +792,16 @@ def main():
     # ordered list of identifiers keeps the slides in this order.
     create("VodafoneHeroCarousel", title="Home — offers carousel", interval="7",
            slides=",".join(slides))
-    create_plans(create_subscriptions())
+    red_plans = create_plans(create_subscriptions())
     create_stores()
-    build_pages(home_tpl, page_tpl, slides)
+    build_pages(home_tpl, page_tpl, slides, red_plans)
     ns.configure_uve(SITE_ID, FRONTEND)
     for uri in ["/index", "/plans/index", "/vodafone-cash/index", "/store-locator/index"]:
         ns.verify(SITE_ID, uri)
     # Last, once the content exists (it is created with the System Workflow):
     # the review workflow, roles and demo users, then the custom JSON API.
-    for script in ("vodafone-editorial.py", "vodafone-apis.py", "vodafone-personalization.py"):
+    for script in ("vodafone-editorial.py", "vodafone-apis.py", "vodafone-personalization.py",
+                   "vodafone-container.py"):
         print(f"\n{script}")
         subprocess.run([sys.executable, os.path.join(HERE, script)], check=True)
     print(f"\nDone. Site id: {SITE_ID}")

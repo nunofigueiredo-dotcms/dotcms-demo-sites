@@ -60,6 +60,12 @@ are prefixed `Vodafone*` (type names are global on the instance).
 - `/vodafone-cash` — banner, who can use it, 3 steps, 8 services, wallet
   limits, help FAQ.
 - `/store-locator` — map + filterable list of the 22 dummy stores.
+- **Container:** the Vodafone templates use a **Vodafone Sections**
+  container on telcodemo.com (not the System Container), which accepts only
+  the Vodafone page-section types + rich text — so the editor's palette on
+  telcodemo.com shows only Vodafone components. Set up by
+  `docs/vodafone-container.py` (backs up placements to
+  `vodafone-placements-backup.local.json`, gitignored).
 - Menu comes from the folders `/plans`, `/vodafone-cash`, `/store-locator`
   (Show on menu).
 
@@ -91,6 +97,13 @@ content: edited from **Edit this slide**, reviewed and published separately —
 or together with the page (see *Gotchas*: publishing a page publishes the
 site's unpublished Vodafone sections, slides included). Carousel slides use the
 default design (Style editor values belong to a slide placed on a page).
+
+A **Vodafone Plan List** works the same way: its **Plans** field is a
+many-to-many relationship to Vodafone Plans, picked and dragged into order
+per list (one plan can be in several lists, e.g. a RED plan on /plans and in
+an offers row). A new plan shows nowhere until an editor adds it to a list.
+Plans keep their own *Plan family*, used by the RED plans API. (Lists used to
+pick a family instead; `docs/vodafone-plan-lists.py` migrated them.)
 
 ### Media library (demo item 1)
 All images are files in `/images/{hero,home,cash,red}` on the site; content

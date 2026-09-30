@@ -74,6 +74,8 @@ Workflow (the page type is shared by every site on the instance). Set up by
   *Subscriptions included* (e.g. ADVANCE+: choose 5 of 7). Open a plan to show
   the relationship field; open a subscription to see the plans that offer it.
 - The website and app plan cards read the relationship ("Choose 5 of 7").
+- A **Vodafone Plan List** picks its plans too (relationship **Plans**, in
+  drag order): add a Plan List to a page, then pick plans in its Plans field.
 
 **Retrieve them as JSON** — three ways, all anonymous (published content only):
 
