@@ -37,3 +37,11 @@ next-env.d.ts
 # (itself a fork of dotCMS/dotcms-learning-nextjs). Excluded so its history,
 # remote and upstream link stay intact. Clone it separately into ./frontend.
 frontend/
+
+# Generated passwords for provisioned franchisee test users.
+docs/franchisee-users.local.csv
+docs/vodafone-users.local.csv
+
+# Python bytecode
+__pycache__/
+*.pyc

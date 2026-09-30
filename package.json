@@ -7,14 +7,19 @@
     "frontend",
     "frontend-spiritvoice",
     "frontend-govconnect",
-    "frontend-forgehub"
+    "frontend-forgehub",
+    "frontend-sandler",
+    "frontend-vodafone"
   ],
   "scripts": {
     "dev:bank": "npm run dev -w dotcms-learning-nextjs",
     "dev:spiritvoice": "npm run dev -w spiritvoice-nextjs",
     "dev:govconnect": "npm run dev -w govconnect-nextjs",
     "dev:forgehub": "npm run dev -w forgehub-nextjs",
-    "dev:all": "npm run dev:bank & npm run dev:spiritvoice & npm run dev:govconnect & npm run dev:forgehub & wait"
+    "dev:sandler": "npm run dev -w sandler-nextjs",
+    "dev:vodafone": "npm run dev -w vodafone-nextjs",
+    "ios:vodafone": "npm --prefix mobile-vodafone run ios",
+    "dev:all": "npm run dev:bank & npm run dev:spiritvoice & npm run dev:govconnect & npm run dev:forgehub & npm run dev:sandler & npm run dev:vodafone & wait"
   },
   "dependencies": {
     "@dotcms/client": "26.9.3-1",

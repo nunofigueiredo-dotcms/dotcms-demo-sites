@@ -20,6 +20,7 @@ instance**, so a new site reuses them rather than defining its own.
 | `spiritvoice.com` | `37d5620507db317630badccd5adb0fbd` | `~/headless/generaldemos/frontend-spiritvoice` | 3002 |
 | `govconnectcentral.com` | `a59c36f2e47c71b1f2cf63fd1d4c0244` | `~/headless/generaldemos/frontend-govconnect` | 3003 |
 | `forgehub.com` | `3465943d44960cdee2606a7fd248b808` | `~/headless/generaldemos/frontend-forgehub` | 3004 |
+| `sandler.com` | `e817e9c8f1c76b29940ee10be7ebb224` | `~/headless/generaldemos/frontend-sandler` | 3006 |
 
 The Docker stack lives in `~/headless/generaldemos` (project name pinned to
 `generaldemos` in `docker-compose.yml`). All content is in Docker volumes
@@ -108,6 +109,22 @@ home page — the error you get is a confusing "Page URL [/index] already exists
 curl -s -X POST "$HOST/api/v1/folder/createfolders/example.com" \
   -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
   -d '["/plans","/coverage","/support","/about","/blog"]'
+```
+
+---
+
+### Showing folders in the menu
+
+`DotNavigation` only lists folders with `showOnMenu: true`, and
+`createfolders` leaves it false. Set it (plus a display title and order) with
+`PUT /api/v1/assets/folders` — and **leave `name` out**, even though the
+OpenAPI schema marks it required. Sending it triggers a rename check that fails
+with *"The name [x] on [site] already exists"*.
+
+```bash
+curl -s -X PUT "$HOST/api/v1/assets/folders" \
+  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"assetPath":"//example.com/plans/","data":{"title":"Plans","showOnMenu":true,"sortOrder":1}}'
 ```
 
 ---
@@ -426,6 +443,11 @@ practical end state.
 
 ## Gotchas worth remembering
 
+- **Saving page content via the API can leave the page locked by "system"**
+  (`POST /api/v1/page/{id}/content`). Draft (edit) mode then disappears from
+  the Universal Visual Editor for everyone. `place()` now unlocks the page
+  afterwards; to fix an existing page, `PUT /api/v1/content/_unlock/{inode}`
+  as an administrator.
 - **`sortBy` silently returns zero results** when the field is not sortable, with
   no error — indistinguishable from "no content". Sortability is per field:
   `Blog.publishDate desc` works, `Blog.modDate desc` returns `[]`. Always test the
@@ -436,8 +458,9 @@ practical end state.
 - **Content is duplicated across sites** in this instance, so always filter
   listings by `+conHost:{siteId}` or posts appear twice.
 - **`urlTitle` is globally unique** across the instance, not per site.
-- Archived content can linger in GraphQL listings until the index catches up —
-  verify with `POST /api/content/_search` and check `live`/`archived` directly.
+- **GraphQL collections return archived content** unless the query includes
+  `+deleted:false` (e.g. `"+conHost:{siteId} +deleted:false"`). It is not
+  index lag — the archived items stay until you filter them out.
 
 ---
 
@@ -457,6 +480,197 @@ Built with exactly the steps above, as a worked example.
 Plus 4 `Blog` posts at `/blog/post/{urlTitle}`.
 
 Helper script used to build it: `docs/new-site.py` (see alongside this file).
+
+## Reference: what sandler.com contains
+
+> **Where it lives:** the Sandler demo runs against **awesomedemo-dev**
+> (`https://awesomedemo-dev.dotcms.dev`), site **`trainning-service.com`**
+> (`2ad84b4176441e1b1a6ef8d2e683a79e`). The same build also exists on the
+> local stack as `sandler.com`. `frontend-sandler/.env.local` decides which
+> one the frontend reads; `.env.docker.local` keeps the local settings.
+> Rebuild on either with `docs/build-sandler.py` (instructions in its
+> docstring) — it creates the site, and refuses to run twice on one site.
+>
+> Two differences on awesomedemo-dev (dotCMS 26.09.24): templates need its
+> `landing-page` theme (`DOTCMS_THEME_ID`), because the local `starter` theme
+> folder doesn't exist there; and Block Editor fields arrive as JSON strings
+> in the page API, so the frontend parses them (`utils/blocks.ts`).
+
+Built by `docs/build-sandler.py`. Unlike the other sites it defines its **own
+site-scoped content types** (all with a `site` field), so nothing depends on
+the shared `Blog`/`Banner` types:
+
+| Type | Used for |
+|---|---|
+| `SandlerHero` | Page heroes (large / compact) with a background image |
+| `SandlerFeatureGrid` | Cards, numbered steps, Success Triangle, stats, awards, image + list — items are one per line, `Title \| Text \| link`; optional image |
+| `SandlerLocalCenter` | Personalised block showing the visitor's chosen center |
+| `SandlerCenterDirectory` | Searchable list of all centers (`/locations`) |
+| `SandlerArticleList` | Latest articles |
+| `TrainingCenter` | 4 real Sandler centers (Boston, Minneapolis, Mississauga, London) from go.sandler.com/locations; URL map `/locations/{urlTitle}`; drives the location selector. Each has its own page body, solutions, "why choose us" and awards; the challenges and next-steps sections below are shared, placed once on the detail page |
+| `SandlerArticle` | 4 articles; URL map `/articles/{urlTitle}` |
+
+The location selector (top right) stores the chosen center in a
+`sandler-center` cookie. The server reads it, so the first render is already
+personalised: header phone number, hero CTA, local-center blocks, footer.
+
+Each center also has subpages, as on go.sandler.com:
+`/locations/{center}/solutions/{solution}`, `/about-us`, `/events` and
+`/contact-us`. They are **one shared set of dotCMS pages** under the hidden
+`/center-pages/` folder, rendered by `app/locations/[center]/[...sub]` in the
+center's context (its sub-menu, name, contact details and events). Edit a page
+once and every center updates. A center only gets the solution pages listed in
+its "Solutions offered" field; others 404. Links in content that start with
+`~/` resolve to the current center (`~/contact-us` →
+`/locations/minnesota/contact-us`). Events are `SandlerEvent` content with a
+many-to-one relationship to `TrainingCenter` (the 11 events are sample data —
+go.sandler.com's center calendars are currently empty).
+
+**HubSpot form widget.** `HubSpotForm` is a dotCMS *Widget* type (fixed
+`widgetTitle`, `contentHost`, constant `widgetCode`/`widgetUsage`/
+`widgetPreexecute`, like `BannerCarousel`). Editors set the HubSpot portal
+ID, form ID, region, fields (`property | Label | type | required`), button
+text, thank-you message and optional consent text. The Next.js component
+posts straight to HubSpot's public Forms API (`api.hsforms.com/submissions/
+v3/integration/submit/{portal}/{form}` — CORS-enabled, no key needed) and adds
+the chosen training center, either to a HubSpot property you name or to the
+`message` field. `widgetCode` holds HubSpot's standard embed, so the same
+widget also works on Velocity-rendered pages. It is placed on `/lets-connect`.
+
+**Translation with Smartcat.** There is no Smartcat connector for dotCMS, so
+`frontend-sandler/scripts/smartcat.mjs` is the bridge (`npm run smartcat --
+send | pull [--now] | sync | status`). Articles use the **Smartcat Translation**
+workflow (their only workflow, so its actions show on existing content):
+Editing → *Send to Smartcat* → Queued for Smartcat → (bridge) In translation at
+Smartcat → (bridge imports each language) Translation ready for review →
+*Publish translation* → Published. `send` turns the title, teaser and each
+Block Editor text run into a key-value JSON file (structure is preserved),
+creates a Smartcat project en → es, fr with machine translation, and records a
+**Translation Job** in dotCMS. `pull` exports finished documents and saves each
+as that language's version of the article; `--now` imports partial
+translations. It polls, so it needs no public URL. Credentials go in
+`frontend-sandler/.env.smartcat.local` (see the `.example`).
+
+**In dotCMS itself (current setup).** "Send to Smartcat" and "Check Smartcat"
+are **JavaScript Actionlets** on the workflow (code in
+`frontend-sandler/dotcms/smartcat/`, installed by `install_smartcat_actionlets`).
+Send creates the project when the editor clicks (straight to *In translation at
+Smartcat*); Check imports every language Smartcat has completed or
+pre-translated into *Translation ready for review*; the editor then publishes
+each and clicks *Mark translated*. The Node bridge still works as an
+alternative. Credentials are in a **Smartcat Settings** item inside
+`/_smartcat`, a folder only its owner (and admins) can read — scripts can't use
+`dotsecrets` on awesomedemo-dev ("External scripting is disabled").
+
+What the JavaScript sandbox needed, found by probing (awesomedemo-dev,
+26.09.24): `fetchtool.fetch(url, {method, headers, body})` is the HTTP client —
+synchronous; `method` is required; never pass `body: undefined`; it crashes on
+empty responses (204) *after* the request succeeds; a multipart file part typed
+`application/json` is rejected by Smartcat (send `text/plain`). No `btoa`,
+`setTimeout` or awaited Promises. `contentlet` in an actionlet is an opaque Java
+object — read the fired item's `inode` from `request.getParameter()` and use
+the REST API. `/api/js/{folder}` endpoints resolve only on the site matching the
+hostname (the default site). The upload firewall silently empties files that
+contain a literal multipart header, so build that string from parts.
+**Permissions:** a new content item copies its site's permissions, including
+CMS Anonymous READ; `PUT /api/v1/permissions/{id}` merges rather than replaces,
+and roles can only be removed from sites/folders — so keep secrets in a
+restricted folder and verify anonymously before publishing.
+
+The site serves `/es/…` and `/fr/…` via `src/proxy.ts`; pages fall back to
+English content where no translation exists, and article lists prefer the
+translated version. Gotchas found on the way: content in a System Workflow
+step only gets that step's actions, so a second workflow's actions never
+appear — make it the type's only workflow and map NEW/EDIT/PUBLISH to it
+(`PUT /api/v1/workflow/system/actions`); workflow actions need an
+`actionNextAssign` role even when nothing is assigned; GraphQL collections
+return every language version unless filtered with `+languageId:`.
+
+**Testimonials.** `SandlerTestimonial` (quote, name, role, rating, review
+title, many-to-one relation to `TrainingCenter`) holds 36 quotes copied verbatim
+from four centers' go.sandler.com testimonials pages
+(`docs/sandler-testimonials.json`). Each center has a shared
+`/about-us/testimonials` subpage (list + "Write a Review" form) and a "What
+clients say" strip on its overview. The form posts to the Next.js route
+`/api/reviews`, which saves an **unpublished** testimonial (source
+`submitted`) — an editor approves it by publishing. Site collection queries
+use `+live:true`: without it GraphQL returns drafts too, which would show
+unapproved reviews and unpublished translations. If a hero image renders only
+partly, dotCMS may have cached a corrupt resized variant — re-upload the image
+(new file version, new variants).
+
+**Center pages.** Each training center has its own dotCMS page at
+`/locations/<slug>/index`, which dotCMS serves ahead of the TrainingCenter
+URL map, so its sections can be edited, moved, added and removed in the
+Universal Visual Editor like the home page. The sections are Sandler Center
+Hero and Sandler Center Intro (both read the address, phone and solutions
+from the center), Sandler Rich Text, feature grids, and the testimonial and
+event lists. They sit in the center's folder, so the franchisee's editors
+may edit them; the two shared sections at the bottom (challenges, next
+steps) are HQ content placed on every center page. `build_center_overview_pages()`
+creates them from the TrainingCenter content; a center without its own page
+falls back to the generated view (`CenterDetail`). Search with `"depth": 1`
+to get relationship fields (e.g. a testimonial's center) from `/api/content/_search`.
+
+**Languages (English, Spanish, French).** Three layers:
+- *Content* — sections, centers and events have es/fr versions made with
+  dotAI's *AI - Translate Content* actionlet: the **Publish & Translate**
+  action (HQ only) on the Franchisee Publishing workflow, and the System
+  Workflow's own one. Use `translateTo: "*"` — a list like `es,fr` is
+  silently ignored. The System Workflow action only sits on the *Published*
+  step, so content still in *New* needs a Publish first. Machine
+  translation also rewrites links (`/contact` → `/contacto`) and slugs, so
+  link fields, center slugs and HubSpot IDs are in the actionlet's ignore
+  list, and anything it still changed was restored from English. Pages
+  (their `url` field) are not machine-translated.
+- *Interface labels* (menus, buttons, messages) — defaults in
+  `frontend-sandler/src/i18n/ui-strings.json`; `create_language_variables()`
+  copies them into dotCMS **Language Variables** (`sandler.<key>`), which
+  editors can change. `useT()` uses the dotCMS value, then the file.
+- *Fallback* — a page, section, center or event without a translation shows
+  in English (GraphQL queries fetch both and merge).
+
+**Locations finder.** `/locations` works like go.sandler.com/locations: a
+map with clustered pins (Leaflet + leaflet.markercluster, OpenStreetMap
+tiles) above a country → state accordion of all 213 offices. They are
+`SandlerLocation` content (name, go.sandler.com group id, city, state code,
+country code, phone, lat/long, website) imported from
+`docs/sandler-locations.json`. That file was scraped from the page and
+geocoded with OpenStreetMap Nominatim from postcode/city, so the pins are
+approximate. Nominatim's structured search matches the city name before
+the postcode, so a Denver office with city "Englewood" landed in Englewood,
+NJ; US offices were re-checked by ZIP alone and 14 corrected. Every location also has a `TrainingCenter` (same slug), so each has a full
+center page: 7 are hand-written (`CENTERS`), the other 206 are created by
+`create_network_centers()` with generic demo copy and six default solutions.
+The `TrainingCenter` country field lists all 13 countries. The
+`SandlerCenterDirectory` content sets what visitors can search: **Search
+options** (distance from a ZIP/city, and/or same state in the US and same
+country elsewhere), **Radius choices**, **Default radius** and **Distance
+unit** and **Demo visitor location** (e.g. `New York, NY`: "Use my
+location" and the radius buttons then treat every visitor as being there,
+which makes the demo repeatable; leave it empty for real geolocation). The frontend reads locations through `/api/locations` (cached 5
+min), and geocodes searches through `/api/geocode`, which proxies Nominatim
+with an identifying User-Agent as its usage policy requires. CARTO's basemap
+tiles now need an API key, which is why the map uses OSM tiles.
+
+Branding follows sandler.com: Poppins, navy `#21245c` / cyan `#00aded` /
+royal `#0045c2` / sky `#e5f3ff` (from their theme's CSS variables), the white
+wordmark in `frontend-sandler/public/brand/`, and pill buttons. The hero,
+split-section and award-badge images are dotCMS content, uploaded by the build
+script from `docs/sandler-assets/`.
+
+Two image gotchas found on the way:
+
+- A binary field is a **path string** in the REST page API
+  (`/dA/{id}/image/{file}`) but an **object** in the GraphQL page API the SDK
+  uses — read `image.idPath`. Passing the object to `next/image` fails with
+  *missing required "src"*, because it looks like a static import.
+- GraphQL's `idPath` ends in `?language_id=1`. Strip it before swapping the
+  file name for `{width}w/80q`, or you silently get the full-size original.
+
+> The shared `Blog` type's detail page lives on **bank.com**, so
+> `/blog/post/{urlTitle}` only resolves there — on other sites it 404s. A
+> site-scoped article type with its own detail page avoids that.
 
 ## Using the helper script
 

@@ -1,0 +1,51 @@
+## ─────────────────────────────────────────────────────────────────────────
+## GET /api/vtl/vodafone-red-plans — the published RED plans as JSON, each with its
+## subscription options (the Plan → Subscription relationship) joined in.
+##
+## Optional query parameters:
+##   maxPrice=1500        plans up to this monthly price (EGP)
+##   subscription=TOD     plans that offer this subscription
+##
+## dotCMS serves /api/vtl/<name> from the site that owns the request's
+## domain. awesomedemo-dev's domain belongs to its default site, so the file
+## lives there (/application/apivtl/vodafone-red-plans/get.vtl, uploaded by
+## docs/vodafone-apis.py) and reads telcodemo.com's content by site id. On a
+## site with its own domain it would sit on that site and use $host instead.
+## ─────────────────────────────────────────────────────────────────────────
+#set($maxPrice = $request.getParameter("maxPrice"))
+#set($wanted = $request.getParameter("subscription"))
+#set($siteId = "c81fca370b6afed12062f71739234638")## telcodemo.com
+#set($query = "+contentType:VodafonePlan +VodafonePlan.family:red +conHost:${siteId} +live:true +deleted:false +languageId:1")
+#set($plans = $dotcontent.pull($query, 100, "VodafonePlan.displayOrder asc"))
+
+#set($out = [])
+#foreach($plan in $plans)
+  #set($price = $math.toInteger($plan.price))
+  #set($options = [])
+  #set($offersWanted = false)
+  #foreach($sub in $plan.subscriptions)
+    #set($added = $options.add({"name": $sub.title, "category": $sub.category.selectValue}))
+    #if($wanted && $sub.title.equalsIgnoreCase($wanted))#set($offersWanted = true)#end
+  #end
+  #set($benefits = [])
+  #foreach($line in $plan.benefits.split("\n"))
+    #if($line.trim().length() > 0)#set($added = $benefits.add($line.trim()))#end
+  #end
+  #if((!$maxPrice || $price <= $math.toInteger($maxPrice)) && (!$wanted || $offersWanted))
+    #set($added = $out.add({
+      "id": $plan.identifier,
+      "name": $plan.title,
+      "badge": $plan.badge,
+      "data": $plan.data,
+      "minutes": $plan.minutes,
+      "price": {"amount": $price, "currency": "EGP", "period": "month", "note": $plan.priceNote},
+      "subscriptions": {"choose": $math.toInteger($plan.subscriptionsIncluded), "options": $options},
+      "benefits": $benefits,
+      "buyUrl": $plan.ctaLink
+    }))
+  #end
+#end
+
+$dotJSON.put("site", "telcodemo.com")
+$dotJSON.put("count", $out.size())
+$dotJSON.put("plans", $out)

@@ -1,0 +1,5 @@
+franchisee,slug,tier,master_franchise,user_email,user_first,user_last,access_level
+Cora Growth Partners,cora,standard,,heathe@dotcms.com,Heather,Test,editor
+The Ruby Group,therubygroup,advanced,,mike@example.com,Mike,Test,editor
+The Ruby Group,therubygroup,advanced,,pat@dotcms.com,Pat,Provider,editor
+Cora Growth Partners,cora,standard,,pat@dotcms.com,Pat,Provider,viewer
