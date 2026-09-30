@@ -6,7 +6,8 @@ Creates the Vodafone content types, templates, folders and menu, the pages
 plans and their subscription options (a many-to-many relationship), a set
 of dummy stores and the site's media library (/images), and points UVE at
 the frontend on :3007. Then it runs vodafone-editorial.py (review workflow,
-roles, demo users) and vodafone-apis.py (the custom JSON endpoint).
+roles, demo users), vodafone-apis.py (the custom JSON endpoint) and
+vodafone-personalization.py (personas, persona content, /devices, rules).
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-vodafone.py
@@ -792,7 +793,7 @@ def main():
         ns.verify(SITE_ID, uri)
     # Last, once the content exists (it is created with the System Workflow):
     # the review workflow, roles and demo users, then the custom JSON API.
-    for script in ("vodafone-editorial.py", "vodafone-apis.py"):
+    for script in ("vodafone-editorial.py", "vodafone-apis.py", "vodafone-personalization.py"):
         print(f"\n{script}")
         subprocess.run([sys.executable, os.path.join(HERE, script)], check=True)
     print(f"\nDone. Site id: {SITE_ID}")

@@ -30,6 +30,8 @@ export interface Plan {
   /** Monthly price in EGP, e.g. "3450". */
   price: string;
   priceNote?: string;
+  /** Shown after the price: "/month" when empty, or e.g. "one-off", "/week". */
+  pricePeriod?: string;
   badge?: string;
   /** One benefit per line. */
   benefits?: string;
@@ -46,6 +48,18 @@ export interface Plan {
 export interface Subscription {
   title: string;
   category?: string;
+}
+
+/** A phone sold with instalments (content type `VodafoneDevice`). */
+export interface Device {
+  identifier: string;
+  title: string;
+  brand?: string;
+  storage?: string;
+  /** Full price in EGP, e.g. "21999". */
+  price: string;
+  badge?: string;
+  image?: DotCMSImageField;
 }
 
 /** A store or dealer (content type `VodafoneStore`). */
@@ -69,5 +83,6 @@ export interface DotCMSPageContent {
   navigation: DotCMSPageNavigation;
   slides?: HeroSlide[];
   plans?: Plan[];
+  devices?: Device[];
   stores?: Store[];
 }

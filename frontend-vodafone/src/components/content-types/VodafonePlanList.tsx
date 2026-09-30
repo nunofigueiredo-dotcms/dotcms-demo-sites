@@ -16,6 +16,12 @@ type VodafonePlanListProps = DotCMSBasicContentlet & {
   family: string;
 };
 
+/** "/month" by default; a word like "one-off" gets a space before it. */
+function period(value?: string) {
+  const p = value?.trim() || "/month";
+  return p.startsWith("/") ? p : ` ${p}`;
+}
+
 // Benefits shown before "Show all benefits".
 const PREVIEW = 4;
 
@@ -37,14 +43,14 @@ function PlanCard({ plan }: { plan: Plan }) {
         )}
         {plan.minutes && (
           <div>
-            <dt>Minutes to any network</dt>
+            <dt>Minutes</dt>
             <dd>{plan.minutes}</dd>
           </div>
         )}
       </dl>
       <p className="plan-card__price">
         <span className="plan-card__currency">EGP</span> {formatPrice(plan.price)}
-        <span className="plan-card__period">/month</span>
+        <span className="plan-card__period">{period(plan.pricePeriod)}</span>
       </p>
       {plan.priceNote && <p className="plan-card__note">{plan.priceNote}</p>}
       {plan.subscriptions?.length ? (

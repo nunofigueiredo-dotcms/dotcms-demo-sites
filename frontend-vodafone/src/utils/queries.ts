@@ -50,6 +50,7 @@ VodafonePlanCollection(query: "${filter(editor)}", limit: 100) {
     minutes
     price
     priceNote
+    pricePeriod
     badge
     benefits
     ctaText
@@ -60,6 +61,18 @@ VodafonePlanCollection(query: "${filter(editor)}", limit: 100) {
         title
         category
     }
+}
+`;
+
+const devicesQuery = (editor: boolean) => `
+VodafoneDeviceCollection(query: "${filter(editor)}", limit: 100) {
+    identifier
+    title
+    brand
+    storage
+    price
+    badge
+    image { idPath }
 }
 `;
 
@@ -85,6 +98,7 @@ function buildPageContentQuery(editor: boolean) {
       navigation: navigationQuery,
       slides: slidesQuery(editor),
       plans: plansQuery(editor),
+      devices: devicesQuery(editor),
       stores: storesQuery(editor),
     },
   };

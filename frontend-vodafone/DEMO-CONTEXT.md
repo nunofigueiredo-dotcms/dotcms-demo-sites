@@ -87,8 +87,9 @@ as set in the editor), plus *Seconds per slide*. One is ready:
 it is a demo step. Page data lists a carousel's slides by identifier only:
 the website loads the site's slides with every page and matches them; the
 iPhone app fetches them by identifier. Slides inside a carousel are their own
-content: edited from **Edit this slide**, reviewed and published separately
-(Publish Page does not include related content). Carousel slides use the
+content: edited from **Edit this slide**, reviewed and published separately —
+or together with the page (see *Gotchas*: publishing a page publishes the
+site's unpublished Vodafone sections, slides included). Carousel slides use the
 default design (Style editor values belong to a slide placed on a page).
 
 ### Media library (demo item 1)
@@ -135,6 +136,21 @@ Draft ──Submit for review──▶ In Review ──Approve & publish──�
   3. **Content REST** `/api/content/query/<lucene>/depth/1` — related
      subscriptions nested.
 
+### Personalization (demo item 3)
+Personas **Tourist / Visitor to Egypt** (`VodafoneTourist`), **Young
+Social-First Prepaid** (`VodafoneSocialPrepaid`) and **Device Shopper**
+(`VodafoneDeviceShopper`), each with its own home hero and "Offers for you"
+row (container right below the quick links); the rest of the page is shared.
+Persona plans use new plan families `tourist` / `youth` / `device` and a
+**Price period** field. `/devices` lists five phones (`VodafoneDevice`,
+`VodafoneDeviceList`). Three dotCMS rules on telcodemo.com assign the
+personas (country ≠ EG, travel/airport, social `utm_source`, visited
+`/devices`). The website resolves the same triggers itself
+(`src/utils/personaTargeting.ts`, `src/proxy.ts`, cookie `vf_persona`;
+`?persona=…` / `?persona=reset`; location off unless `PERSONA_GEO=true`).
+Set up by `docs/vodafone-personalization.py`; run sheet section 3. Not in
+the iPhone app yet. Prices illustrative.
+
 ### Website (`frontend-vodafone`)
 Next.js 16 + `@dotcms/react`: `DotCMSLayoutBody` renders each page from its
 dotCMS template, mapping content type variables to components in
@@ -155,10 +171,28 @@ refresh reloads from dotCMS. See its `AGENTS.md`.
 - **Never name a field `sortOrder`** — it's a built-in contentlet property;
   creation works but every later edit fails with `BADTYPE`. We use
   `displayOrder`.
-- **Publishing a page does not publish its sections** via the workflow API.
-  In the editor use **Publish Page**, which lists and publishes all
-  unpublished content on the page. Related content (e.g. a carousel's slides)
-  and content loaded by query are not included — publish those themselves.
+- **Publishing a page publishes its Vodafone sections too** — but only
+  because of a custom step on System Workflow → Publish (both "Publish"
+  actions), installed by `docs/install-publish-page-sections.py`, source
+  `docs/workflow/publish-page-sections/publish-page-sections.vtl`. For
+  admins and Vodafone Reviewers it publishes the unpublished Vodafone page
+  sections (banners, slides, carousels, tiles, …; not plans/stores/
+  subscriptions) **on the page's site**, through Vodafone Editorial. Editors
+  can't publish pages. Out of the box dotCMS publishes the page only.
+- **JavaScript workflow steps are broken on this dotCMS version**: any JS
+  step that finishes normally makes the action fail (HTTP 500) — only a JS
+  step that throws "works". Use Velocity steps. Velocity has no try/catch,
+  so check permissions before `$workflowtool.fire` (a refusal fails the
+  whole action).
+- **Action step order isn't guaranteed** when created over the API. A
+  Publish that runs Save after Publish leaves a draft copy of everything;
+  `vodafone-editorial.py` now rebuilds and verifies each action's steps.
+- **The Page content type** (System Host) needs *read* permission for the
+  Vodafone roles before they can publish pages — set it in the UI (Content
+  Types → Page → Permissions); the permissions API ignores content types.
+- **Inserting a row renumbers a drawn template's containers** in layout
+  order (dotCMS moves the placed content along). Look containers up by row
+  class, not by a fixed uuid.
 - **Inline edits save drafts.** Apps and the public site show published
   content only; in the editor the website asks for `+working:true` and passes
   the editor's mode to dotCMS (needed for Style editor schemas too).

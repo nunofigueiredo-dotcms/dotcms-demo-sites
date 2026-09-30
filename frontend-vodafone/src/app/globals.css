@@ -471,6 +471,46 @@
     @apply w-full;
   }
 
+  /* ── Devices ─ */
+  .device-grid {
+    @apply grid gap-5 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .device-card {
+    @apply relative flex flex-col gap-1 rounded-md bg-white p-6 shadow-sm;
+  }
+  .device-card__image {
+    @apply relative mb-3 grid h-40 place-items-center rounded-md bg-brand-mist;
+  }
+  .device-card__image img {
+    @apply object-contain;
+  }
+  .device-card__brand {
+    @apply text-xs tracking-wide text-brand-grey uppercase;
+  }
+  .device-card h3 {
+    @apply text-xl;
+  }
+  .device-card__storage {
+    @apply text-sm text-brand-grey;
+  }
+  .device-card__monthly {
+    @apply mt-3 text-3xl;
+  }
+  .device-card__total {
+    @apply mb-4 text-xs text-brand-grey;
+  }
+  .device-card .btn {
+    @apply mt-auto w-full;
+  }
+
+  /* ── Persona badge (live site only) ─ */
+  .persona-badge {
+    @apply fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full bg-brand-charcoal px-4 py-2 text-sm text-white shadow-lg;
+  }
+  .persona-badge a {
+    @apply text-white/70 underline hover:text-white;
+  }
+
   /* ── Feature split ─ */
   .feature-split {
     @apply grid items-center gap-8 md:grid-cols-2 lg:gap-14;

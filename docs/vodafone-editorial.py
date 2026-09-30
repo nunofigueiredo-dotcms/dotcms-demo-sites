@@ -160,9 +160,26 @@ def ensure_workflow(role_ids):
             if action_id not in on_step:
                 ns.api("POST", f"/api/v1/workflow/steps/{steps[step]}/actions", {"actionId": action_id})
 
+    def set_actionlets(action_id, name, actionlets):
+        """Replace the action's steps, one at a time, and check the order:
+        dotCMS doesn't always keep the order it's given, and a Publish that
+        runs Save after Publish leaves a draft copy of everything it publishes."""
+        for _ in range(3):
+            for sub in ns.api("GET", f"/api/v1/workflow/actions/{action_id}/actionlets").get("entity") or []:
+                ns.api("DELETE", f"/api/v1/workflow/actionlets/{sub['id']}")
+            for order, clazz in enumerate(actionlets):
+                ns.api("POST", f"/api/v1/workflow/actions/{action_id}/actionlets",
+                       {"actionletClass": A + clazz, "order": order, "parameters": {}})
+            got = [sub.get("actionlet", {}).get("actionClass", "").rsplit(".", 1)[-1] for sub in
+                   ns.api("GET", f"/api/v1/workflow/actions/{action_id}/actionlets").get("entity") or []]
+            if got == actionlets:
+                return
+        sys.exit(f"  ! {name}: steps out of order {got}")
+
     def action(name, on_steps, next_step, actionlets, who, icon, comment=False, assign=None):
         if name in have:
             attach(have[name], on_steps)
+            set_actionlets(have[name], name, actionlets)
             return have[name]
         a = entity(ns.api("POST", "/api/v1/workflow/actions", {
             "schemeId": scheme, "stepId": steps[on_steps[0]], "actionName": name,
@@ -171,13 +188,8 @@ def ensure_workflow(role_ids):
             "showOn": SHOW_ALL, "actionNextStep": steps.get(next_step, next_step),
             "actionNextAssign": assign or nobody, "actionCondition": ""}), f"action {name}")
         attach(a["id"], on_steps[1:])
-        for order, clazz in enumerate(actionlets):
-            ns.api("POST", f"/api/v1/workflow/actions/{a['id']}/actionlets",
-                   {"actionletClass": A + clazz, "order": order, "parameters": {}})
-        # dotCMS adds "Notify Assignee" to new actions; nothing here emails.
-        for sub in ns.api("GET", f"/api/v1/workflow/actions/{a['id']}/actionlets").get("entity") or []:
-            if sub.get("name") == "Notify Assignee":
-                ns.api("DELETE", f"/api/v1/workflow/actionlets/{sub['id']}")
+        # (This also clears the "Notify Assignee" step dotCMS adds to new actions.)
+        set_actionlets(a["id"], name, actionlets)
         print(f"  action {name}")
         return a["id"]
 
