@@ -43,12 +43,3 @@ export const NEWS_CATEGORIES: Record<string, string> = {
   programs: "Programs",
   recognition: "Recognition",
 };
-
-export const EVENT_CATEGORIES: Record<string, string> = {
-  academic: "Academic",
-  testing: "Testing",
-  holiday: "No school",
-  family: "Family",
-  athletics: "Athletics",
-  community: "Community",
-};

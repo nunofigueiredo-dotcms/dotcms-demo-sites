@@ -1,4 +1,5 @@
 import type { DotCMSNavigationItem } from "@dotcms/types";
+import type { Category } from "@/utils/categories";
 import type { BlockField } from "@/utils/blocks";
 import type { DotCMSImageField } from "@/utils/images";
 
@@ -29,7 +30,8 @@ export interface CalendarEvent {
   /** As shown, e.g. "8 AM – 3 PM". Empty means all day. */
   timeText?: string | null;
   location?: string | null;
-  category: string;
+  /** From the TSD Event Categories tree in dotCMS; an event can have several. */
+  eventCategories?: Category[] | null;
   description?: string | null;
 }
 

@@ -50,7 +50,10 @@ TsdEventCollection(query: "${filter(editor)}", limit: 300) {
     endDate
     timeText
     location
-    category
+    eventCategories {
+        key
+        name
+    }
     description
 }
 `;

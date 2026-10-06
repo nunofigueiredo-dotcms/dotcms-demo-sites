@@ -6,7 +6,7 @@ Visual Editor only offers TSD components on this site), templates, folders and
 menu, the pages (home, about, admissions, academics and its five school pages,
 outreach, news, calendar, contact) with their sections, news articles and
 calendar events, and the site's media library (/images). Then it points UVE
-at the frontend on :3008.
+at the deployed frontend on Vercel (the local :3008 server is a dev URL).
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-education.py
@@ -36,7 +36,10 @@ os.environ.setdefault("DOTCMS_THEME_ID", "ce00bd28-5f66-47f9-96ca-bbf0722a79aa")
 import dotcms_site as ns  # noqa: E402
 
 SITE = os.environ.get("EDUCATION_SITE", "educationdemo.com")
-FRONTEND = os.environ.get("EDUCATION_FRONTEND", "http://localhost:3008")
+# The deployed frontend (Vercel). UVE loads pages from it; the local dev
+# server stays available in the editor as a dev URL.
+FRONTEND = os.environ.get("EDUCATION_FRONTEND", "https://dotcms-demo-sites-45sr.vercel.app")
+DEV_FRONTENDS = ["http://localhost:3008", "http://educationdemo.localhost:3008"]
 # Same identifier on every instance: it ships with dotCMS.
 SYSTEM_WORKFLOW = "d61a59e1-a49c-46f2-a929-db2b4bfa88b2"
 CONTAINER_TITLE = "TSD Sections"
@@ -71,9 +74,16 @@ ICON_HINT = "Icons: " + ", ".join(ICONS[:18]) + " …"
 NEWS_CATEGORIES = [("Announcements", "announcements"), ("Lone Star Journal", "lone-star"),
                    ("The Roots", "the-roots"), ("Programs", "programs"),
                    ("Recognition", "recognition")]
-EVENT_CATEGORIES = [("Academic", "academic"), ("Testing", "testing"),
-                    ("No school", "holiday"), ("Family", "family"),
-                    ("Athletics", "athletics"), ("Community", "community")]
+# The TSD Event Categories tree (Content → Categories). Editors add or rename
+# categories there; the frontend gives the known keys their colours
+# (frontend-education/src/utils/categories.ts). Keys are global on the
+# instance, hence the prefix.
+EVENT_CATEGORY_PARENT = ("TSD Event Categories", "tsdEventCategories")
+EVENT_CATEGORIES = [("Academic", "tsd-academic"), ("Testing", "tsd-testing"),
+                    ("No School", "tsd-no-school"), ("Family", "tsd-family"),
+                    ("Athletics", "tsd-athletics"), ("Student Life", "tsd-student-life"),
+                    ("Community", "tsd-community"), ("Outreach", "tsd-outreach")]
+EVENT_CATEGORY_ROOT = ""  # set by ensure_event_categories()
 
 
 # --------------------------------------------------------------------------
@@ -144,6 +154,33 @@ def create_type(variable, name, description, fields, icon="article",
         print(f"  type {variable} created")
         return ent[0]["id"]
     sys.exit(f"  ! type {variable} failed: {str(resp)[:300]}")
+
+
+def ensure_event_categories():
+    """The TSD Event Categories tree. Reused if it already exists."""
+    global EVENT_CATEGORY_ROOT
+    name, key = EVENT_CATEGORY_PARENT
+    found = ns.api("GET", f"/api/v1/categories?filter={key}&per_page=50").get("entity") or []
+    root = next((c for c in found if c.get("key") == key), None)
+    if not root:
+        root = ns.api("POST", "/api/v1/categories", {
+            "categoryName": name, "key": key, "categoryVelocityVarName": key, "sortOrder": 0,
+            "active": True, "description": f"Calendar categories for {SITE}"})["entity"]
+    EVENT_CATEGORY_ROOT = root["inode"]
+    existing = {c["key"] for c in ns.api(
+        "GET", f"/api/v1/categories/children?inode={EVENT_CATEGORY_ROOT}&per_page=100").get("entity") or []}
+    for order, (child, child_key) in enumerate(EVENT_CATEGORIES, start=1):
+        if child_key not in existing:
+            ns.api("POST", "/api/v1/categories", {
+                "categoryName": child, "key": child_key,
+                "categoryVelocityVarName": child_key.replace("-", ""), "sortOrder": order,
+                "active": True, "parent": EVENT_CATEGORY_ROOT})
+    print(f"  categories {name}: {len(EVENT_CATEGORIES)}")
+
+
+def category_field(name, variable, hint):
+    return {**field("ImmutableCategoryField", name, variable, indexed=True, hint=hint),
+            "values": EVENT_CATEGORY_ROOT}
 
 
 def create_section_types():
@@ -266,7 +303,11 @@ def create_section_types():
         field("ImmutableSelectField", "Layout", "layout",
               values=options([("Compact (date tiles)", "compact"), ("Full, grouped by month", "full")])),
         field("ImmutableCheckboxField", "Options", "showAllLink",
-              values=options([("Show an 'All events' link", "true")])),
+              values=options([("Show an 'All events' link", "true"),
+                              ("Show category filter buttons", "filter"),
+                              ("Show 'Add to calendar' and subscribe links", "ics")])),
+        category_field("Only these categories", "eventCategories",
+                       "Leave empty to show every category"),
     ], icon="event")
 
     create_type("TsdFaq", "TSD FAQ",
@@ -315,8 +356,9 @@ def create_record_types(news_detail_page):
         field("ImmutableDateTimeField", "Ends", "endDate", hint="Optional, for multi-day events"),
         field("ImmutableTextField", "Time", "timeText", hint="As shown, e.g. 8 AM – 3 PM. Empty = all day"),
         field("ImmutableTextField", "Location", "location"),
-        field("ImmutableSelectField", "Category", "category", required=True, listed=True,
-              values=options(EVENT_CATEGORIES)),
+        {**category_field("Categories", "eventCategories",
+                          "Pick one or more. Manage the list under Content > Categories > "
+                          "TSD Event Categories."), "listed": True},
         field("ImmutableTextAreaField", "Description", "description"),
     ], icon="event")
 
@@ -353,6 +395,16 @@ def ensure_container():
     print(f"  container {CONTAINER_TITLE} -> {CONTAINER_ID}")
 
 
+def configure_uve():
+    """Point the Universal Visual Editor at the deployed frontend, with the
+    local dev server selectable as a dev URL."""
+    cfg = {"config": [{"pattern": ".*", "url": FRONTEND,
+                       "options": {"allowedDevURLs": DEV_FRONTENDS}}]}
+    ns.api("POST", f"/api/v1/apps/dotema-config-v2/{SITE_ID}",
+           {"configuration": {"value": json.dumps(cfg, indent=2), "hidden": False}})
+    print(f"  UVE -> {FRONTEND} (dev: {', '.join(DEV_FRONTENDS)})")
+
+
 def create_settings_type():
     """Site-wide settings, one item per site: integrations an administrator
     turns on or changes without a code deploy."""
@@ -383,8 +435,10 @@ def configure_analytics():
     # The analytics service finds the site from the browser's Origin header.
     # Browsers send *.localhost to this machine, so this alias lets the local
     # frontend (http://educationdemo.localhost:3008) record events.
+    # The deployed frontend's domain is an alias for the same reason.
+    aliases = ["educationdemo.localhost", FRONTEND.split("://", 1)[-1].rstrip("/")]
     ns.api("PUT", f"/api/v1/site?id={SITE_ID}", {
-        "siteName": SITE, "aliases": "educationdemo.localhost", "forceExecution": True})
+        "siteName": SITE, "aliases": "\n".join(aliases), "forceExecution": True})
     return key
 
 
@@ -658,36 +712,50 @@ NEWS = [
 ]
 
 # The six testing dates are on tsd.texas.gov; the rest have sample dates.
+# An event can be in several categories.
 EVENTS = [
     dict(title="ACT Test - TSD Campus", startDate="2026-10-21 08:00:00", timeText="8 AM – 3 PM",
-         location="High School", category="testing"),
+         location="High School", eventCategories=["tsd-testing", "tsd-academic"]),
     dict(title="Parent-Teacher Conferences", startDate="2026-10-30 08:00:00",
-         timeText="8 AM – 4 PM", location="All school buildings", category="family",
+         timeText="8 AM – 4 PM", location="All school buildings", eventCategories=["tsd-family", "tsd-academic"],
          description="Meet your child’s teachers. Interpreters are available on request."),
     dict(title="Family Weekend Retreat", startDate="2026-11-06 16:00:00",
-         endDate="2026-11-08 12:00:00", location="TSD Campus", category="family",
+         endDate="2026-11-08 12:00:00", location="TSD Campus", eventCategories=["tsd-family", "tsd-outreach"],
          description="A weekend for families of deaf and hard of hearing children, run by the "
                      "Statewide Outreach Center."),
     dict(title="Thanksgiving Break — No School", startDate="2026-11-23 00:00:00",
-         endDate="2026-11-27 23:59:00", location="", category="holiday"),
+         endDate="2026-11-27 23:59:00", location="", eventCategories=["tsd-no-school"]),
     dict(title="English 1 End of Course", startDate="2026-12-01 08:00:00", location="High School",
-         category="testing"),
+         eventCategories=["tsd-testing"]),
     dict(title="English 2 End of Course", startDate="2026-12-03 08:00:00", location="High School",
-         category="testing"),
+         eventCategories=["tsd-testing"]),
     dict(title="Biology End of Course", startDate="2026-12-08 08:00:00", location="High School",
-         category="testing"),
+         eventCategories=["tsd-testing"]),
     dict(title="Algebra 1 End of Course", startDate="2026-12-09 08:00:00", location="High School",
-         category="testing"),
+         eventCategories=["tsd-testing"]),
     dict(title="US History End of Course", startDate="2026-12-10 08:00:00", location="High School",
-         category="testing"),
+         eventCategories=["tsd-testing"]),
     dict(title="Winter Performing Arts Showcase", startDate="2026-12-15 18:00:00",
-         timeText="6 PM", location="Auditorium", category="community",
+         timeText="6 PM", location="Auditorium", eventCategories=["tsd-community", "tsd-student-life"],
          description="Students from the Performing Arts program present their winter showcase."),
     dict(title="Winter Break — No School", startDate="2026-12-21 00:00:00",
-         endDate="2027-01-01 23:59:00", location="", category="holiday"),
+         endDate="2027-01-01 23:59:00", location="", eventCategories=["tsd-no-school"]),
     dict(title="Classes Resume", startDate="2027-01-05 08:00:00", timeText="8 AM",
-         location="TSD Campus", category="academic",
+         location="TSD Campus", eventCategories=["tsd-academic"],
          description="Residential students return on Sunday, January 4."),
+    dict(title="Ranger Volleyball — Home Game", startDate="2026-10-15 18:00:00", timeText="6 PM",
+         location="Rives Gym", eventCategories=["tsd-athletics"],
+         description="Cheer on the Rangers at home."),
+    dict(title="Fall Festival in the Dorms", startDate="2026-10-29 18:30:00",
+         timeText="6:30 – 8:30 PM", location="Elementary & Middle School Dorms",
+         eventCategories=["tsd-student-life"],
+         description="Games, crafts and treats for residential students, hosted by Student Life."),
+    dict(title="Communication Skills Workshop (Online)", startDate="2026-11-14 10:00:00",
+         timeText="10 AM – 12 PM", location="Online", eventCategories=["tsd-outreach", "tsd-family"],
+         description="ASL learning for families and professionals, from the Statewide Outreach Center."),
+    dict(title="Ranger Basketball Home Opener", startDate="2026-11-20 18:00:00", timeText="6 PM",
+         location="Rives Gym", eventCategories=["tsd-athletics", "tsd-community"],
+         description="The Rangers open the basketball season at home."),
 ]
 
 
@@ -1021,7 +1089,11 @@ def build_pages(home_tpl, page_tpl, detail_id):
                        "Expand access through statewide events and virtual options",
                        "Increase awareness that every deaf and hard-of-hearing student can reach "
                        "their full potential"]))],
-        5: [contacts("Outreach — contacts", "We stand by ready to assist you", [OUTREACH_OFFICE])],
+        # Only Outreach events: an Event List scoped to one category.
+        5: [create("TsdEventList", title="Outreach — upcoming events",
+                   heading="Upcoming Outreach events", count="5", layout="compact",
+                   showAllLink="true", eventCategories=["tsd-outreach"])],
+        6: [contacts("Outreach — contacts", "We stand by ready to assist you", [OUTREACH_OFFICE])],
     })
 
     # ---- News, its detail page, calendar, contact
@@ -1044,7 +1116,7 @@ def build_pages(home_tpl, page_tpl, detail_id):
         1: [banner("2026–2027 TSD Calendar", "Testing dates, school holidays, family events and "
                    "more.", "Calendar")],
         2: [create("TsdEventList", title="Calendar — all events", heading="Upcoming events",
-                   count="all", layout="full")],
+                   count="all", layout="full", showAllLink="filter,ics")],
     })
 
     contact = page("Contact TSD", "/contact", page_tpl,
@@ -1132,6 +1204,7 @@ def set_menu():
 def main():
     ensure_site()
     set_menu()
+    ensure_event_categories()
     create_section_types()
     ensure_container()
     # Home: hero, quick links, school cards, promos, then latest news beside
@@ -1150,7 +1223,7 @@ def main():
     create_settings_type()
     create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="")
     analytics_key = configure_analytics()
-    ns.configure_uve(SITE_ID, FRONTEND)
+    configure_uve()
     for uri in ["/index", "/about/index", "/admissions/index", "/academics/index",
                 *[f"/academics/{s}/index" for s in SCHOOLS], "/outreach/index",
                 "/news/index", "/calendar/index", "/contact/index"]:
