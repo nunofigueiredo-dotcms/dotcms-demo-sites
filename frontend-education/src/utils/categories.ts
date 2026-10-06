@@ -1,0 +1,59 @@
+/** A dotCMS category, as GraphQL returns it. */
+export interface Category {
+  key: string;
+  name: string;
+}
+
+/**
+ * Category fields arrive in three shapes depending on the API: GraphQL
+ * collections give [{ key, name }], the page API gives
+ * { categories: [{ key, name, … }] }, and REST gives [{ "key": "name" }].
+ */
+export function toCategories(field: unknown): Category[] {
+  const list = Array.isArray(field)
+    ? field
+    : field && typeof field === "object" && Array.isArray((field as { categories?: unknown }).categories)
+      ? (field as { categories: unknown[] }).categories
+      : [];
+  return list.flatMap((item): Category[] => {
+    if (!item || typeof item !== "object") return [];
+    const c = item as Record<string, unknown>;
+    if (typeof c.key === "string") return [{ key: c.key, name: String(c.name ?? c.key) }];
+    const [key, name] = Object.entries(c)[0] ?? [];
+    return typeof key === "string" ? [{ key, name: String(name) }] : [];
+  });
+}
+
+/**
+ * Colours for the TSD Event Categories in dotCMS (Content → Categories), in
+ * display order. All pass WCAG AA with white text. A category editors add
+ * later shows in the default navy, after these.
+ */
+const EVENT_CATEGORY_COLORS: Record<string, string> = {
+  "tsd-academic": "#041436",
+  "tsd-testing": "#3e6581",
+  "tsd-no-school": "#b5245f",
+  "tsd-family": "#1f6f43",
+  "tsd-athletics": "#a3470f",
+  "tsd-student-life": "#5b3f99",
+  "tsd-community": "#2c5e8c",
+  "tsd-outreach": "#0e5f6e",
+};
+const ORDER = Object.keys(EVENT_CATEGORY_COLORS);
+
+export function categoryColor(key: string | undefined): string {
+  return (key && EVENT_CATEGORY_COLORS[key]) || "#041436";
+}
+
+/** Known categories in their display order, then any others alphabetically. */
+export function sortCategories(categories: Category[]): Category[] {
+  const rank = (c: Category) => (ORDER.includes(c.key) ? ORDER.indexOf(c.key) : ORDER.length);
+  return [...categories].sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+}
+
+/** The distinct categories of a list of items, in display order. */
+export function distinctCategories(lists: Category[][]): Category[] {
+  const byKey = new Map<string, Category>();
+  for (const c of lists.flat()) byKey.set(c.key, c);
+  return sortCategories([...byKey.values()]);
+}

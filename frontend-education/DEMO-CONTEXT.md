@@ -51,7 +51,7 @@ Sections editors drag onto pages: **TsdHero**, **TsdPageBanner**,
 **TsdFeatureSplit**, **TsdCallout**, **TsdPromoCarousel**, **TsdNewsList**,
 **TsdEventList**, **TsdFaq**, **TsdContactList**, plus rich text
 (`webPageContent`). Records: **TsdNews** (9 real articles), **TsdEvent**
-(12), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
+(16, in categories), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
 the Google Analytics ID).
 
 The pages use a **TSD Sections** container that accepts only those section
@@ -63,12 +63,35 @@ TsdPageBanner (background, alignment).
 
 ### Real vs sample content
 Real (tsd.texas.gov): all page copy, phone/VP numbers, news articles, the six
-testing dates (ACT Oct 21; end-of-course Dec 1–10). Sample dates: parent
+testing dates (ACT Oct 21; end-of-course Dec 1–10). Sample: parent
 conferences, Family Weekend Retreat, breaks, the winter showcase, classes
-resuming. Program descriptions on `/outreach` for Discovery Retreat,
+resuming, and the volleyball, basketball, dorm festival and online workshop
+events added for the category filters. Program descriptions on `/outreach` for Discovery Retreat,
 Communication Skills Workshop, Parent Infant Program and On The Road are
 short paraphrases, not TSD copy. Sensitive recent news (the homecoming
 incident, media statements) was deliberately left out.
+
+### Calendar categories (requirement 2)
+- Event categories are a dotCMS **category tree**: Content → Categories →
+  **TSD Event Categories** (Academic, Testing, No School, Family, Athletics,
+  Student Life, Community, Outreach). Editors add or rename categories there,
+  no developer needed; an event can be in several (TsdEvent → Categories).
+  Keys are `tsd-*`; the frontend colours the known keys
+  (`src/utils/categories.ts`), new ones show in navy.
+- **TSD Event List** section options: *Only these categories* (pick from the
+  tree; empty = all) and checkboxes for *category filter buttons* and
+  *Add to calendar / subscribe links*. The Outreach page has a list scoped to
+  Outreach; the calendar page has filters and calendar links on.
+- Filters keep the choice in the address, so links are shareable:
+  `/calendar?category=tsd-testing`. A status message announces the result
+  count to screen readers.
+- **iCalendar feeds** (`src/app/api/calendar/route.ts`): `/api/calendar`
+  (all), `?category=tsd-testing` (one category), `?event=ID` (one event,
+  downloads). Subscribe with `webcal://…` in Google, Outlook or Apple
+  Calendar; times are America/Chicago, breaks are all-day. Feeds include the
+  last 60 days and are cached 5 minutes.
+- Search-index gotcha: Lucene matches categories by variable name
+  (`+categories:tsdtesting`), not by key — the feed filters by key in code.
 
 ### Analytics (requirement 1)
 Two options, both live in the code; either can run alone.

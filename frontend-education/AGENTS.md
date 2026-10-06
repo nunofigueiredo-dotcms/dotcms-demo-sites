@@ -37,6 +37,10 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
   media library; images are served resized from `/dA/{id}/{w}w/80q`.
 - `dotcms/style-schemas/` — Style editor options for TsdHero and
   TsdPageBanner, pushed with `npm run style-schemas`.
+- Calendar: event categories come from the dotCMS category tree "TSD Event
+  Categories" (`utils/categories.ts` for colours and the three API shapes of
+  a category field); `TsdEventList` filters by category (`?category=` in the
+  URL); `app/api/calendar/route.ts` serves iCalendar feeds (`utils/ics.ts`).
 - Analytics: dotCMS Content Analytics in `app/layout.tsx`
   (`utils/analytics.ts`, needs `NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY` and the
   site opened at http://educationdemo.localhost:3008); Google Analytics from
