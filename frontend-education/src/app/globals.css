@@ -387,6 +387,33 @@
   .card--link:hover .card__more {
     @apply text-brand-pink;
   }
+  /* Style editor: columns, card style, alignment. */
+  .feature-grid--cols-2 {
+    @apply sm:grid-cols-2 lg:grid-cols-2;
+  }
+  .feature-grid--cols-3 {
+    @apply sm:grid-cols-2 lg:grid-cols-3;
+  }
+  .feature-grid--cols-4 {
+    @apply sm:grid-cols-2 lg:grid-cols-4;
+  }
+  .feature-grid--card-filled .card {
+    @apply border-transparent bg-brand-mist;
+  }
+  .section--mist .feature-grid--card-filled .card {
+    @apply bg-white;
+  }
+  .feature-grid--card-minimal .card {
+    @apply border-transparent bg-transparent p-0 shadow-none hover:shadow-none;
+  }
+  .section--centered .section__header,
+  .section--centered .card,
+  .section--centered .feature-grid--steps li {
+    @apply mx-auto items-center text-center;
+  }
+  .section--centered .section__actions {
+    @apply text-center;
+  }
   .feature-grid--checklist {
     @apply max-w-4xl gap-x-10 gap-y-4 md:grid-cols-2;
   }
@@ -453,6 +480,25 @@
   .split__image img {
     @apply object-cover;
   }
+  /* Style editor: photo width and shape. */
+  .split--wide {
+    @apply lg:grid-cols-[3fr_2fr];
+  }
+  .split--wide.split--image-right {
+    @apply lg:grid-cols-[2fr_3fr];
+  }
+  .split--narrow {
+    @apply lg:grid-cols-[2fr_3fr];
+  }
+  .split--narrow.split--image-right {
+    @apply lg:grid-cols-[3fr_2fr];
+  }
+  .split--shape-square .split__image {
+    @apply rounded-none;
+  }
+  .split--shape-arch .split__image {
+    @apply rounded-t-[999px] rounded-b-2xl;
+  }
   .split__text p {
     @apply mt-4 text-lg text-brand-muted;
   }
@@ -484,6 +530,12 @@
   }
   .callout blockquote {
     @apply font-serif text-2xl leading-snug italic sm:text-3xl;
+  }
+  .callout--left {
+    @apply text-left;
+  }
+  .callout--medium blockquote {
+    @apply text-xl sm:text-2xl;
   }
   .callout .btn {
     @apply mt-10;
@@ -782,6 +834,79 @@
   }
   .site-footer__bottom {
     @apply border-t border-white/15 py-5 text-sm text-white/70;
+  }
+
+  /* ── Video ─ */
+  .video-section {
+    @apply grid items-center gap-10 lg:gap-16;
+  }
+  .video-section--split {
+    @apply lg:grid-cols-[2fr_3fr];
+  }
+  .video-section--full .video-section__text {
+    @apply max-w-3xl;
+  }
+  .video-section__text p {
+    @apply mt-4 text-lg text-brand-muted;
+  }
+  .section--navy .video-section__text p {
+    @apply text-white/85;
+  }
+  .video__frame {
+    @apply relative aspect-video overflow-hidden rounded-2xl bg-brand-navy shadow-[0_20px_40px_rgb(4_20_54/0.15)];
+  }
+  .video__frame iframe {
+    @apply absolute inset-0 h-full w-full;
+  }
+  .video__poster {
+    @apply absolute inset-0 h-full w-full cursor-pointer;
+  }
+  .video__poster img {
+    @apply object-cover;
+  }
+  .video__play {
+    @apply absolute top-1/2 left-1/2 grid h-20 w-20 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-brand-pink pl-1 text-white shadow-xl transition-transform;
+  }
+  .video__poster:hover .video__play {
+    @apply scale-110;
+  }
+  .video__missing {
+    @apply grid h-full place-items-center text-white/80;
+  }
+  .video__badges {
+    @apply mt-3 flex flex-wrap gap-2;
+  }
+  .video__badges span {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-brand-mist px-3 py-1 text-sm font-semibold text-brand-navy;
+  }
+  .video__transcript {
+    @apply mt-4 rounded-xl border border-brand-rule p-4;
+  }
+  .video__transcript summary {
+    @apply flex cursor-pointer list-none items-center justify-between font-semibold text-brand-navy;
+  }
+  .video__transcript p {
+    @apply mt-3 text-brand-muted;
+  }
+
+  /* ── Social media ─ */
+  .social-grid {
+    @apply grid gap-6 md:grid-cols-2;
+  }
+  .social-embed {
+    @apply flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm;
+  }
+  .social-embed h3 {
+    @apply flex items-center gap-2 text-xl text-brand-navy;
+  }
+  .social-embed__consent {
+    @apply flex min-h-64 flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-brand-rule p-6 text-center text-brand-muted;
+  }
+  .social-embed__facebook {
+    @apply h-[600px] w-full border-0;
+  }
+  .social-embed .instagram-media {
+    @apply mx-auto! w-full! max-w-full! min-w-0!;
   }
 
   /* ── Accessibility panel (editor only) ─ */

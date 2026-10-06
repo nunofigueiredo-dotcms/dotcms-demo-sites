@@ -46,7 +46,7 @@ Site aliases: `educationdemo.localhost` and `dotcms-demo-sites-45sr.vercel.app`
 Every other page uses template **TSD Full Width** (8 rows).
 
 ### Content types (all `Tsd*`, each with a Site field)
-Sections editors drag onto pages: **TsdHero**, **TsdPageBanner**,
+Sections editors drag onto pages: **TsdVideo**, **TsdSocialMedia**, **TsdHero**, **TsdPageBanner**,
 **TsdQuickLinks**, **TsdFeatureGrid** (cards / checklist / steps / stats),
 **TsdFeatureSplit**, **TsdCallout**, **TsdPromoCarousel**, **TsdNewsList**,
 **TsdEventList**, **TsdFaq**, **TsdContactList**, plus rich text
@@ -92,6 +92,40 @@ incident, media statements) was deliberately left out.
   last 60 days and are cached 5 minutes.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
+
+### Design flexibility and social media (requirement 6)
+- **Every part of a page is editable.** Page bodies in the Universal Visual
+  Editor (13 TSD components on the TSD-only container); the menu from dotCMS
+  folders; the header's top bar, social icons, address, phones and footer
+  columns in **TSD Site Settings** (`Label | link` lines). Nothing in the
+  header or footer is hard-coded any more.
+- **Style editor** on five components, no code change: Hero (text position,
+  height, overlay), Page Banner (background, alignment), Feature Grid
+  (columns, card style, alignment), Feature Split (photo shape — rounded,
+  square, arched — and width), Callout (alignment, size). Schemas in
+  `frontend-education/dotcms/style-schemas/`, pushed by `npm run style-schemas`.
+- **TSD Video** (YouTube): poster served by this site, player loads on Play
+  from youtube-nocookie.com; badges *Signed in ASL* / *Captioned*; optional
+  transcript. The accessibility check **refuses a video that is neither
+  captioned nor signed in ASL**, or that promises a transcript without one.
+  On the Outreach page: "Duck at the Door (ASL)", a real video from the
+  Statewide Outreach Center Videos channel.
+- **TSD Social Media**: TSD's Facebook page (Page Plugin) and Instagram
+  profile (Instagram's embed), as on tsd.texas.gov, on the home page. Each
+  loads only when the visitor clicks *Show Facebook/Instagram posts*.
+- **Privacy**: verified that no page contacts YouTube, Facebook or Instagram
+  until the visitor chooses to load them.
+
+**Talk track**
+1. Home page in the editor → select the Feature Grid "Discover TSD" →
+   Style editor → 2 columns, Filled cards, Centered. No developer.
+2. Drag a **TSD Video** onto a page, paste a YouTube link, leave the
+   accessibility boxes empty → Publish is refused ("Confirm the video is
+   captioned or signed in ASL…"). Tick *Signed in ASL* → it publishes.
+3. Content → TSD Site Settings → add `YouTube | …` to *Social media* or a
+   link to the footer → publish → it's on every page.
+4. Home page → *Follow TSD* → *Show Facebook posts* / *Show Instagram posts*:
+   live TSD posts, loaded only with the visitor's consent.
 
 ### Accessibility enforced in approval (requirement 5)
 - **Java plugin** `osgi/tsd-accessibility-check` (see its README), installed

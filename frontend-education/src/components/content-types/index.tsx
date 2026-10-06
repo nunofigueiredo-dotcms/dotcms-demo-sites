@@ -10,6 +10,8 @@ import TsdNewsList from "./TsdNewsList";
 import TsdPageBanner from "./TsdPageBanner";
 import TsdPromoCarousel from "./TsdPromoCarousel";
 import TsdQuickLinks from "./TsdQuickLinks";
+import TsdSocialMedia from "./TsdSocialMedia";
+import TsdVideo from "./TsdVideo";
 import WebPageContent from "./WebPageContent";
 
 // Keys are dotCMS content type variables. Each component declares its own
@@ -29,5 +31,7 @@ export const pageComponents: Record<string, ComponentType<any>> = {
   TsdPageBanner,
   TsdPromoCarousel,
   TsdQuickLinks,
+  TsdSocialMedia,
+  TsdVideo,
   webPageContent: WebPageContent,
 };

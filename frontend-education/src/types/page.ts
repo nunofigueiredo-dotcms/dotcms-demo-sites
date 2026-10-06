@@ -54,6 +54,16 @@ export interface PromoBanner {
 export interface SiteSettings {
   /** GA4 measurement ID; empty turns Google Analytics off. */
   gaMeasurementId?: string | null;
+  /** The header's top bar, one per line: Label | link. */
+  utilityLinks?: string | null;
+  /** Header and footer icons, one per line: Facebook | link. */
+  socialLinks?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  videophone?: string | null;
+  /** Footer columns, one per line: Label | link. */
+  footerCommunity?: string | null;
+  footerUseful?: string | null;
 }
 
 /** The extra GraphQL queries every page request carries (see utils/queries.ts). */

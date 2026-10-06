@@ -53,14 +53,15 @@ export default async function CatchAllPage({ params, searchParams }: PageProps) 
 
   const layout = pageContent.pageAsset?.layout;
   const navItems = pageContent.content?.navigation?.children ?? [];
+  const settings = pageContent.content?.settings?.[0];
 
   return (
     <>
-      {layout?.header && <Header navItems={navItems} />}
+      {layout?.header && <Header navItems={navItems} settings={settings} />}
       <Page pageContent={pageContent} />
-      {layout?.footer && <Footer navItems={navItems} />}
+      {layout?.footer && <Footer navItems={navItems} settings={settings} />}
       {/* Only on the public site: editors' visits aren't traffic. */}
-      {mode === "LIVE" && <GoogleAnalytics measurementId={pageContent.content?.settings?.[0]?.gaMeasurementId} />}
+      {mode === "LIVE" && <GoogleAnalytics measurementId={settings?.gaMeasurementId} />}
     </>
   );
 }

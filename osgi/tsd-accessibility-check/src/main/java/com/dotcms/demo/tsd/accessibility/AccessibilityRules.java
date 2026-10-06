@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  *   <li>Images need a text alternative (1.1.1), and it can't be a file name.</li>
  *   <li>Links and buttons need text that makes sense on its own (2.4.4).</li>
  *   <li>Rich text keeps one main heading per page and doesn't skip levels (1.3.1).</li>
+ *   <li>Videos are captioned or signed in ASL (1.2.2), and a promised transcript exists (1.2.1).</li>
  * </ul>
  */
 public final class AccessibilityRules {
@@ -62,6 +63,9 @@ public final class AccessibilityRules {
         checkHeadingCase(content, byVariable, issues);
         if ("TsdQuickLinks".equals(content.getContentType().variable())) {
             checkQuickLinks(text(content, "items"), issues);
+        }
+        if (byVariable.containsKey("videoAccessibility")) {
+            checkVideo(content, byVariable, issues);
         }
         return Report.of(content.getIdentifier(), content.getTitle(), content.getContentType().variable(), issues);
     }
@@ -151,6 +155,34 @@ public final class AccessibilityRules {
                 issues.add(new Issue(field.name(), "\"" + value + "\" is all in capitals. Use sentence case; "
                         + "the design can style it.", false));
             }
+        }
+    }
+
+    // ── Video (WCAG 1.2.1, 1.2.2) ──────────────────────────────────────────
+
+    private static final Pattern YOUTUBE = Pattern.compile(
+            "^https?://(www\\.|m\\.)?(youtube\\.com/(watch\\?.*v=|embed/|shorts/|live/)|youtu\\.be/)[A-Za-z0-9_-]{11}");
+
+    /**
+     * A video needs captions or ASL — at a school for the Deaf, an uncaptioned video
+     * leaves out its own community. The editor confirms which, and a promised
+     * transcript must be there.
+     */
+    private static void checkVideo(Contentlet content, Map<String, Field> fields, List<Issue> issues) {
+        String url = text(content, "youtubeUrl").trim();
+        String access = text(content, "videoAccessibility").toLowerCase(Locale.ROOT);
+        String where = fields.get("videoAccessibility").name();
+        if (!url.isEmpty() && !YOUTUBE.matcher(url).find()) {
+            issues.add(new Issue(fields.containsKey("youtubeUrl") ? fields.get("youtubeUrl").name() : "Video",
+                    "\"" + url + "\" isn't a YouTube video link. Copy it from the video's Share button.", true));
+        }
+        if (!access.contains("captions") && !access.contains("asl")) {
+            issues.add(new Issue(where, "Confirm the video is captioned or signed in ASL. Videos without "
+                    + "either can't be followed by Deaf viewers.", true));
+        }
+        if (access.contains("transcript") && text(content, "transcript").isBlank()) {
+            issues.add(new Issue(where, "\"A transcript is provided below\" is ticked, but the Transcript "
+                    + "is empty. Add it, or untick the box.", true));
         }
     }
 
