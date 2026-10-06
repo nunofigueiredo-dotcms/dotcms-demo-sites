@@ -1,0 +1,38 @@
+{
+  "name": "education-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3008",
+    "build": "next build",
+    "start": "next start -p 3008",
+    "lint": "eslint",
+    "style-schemas": "node --env-file=.env.local scripts/push-style-schemas.mjs"
+  },
+  "dependencies": {
+    "@dotcms/analytics": "26.9.3-1",
+    "@dotcms/client": "26.9.3-1",
+    "@dotcms/react": "26.9.3-1",
+    "@dotcms/types": "26.9.3-1",
+    "@dotcms/uve": "26.9.3-1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.577.0",
+    "next": "16.1.7",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.37",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.7",
+    "tailwindcss": "^4",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "sharp": true,
+    "unrs-resolver": true
+  }
+}
