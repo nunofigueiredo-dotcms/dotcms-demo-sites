@@ -52,6 +52,9 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
 - Accessibility: `components/site/AccessibilityPanel.tsx` (editor only) via
   `app/api/accessibility/route.ts` → the TSD accessibility plugin
   (`../osgi/tsd-accessibility-check`), which also blocks submit/publish.
+- Staff: `TsdStaffDirectory` (search + department filter) and
+  `views/StaffProfile.tsx` for `/staff/{urlTitle}` (URL-mapped `TsdStaff`);
+  shared avatar and contact links in `components/site/StaffContact.tsx`.
 - Analytics: dotCMS Content Analytics in `app/layout.tsx`
   (`utils/analytics.ts`, needs `NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY` and the
   site opened at http://educationdemo.localhost:3008); Google Analytics from

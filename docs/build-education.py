@@ -31,6 +31,7 @@ import secrets
 import subprocess
 import sys
 import time
+import unicodedata
 
 # dotcms_site reads these at import time.
 os.environ.setdefault("DOTCMS_HOST", "https://awesomedemo-dev.dotcms.dev")
@@ -56,7 +57,7 @@ ASSETS = os.path.join(HERE, "education-assets")
 
 SCHOOLS = ["early-learning-center", "elementary", "middle-school", "high-school", "access"]
 FOLDERS = ["/about", "/admissions", "/academics", "/outreach", "/news", "/calendar",
-           "/contact"] + [f"/academics/{s}" for s in SCHOOLS]
+           "/contact", "/staff"] + [f"/academics/{s}" for s in SCHOOLS]
 # (folder, menu title) in menu order. Academics' school folders form its dropdown.
 MENU = [("about", "About"), ("admissions", "Admissions"), ("academics", "Academics"),
         ("outreach", "Outreach Center"), ("news", "News"), ("calendar", "Calendar"),
@@ -82,6 +83,15 @@ NEWS_CATEGORIES = [("Announcements", "tsd-news-announcements"),
                    ("Programs", "tsd-news-programs"), ("Recognition", "tsd-news-recognition"),
                    ("Academics", "tsd-news-academics"), ("Athletics", "tsd-news-athletics")]
 NEWS_CATEGORY_ROOT = ""  # set by ensure_categories()
+# The TSD Departments tree: staff belong to one or more; the directory filters by it.
+DEPARTMENT_PARENT = ("TSD Departments", "tsdDepartments")
+DEPARTMENTS = [("Administration", "tsd-dept-administration"), ("Admissions", "tsd-dept-admissions"),
+               ("Early Learning Center", "tsd-dept-elc"), ("Elementary", "tsd-dept-elementary"),
+               ("6–8 Secondary Program", "tsd-dept-middle"), ("9–12 Secondary Program", "tsd-dept-high"),
+               ("ACCESS", "tsd-dept-access"), ("Student Life", "tsd-dept-student-life"),
+               ("Student Support Services", "tsd-dept-support"),
+               ("Statewide Outreach Center", "tsd-dept-outreach"), ("Human Resources", "tsd-dept-hr")]
+DEPARTMENT_ROOT = ""  # set by ensure_categories()
 # The TSD Event Categories tree (Content → Categories). Editors add or rename
 # categories there; the frontend gives the known keys their colours
 # (frontend-education/src/utils/categories.ts). Keys are global on the
@@ -188,9 +198,10 @@ def ensure_category_tree(parent, children):
 
 
 def ensure_categories():
-    global EVENT_CATEGORY_ROOT, NEWS_CATEGORY_ROOT
+    global EVENT_CATEGORY_ROOT, NEWS_CATEGORY_ROOT, DEPARTMENT_ROOT
     EVENT_CATEGORY_ROOT = ensure_category_tree(EVENT_CATEGORY_PARENT, EVENT_CATEGORIES)
     NEWS_CATEGORY_ROOT = ensure_category_tree(NEWS_CATEGORY_PARENT, NEWS_CATEGORIES)
+    DEPARTMENT_ROOT = ensure_category_tree(DEPARTMENT_PARENT, DEPARTMENTS)
 
 
 def category_field(name, variable, hint, root):
@@ -383,8 +394,21 @@ def create_section_types():
               hint="e.g. https://www.instagram.com/texasschoolforthedeaf/ — leave empty to hide"),
     ], icon="share")
 
+    create_type("TsdStaffDirectory", "TSD Staff Directory",
+                "Staff cards with contact details, linking to each profile. Can be searchable and "
+                "limited to some departments.", [
+        site_field(),
+        internal_name(),
+        field("ImmutableTextField", "Heading", "heading"),
+        field("ImmutableTextAreaField", "Intro", "intro"),
+        category_field("Only these departments", "departments",
+                       "Leave empty to list everyone", DEPARTMENT_ROOT),
+        field("ImmutableCheckboxField", "Options", "options",
+              values=options([("Search box", "search"), ("Department filter buttons", "filter")])),
+    ], icon="badge")
 
-def create_record_types(news_detail_page):
+
+def create_record_types(news_detail_page, staff_detail_page):
     """Structured content that the list sections show."""
     create_type("TsdNews", "TSD News",
                 "A news article or announcement. Shown at /news/{url title}.", [
@@ -405,6 +429,29 @@ def create_record_types(news_detail_page):
         field("ImmutableStoryBlockField", "Body", "body"),
     ], icon="newspaper", url_map="/news/{urlTitle}", detail_page=news_detail_page)
 
+    create_type("TsdStaff", "TSD Staff",
+                "A staff member's profile. Shown at /staff/{url title} and in TSD Staff Directories.", [
+        site_field(),
+        field("ImmutableTextField", "Full name", "title", required=True, listed=True),
+        field("ImmutableTextField", "Last name", "lastName", required=True,
+              hint="For sorting the directory"),
+        field("ImmutableTextField", "URL title", "urlTitle", required=True, unique=True,
+              hint="Unique across the instance, e.g. tsd-staff-maria-delgado"),
+        field("ImmutableTextField", "Job title", "jobTitle", required=True, listed=True),
+        {**category_field("Departments", "departments",
+                          "Manage the list under Content > Categories > TSD Departments.",
+                          DEPARTMENT_ROOT), "listed": True},
+        field("ImmutableTextField", "Email", "email"),
+        field("ImmutableTextField", "Voice phone", "phone"),
+        field("ImmutableTextField", "Videophone (VP)", "videophone"),
+        field("ImmutableTextField", "Languages", "languages", hint="e.g. ASL, English, Spanish"),
+        field("ImmutableTextField", "Office", "office", hint="Building and room"),
+        field("ImmutableImageField", "Photo", "photo", hint="Optional; initials are shown without one"),
+        field("ImmutableTextField", "Photo description (alt text)", "photoAlt",
+              hint="Required when there's a photo"),
+        field("ImmutableStoryBlockField", "Bio", "bio"),
+    ], icon="person", url_map="/staff/{urlTitle}", detail_page=staff_detail_page)
+
     create_type("TsdEvent", "TSD Event",
                 "A calendar event, shown by TSD Event Lists", [
         site_field(),
@@ -423,7 +470,7 @@ def create_record_types(news_detail_page):
 SECTION_TYPES = ["TsdHero", "TsdPageBanner", "TsdQuickLinks", "TsdFeatureGrid",
                  "TsdFeatureSplit", "TsdCallout", "TsdPromoCarousel", "TsdNewsList",
                  "TsdEventList", "TsdFaq", "TsdContactList", "TsdVideo", "TsdSocialMedia",
-                 "webPageContent"]
+                 "TsdStaffDirectory", "webPageContent"]
 
 
 def ensure_container():
@@ -871,6 +918,79 @@ SITE_SETTINGS = dict(
 )
 
 
+# Sample staff: fictional people in TSD's real departments. Emails use the demo
+# domain and phones the 555-01xx range reserved for fiction; no photos, so
+# the directory shows initials.
+STAFF = [
+    ("Maria Delgado", "Director of Admissions", ["tsd-dept-admissions"], "ASL, English, Spanish",
+     "Main Building, 110", "Maria guides families through applications, campus tours and the Admission ARD. "
+     "She has worked in Deaf education in Texas for 18 years."),
+    ("James Whitfield", "Admissions Coordinator", ["tsd-dept-admissions"], "ASL, English",
+     "Main Building, 112", "James is the first point of contact for new applications and school records."),
+    ("Aisha Thompson", "Lead Teacher, Pre-K", ["tsd-dept-elc"], "ASL, English",
+     "Early Learning Center, 4", "Aisha leads the Pre-K classroom's play-based, bilingual ASL-English program."),
+    ("Daniel Kim", "3rd Grade Teacher", ["tsd-dept-elementary"], "ASL, English, Korean",
+     "Elementary, 21", "Daniel teaches reading through storytelling in ASL and English."),
+    ("Hannah Brooks", "5th Grade Teacher", ["tsd-dept-elementary"], "ASL, English",
+     "Elementary, 27", "Hannah gets 5th graders ready for the 6–8 Secondary Program."),
+    ("Marcus Allen", "Math Teacher", ["tsd-dept-middle"], "ASL, English",
+     "Middle School, 14", "Marcus teaches grades 6–8 math and coaches the MATHCOUNTS team."),
+    ("Priya Natarajan", "Science Teacher", ["tsd-dept-middle"], "ASL, English, Tamil",
+     "Middle School, 18", "Priya runs the middle school science lab and the garden club."),
+    ("Robert Chen", "Welding Instructor, Trades Academy", ["tsd-dept-high"], "ASL, English",
+     "CTE Building, Shop 2", "Robert teaches welding and fabrication, with industry certifications for "
+     "students in the Trades academy."),
+    ("Lauren Ellis", "Digital Media Teacher", ["tsd-dept-high"], "ASL, English",
+     "CTE Building, 205", "Lauren teaches video production and design in the Digital Media academy."),
+    ("Tomás Reyes", "STEM Academy Lead and Robotics Coach", ["tsd-dept-high"], "ASL, English, Spanish",
+     "High School, 132", "Tomás leads the STEM academy and coaches the VEX V5 robotics team."),
+    ("Grace Okafor", "Transition Coordinator", ["tsd-dept-access"], "ASL, English",
+     "ACCESS House", "Grace plans each ACCESS student's move into work and independent living, with "
+     "families and home districts."),
+    ("Kevin Murphy", "Job Coach", ["tsd-dept-access"], "ASL, English",
+     "ACCESS House", "Kevin supports ACCESS students at their community job placements."),
+    ("Jasmine Patel", "Residential Supervisor, High School Dorms", ["tsd-dept-student-life"],
+     "ASL, English", "High School Dorm", "Jasmine leads the high school dorm team and its evening programs."),
+    ("Carlos Navarro", "Athletics Coordinator", ["tsd-dept-student-life"], "ASL, English, Spanish",
+     "Rives Gym", "Carlos coordinates Ranger athletics, from volleyball to the Clerc Classic."),
+    ("Rosa Martinez", "Speech-Language Pathologist", ["tsd-dept-support"], "ASL, English, Spanish",
+     "Student Support Services, 6", "Rosa works with students on spoken and written English, alongside ASL."),
+    ("Sarah Whitman", "School Counselor", ["tsd-dept-support"], "ASL, English",
+     "Student Support Services, 9", "Sarah supports students' social and emotional wellbeing."),
+    ("Emily Sanders", "ASL Storyteller", ["tsd-dept-outreach"], "ASL, English",
+     "Outreach Studio", "Emily tells stories in ASL to classrooms across Texas through the ASL "
+     "Storytelling program."),
+    ("Michelle Nguyen", "Family Services Coordinator", ["tsd-dept-outreach"], "ASL, English, Vietnamese",
+     "Outreach Center, 3", "Michelle organizes the Family Weekend Retreat and the Discovery Retreat."),
+    ("David Park", "Parent Infant Program Specialist", ["tsd-dept-outreach"], "ASL, English",
+     "Outreach Center, 5", "David supports families of deaf and hard of hearing babies and toddlers."),
+    ("Linda Foster", "Human Resources Generalist", ["tsd-dept-hr"], "ASL, English",
+     "Main Building, 204", "Linda helps applicants and staff with hiring, benefits and onboarding."),
+]
+
+
+def folder_identifier(path):
+    return ns.api("GET", f"/api/v1/folder/siteId/{SITE_ID}/path/{path.strip('/')}")["entity"]["identifier"]
+
+
+def create_staff():
+    """Outreach staff live in /outreach, where the Outreach Editor can keep
+    their own team's profiles up to date."""
+    outreach = folder_identifier("/outreach")
+    for i, (name, job, departments, languages, office, bio) in enumerate(STAFF, start=1):
+        first, last = name.split(" ", 1)
+        # "Tomás Reyes" → "tomas-reyes" for the URL and e-mail address.
+        ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
+        slug = ascii_name.replace(" ", "-")
+        first_ascii, last_ascii = ascii_name.split(" ", 1)
+        location = outreach if "tsd-dept-outreach" in departments else SITE_ID
+        create("TsdStaff", site=location, title=name, lastName=last, urlTitle=f"tsd-staff-{slug}",
+               jobTitle=job, departments=departments, email=f"{first_ascii}.{last_ascii}@educationdemo.com",
+               phone=f"(512) 555-01{i:02d}", videophone=f"(512) 555-01{i + 30:02d}", languages=languages,
+               office=office, bio=ns.doc([ns.p(bio)]))
+    print(f"  {len(STAFF)} staff")
+
+
 def create_news():
     for n in NEWS:
         create("TsdNews", title=n["title"], urlTitle=f"tsd-{n['slug']}",
@@ -988,7 +1108,7 @@ def build_pages(home_tpl, page_tpl, detail_id):
                    imageAlt="Five children smiling and posing together, showing peace signs outdoors.")],
         2: [create("TsdQuickLinks", title="Home — quick links", items=lines([
             "School Calendar | /calendar | calendar",
-            "Staff Directory | https://www.tsd.texas.gov/apps/pages/staffdirectory | users",
+            "Staff Directory | /staff | users",
             "Enrollment | /admissions | clipboard",
             "News | /news | megaphone"]))],
         3: [create("TsdFeatureGrid", title="Home — discover TSD", eyebrow="School Links",
@@ -1220,7 +1340,9 @@ def build_pages(home_tpl, page_tpl, detail_id):
         5: [create("TsdEventList", title="Outreach — upcoming events",
                    heading="Upcoming Outreach events", count="5", layout="compact",
                    showAllLink="true", eventCategories=["tsd-outreach"])],
-        6: [contacts("Outreach — contacts", "We stand by ready to assist you", [OUTREACH_OFFICE])],
+        6: [create("TsdStaffDirectory", title="Outreach — team", site=folder_identifier("/outreach"),
+                   heading="Meet the Outreach team", departments=["tsd-dept-outreach"]),
+            contacts("Outreach — contacts", "We stand by ready to assist you", [OUTREACH_OFFICE])],
     })
 
     # ---- News, its detail page, calendar, contact
@@ -1235,6 +1357,21 @@ def build_pages(home_tpl, page_tpl, detail_id):
     fill(detail_id, {
         1: [create("TsdNewsList", title="News detail — more news", heading="More news", count="3",
                    layout="cards", showAllLink="true")],
+    })
+
+    staff = page("Staff Directory", "/staff", page_tpl,
+                 description="Find Texas School for the Deaf staff by name, job or department.")
+    fill(staff, {
+        1: [banner("Staff Directory", "Find staff by name, job or department. Videophone (VP) "
+                   "numbers are listed for calls in ASL.", "Contact")],
+        2: [create("TsdStaffDirectory", title="Staff — everyone", heading="",
+                   options="search,filter")],
+    })
+    staff_detail = ns.api("GET", f"/api/v1/page/json/staff/staff-detail?host_id={SITE_ID}&language_id=1")
+    fill(staff_detail["entity"]["page"]["identifier"], {
+        1: [create("TsdCallout", title="Staff profile — contact", eyebrow="Main office",
+                   text="Can't find who you need? Call (512) 462-5353 or VP (512) 580-6994.",
+                   ctaText="See every office", ctaLink="/contact", theme="mist")],
     })
 
     calendar = page("2026-2027 TSD Calendar", "/calendar", page_tpl,
@@ -1343,9 +1480,11 @@ def main():
     article_tpl = template("TSD Article", [([12], "tsd-row")] * 3)
     # The news detail page must exist before TsdNews names it as its detail page.
     detail_id = page("News article", "/news", article_tpl, url="news-detail")
-    create_record_types(detail_id)
+    staff_detail_id = page("Staff profile", "/staff", article_tpl, url="staff-detail")
+    create_record_types(detail_id, staff_detail_id)
     create_news()
     create_events()
+    create_staff()
     build_pages(home_tpl, page_tpl, detail_id)
     create_settings_type()
     create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="", **SITE_SETTINGS)
