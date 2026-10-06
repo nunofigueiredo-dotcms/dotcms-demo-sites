@@ -34,12 +34,3 @@ export function isChecked(field: unknown, value = "true"): boolean {
   }
   return false;
 }
-
-/** The human label of a select field's value, from the options in dotCMS. */
-export const NEWS_CATEGORIES: Record<string, string> = {
-  announcements: "Announcements",
-  "lone-star": "Lone Star Journal",
-  "the-roots": "The Roots",
-  programs: "Programs",
-  recognition: "Recognition",
-};

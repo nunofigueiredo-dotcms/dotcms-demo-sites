@@ -12,7 +12,10 @@ export interface NewsArticle {
   identifier: string;
   title: string;
   urlTitle: string;
-  category: string;
+  /** From the TSD News Categories tree in dotCMS; an article can have several. */
+  newsCategories?: Category[] | null;
+  /** Options checkbox: contains "pinned" when pinned to the top of lists. */
+  pinned?: unknown;
   /** "2026-09-10 09:00:00.0" or an ISO string, depending on the API. */
   publishDate: string;
   teaser: string;
