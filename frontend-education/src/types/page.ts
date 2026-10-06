@@ -69,6 +69,47 @@ export interface StaffMember {
   bio?: BlockField | null;
 }
 
+/** A file from the media library, as GraphQL returns a File field. */
+export interface DotCMSFile {
+  identifier: string;
+  fileName?: string | null;
+  fileAsset?: { idPath?: string | null; name?: string | null; size?: number | null; mime?: string | null } | null;
+}
+
+/** A knowledge base entry (content type `TsdResource`). Its page is /resources/{urlTitle}. */
+export interface Resource {
+  identifier: string;
+  title: string;
+  urlTitle: string;
+  summary: string;
+  /** From the TSD Resource Topics tree (page data gives another shape: see toCategories). */
+  topics?: unknown;
+  /** Checkbox: families, students, staff, public. */
+  audience?: unknown;
+  ownerDepartment?: unknown;
+  /** "2026-08-15 00:00:00.0" */
+  lastReviewed?: string | null;
+  /** GraphQL gives the file; the page API's urlContentMap only its identifier. */
+  document?: DotCMSFile | string | null;
+  documentDescription?: string | null;
+  externalUrl?: string | null;
+  body?: BlockField | null;
+}
+
+/** A site-wide alert banner (content type `TsdAlert`). */
+export interface SiteAlert {
+  identifier: string;
+  title: string;
+  message?: string | null;
+  severity: "emergency" | "closure" | "info";
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  aslVideoUrl?: string | null;
+  startDate: string;
+  endDate: string;
+  scope?: "all" | "home" | null;
+}
+
 /** Site-wide settings (content type `TsdSiteSettings`, one item per site). */
 export interface SiteSettings {
   /** GA4 measurement ID; empty turns Google Analytics off. */
@@ -93,4 +134,6 @@ export interface DotCMSPageContent {
   events?: CalendarEvent[];
   promos?: PromoBanner[];
   staff?: StaffMember[];
+  resources?: Resource[];
+  alerts?: SiteAlert[];
 }

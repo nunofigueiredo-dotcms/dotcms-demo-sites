@@ -24,13 +24,20 @@ export function paragraphs(value: string | undefined): string[] {
 
 /**
  * Checkbox fields arrive as "a,b", as a list of strings, or as a list of
- * { key, value } objects, depending on the API. True when `value` is ticked.
+ * { key, value } objects, depending on the API. Always returns the values.
  */
-export function isChecked(field: unknown, value = "true"): boolean {
-  if (!field) return false;
-  if (typeof field === "string") return field.split(",").map((v) => v.trim()).includes(value);
+export function checkboxValues(field: unknown): string[] {
+  if (!field) return [];
+  if (typeof field === "string") return field.split(",").map((v) => v.trim()).filter(Boolean);
   if (Array.isArray(field)) {
-    return field.some((v) => (typeof v === "string" ? v : (v as { value?: string }).value) === value);
+    return field
+      .map((v) => (typeof v === "string" ? v : ((v as { value?: string }).value ?? "")))
+      .filter(Boolean);
   }
-  return false;
+  return [];
+}
+
+/** True when a checkbox field has `value` ticked. */
+export function isChecked(field: unknown, value = "true"): boolean {
+  return checkboxValues(field).includes(value);
 }

@@ -57,11 +57,11 @@ ASSETS = os.path.join(HERE, "education-assets")
 
 SCHOOLS = ["early-learning-center", "elementary", "middle-school", "high-school", "access"]
 FOLDERS = ["/about", "/admissions", "/academics", "/outreach", "/news", "/calendar",
-           "/contact", "/staff"] + [f"/academics/{s}" for s in SCHOOLS]
+           "/contact", "/staff", "/resources"] + [f"/academics/{s}" for s in SCHOOLS]
 # (folder, menu title) in menu order. Academics' school folders form its dropdown.
 MENU = [("about", "About"), ("admissions", "Admissions"), ("academics", "Academics"),
         ("outreach", "Outreach Center"), ("news", "News"), ("calendar", "Calendar"),
-        ("contact", "Contact TSD")]
+        ("resources", "Resources"), ("contact", "Contact TSD")]
 SCHOOL_MENU = [("early-learning-center", "Early Learning Center"), ("elementary", "Elementary"),
                ("middle-school", "6–8 Secondary Program"), ("high-school", "9–12 Secondary Program"),
                ("access", "ACCESS")]
@@ -92,6 +92,14 @@ DEPARTMENTS = [("Administration", "tsd-dept-administration"), ("Admissions", "ts
                ("Student Support Services", "tsd-dept-support"),
                ("Statewide Outreach Center", "tsd-dept-outreach"), ("Human Resources", "tsd-dept-hr")]
 DEPARTMENT_ROOT = ""  # set by ensure_categories()
+# The TSD Resource Topics tree for the knowledge base.
+TOPIC_PARENT = ("TSD Resource Topics", "tsdResourceTopics")
+TOPICS = [("Admissions & Enrollment", "tsd-topic-admissions"), ("Handbooks", "tsd-topic-handbooks"),
+          ("Policies & Governance", "tsd-topic-policies"), ("Health & Safety", "tsd-topic-safety"),
+          ("Student Life", "tsd-topic-student-life"), ("Visiting TSD", "tsd-topic-visiting"),
+          ("Accessibility", "tsd-topic-accessibility"), ("Staff Resources", "tsd-topic-staff")]
+TOPIC_ROOT = ""  # set by ensure_categories()
+AUDIENCES = [("Families", "families"), ("Students", "students"), ("Staff", "staff"), ("Public", "public")]
 # The TSD Event Categories tree (Content → Categories). Editors add or rename
 # categories there; the frontend gives the known keys their colours
 # (frontend-education/src/utils/categories.ts). Keys are global on the
@@ -150,7 +158,7 @@ def theme_field(pairs, name="Background"):
 
 
 def create_type(variable, name, description, fields, icon="article",
-                url_map=None, detail_page=None):
+                url_map=None, detail_page=None, publish_var=None, expire_var=None):
     # A missing type returns a bare 404 body, not a JSON object.
     resp = ns.api("GET", f"/api/v1/contenttype/id/{variable}")
     existing = resp.get("entity") if isinstance(resp, dict) else None
@@ -166,6 +174,11 @@ def create_type(variable, name, description, fields, icon="article",
     if url_map:
         body["urlMapPattern"] = url_map
         body["detailPage"] = detail_page
+    # dotCMS publishes and unpublishes content on these dates by itself.
+    if publish_var:
+        body["publishDateVar"] = publish_var
+    if expire_var:
+        body["expireDateVar"] = expire_var
     resp = ns.api("POST", "/api/v1/contenttype", [body])
     ent = resp.get("entity")
     if isinstance(ent, list) and ent:
@@ -198,10 +211,11 @@ def ensure_category_tree(parent, children):
 
 
 def ensure_categories():
-    global EVENT_CATEGORY_ROOT, NEWS_CATEGORY_ROOT, DEPARTMENT_ROOT
+    global EVENT_CATEGORY_ROOT, NEWS_CATEGORY_ROOT, DEPARTMENT_ROOT, TOPIC_ROOT
     EVENT_CATEGORY_ROOT = ensure_category_tree(EVENT_CATEGORY_PARENT, EVENT_CATEGORIES)
     NEWS_CATEGORY_ROOT = ensure_category_tree(NEWS_CATEGORY_PARENT, NEWS_CATEGORIES)
     DEPARTMENT_ROOT = ensure_category_tree(DEPARTMENT_PARENT, DEPARTMENTS)
+    TOPIC_ROOT = ensure_category_tree(TOPIC_PARENT, TOPICS)
 
 
 def category_field(name, variable, hint, root):
@@ -407,8 +421,23 @@ def create_section_types():
               values=options([("Search box", "search"), ("Department filter buttons", "filter")])),
     ], icon="badge")
 
+    create_type("TsdResourceLibrary", "TSD Resource Library",
+                "The knowledge base: help articles and documents, searchable and filterable by "
+                "topic and audience.", [
+        site_field(),
+        internal_name(),
+        field("ImmutableTextField", "Heading", "heading"),
+        field("ImmutableTextAreaField", "Intro", "intro"),
+        category_field("Only these topics", "topics", "Leave empty to list every topic", TOPIC_ROOT),
+        field("ImmutableCheckboxField", "Only for", "audience", values=options(AUDIENCES),
+              hint="Leave empty for every audience"),
+        field("ImmutableCheckboxField", "Options", "options",
+              values=options([("Search box", "search"), ("Topic filter buttons", "filter"),
+                              ("Audience filter", "audience")])),
+    ], icon="menu_book")
 
-def create_record_types(news_detail_page, staff_detail_page):
+
+def create_record_types(news_detail_page, staff_detail_page, resource_detail_page):
     """Structured content that the list sections show."""
     create_type("TsdNews", "TSD News",
                 "A news article or announcement. Shown at /news/{url title}.", [
@@ -452,6 +481,50 @@ def create_record_types(news_detail_page, staff_detail_page):
         field("ImmutableStoryBlockField", "Bio", "bio"),
     ], icon="person", url_map="/staff/{urlTitle}", detail_page=staff_detail_page)
 
+    create_type("TsdResource", "TSD Resource",
+                "A knowledge base entry: a help article, a document, or a link to one. "
+                "Shown at /resources/{url title}.", [
+        site_field(),
+        field("ImmutableTextField", "Title", "title", required=True, listed=True),
+        field("ImmutableTextField", "URL title", "urlTitle", required=True, unique=True,
+              hint="Unique across the instance, e.g. tsd-resource-campus-tours"),
+        field("ImmutableTextAreaField", "Summary", "summary", required=True,
+              hint="Two or three sentences: the answer in brief, so people needn't open a PDF"),
+        {**category_field("Topics", "topics", "Manage the list under Content > Categories > "
+                          "TSD Resource Topics.", TOPIC_ROOT), "listed": True},
+        field("ImmutableCheckboxField", "Audience", "audience", values=options(AUDIENCES)),
+        category_field("Owner department", "ownerDepartment",
+                       "Who keeps this up to date", DEPARTMENT_ROOT),
+        field("ImmutableDateField", "Last reviewed", "lastReviewed", required=True, listed=True,
+              hint="Shown to readers; review at least once a year"),
+        field("ImmutableFileField", "Document", "document",
+              hint="Optional: a PDF or file from the media library (/documents)"),
+        field("ImmutableTextField", "Document description", "documentDescription",
+              hint="e.g. PDF, 11 pages"),
+        field("ImmutableTextField", "External link", "externalUrl",
+              hint="Optional: when the resource lives on another site"),
+        field("ImmutableStoryBlockField", "Article", "body"),
+    ], icon="menu_book", url_map="/resources/{urlTitle}", detail_page=resource_detail_page)
+
+    create_type("TsdAlert", "TSD Alert",
+                "A site-wide alert banner above the header on every page: emergencies, closures, "
+                "notices. It shows between its start and end times.", [
+        site_field(),
+        field("ImmutableTextField", "Headline", "title", required=True, listed=True),
+        field("ImmutableTextAreaField", "Message", "message"),
+        field("ImmutableSelectField", "Severity", "severity", required=True, listed=True,
+              values=options([("Emergency (red)", "emergency"), ("Closure or weather (amber)", "closure"),
+                              ("Information (blue)", "info")])),
+        *cta_fields("Link"),
+        field("ImmutableTextField", "ASL video link", "aslVideoUrl",
+              hint="Optional: the same message in ASL (shown as Watch in ASL)"),
+        field("ImmutableDateTimeField", "Starts", "startDate", required=True, listed=True),
+        field("ImmutableDateTimeField", "Ends", "endDate", required=True, listed=True,
+              hint="dotCMS unpublishes it at this time"),
+        field("ImmutableSelectField", "Show on", "scope",
+              values=options([("Every page", "all"), ("Home page only", "home")])),
+    ], icon="campaign", publish_var="startDate", expire_var="endDate")
+
     create_type("TsdEvent", "TSD Event",
                 "A calendar event, shown by TSD Event Lists", [
         site_field(),
@@ -470,7 +543,7 @@ def create_record_types(news_detail_page, staff_detail_page):
 SECTION_TYPES = ["TsdHero", "TsdPageBanner", "TsdQuickLinks", "TsdFeatureGrid",
                  "TsdFeatureSplit", "TsdCallout", "TsdPromoCarousel", "TsdNewsList",
                  "TsdEventList", "TsdFaq", "TsdContactList", "TsdVideo", "TsdSocialMedia",
-                 "TsdStaffDirectory", "webPageContent"]
+                 "TsdStaffDirectory", "TsdResourceLibrary", "webPageContent"]
 
 
 def ensure_container():
@@ -991,6 +1064,161 @@ def create_staff():
     print(f"  {len(STAFF)} staff")
 
 
+# The knowledge base. Facts come from tsd.texas.gov; the document is TSD's
+# public Board Policy FD; the two staff guides describe this demo's CMS.
+RESOURCES = [
+    dict(slug="how-to-apply", title="How to apply to TSD", topics=["tsd-topic-admissions"],
+         audience="families", owner=["tsd-dept-admissions"], reviewed="2026-08-15",
+         summary="Check eligibility, tour the campus, then send a complete application. Apply by "
+                 "April 1 so August admission isn't delayed.",
+         body=[ns.h(2, "Who can enroll"),
+               ns.ul(["A Texas resident under 22", "With an updated immunization record or waiver",
+                      "With a documented hearing loss and interest in sign as the instructional and "
+                      "communication mode", "With a guardian or emergency contact"]),
+               ns.h(2, "The steps"),
+               ns.ul(["Visit the campus", "Send the application with documentation of the hearing loss "
+                      "and a complete special education evaluation",
+                      "The Referral Committee reviews it", "Eligible students have an Admission ARD meeting"]),
+               ns.p("Questions: the Admissions Office, voice (512) 462-5412 or VP (512) 782-4262.")]),
+    dict(slug="board-policy-fd", title="Board Policy FD: Admissions and Enrollment",
+         topics=["tsd-topic-policies", "tsd-topic-admissions"], audience="families,public",
+         owner=["tsd-dept-administration"], reviewed="2026-07-01", document="board-policy-fd.pdf",
+         documentDescription="PDF, 11 pages",
+         summary="The Governing Board's policy on who TSD admits and how: eligibility, the referral "
+                 "process, and admission decisions and appeals.",
+         body=[ns.p("The full policy is attached. For how it works in practice, see How to apply to TSD.")]),
+    dict(slug="student-family-handbook", title="Student & Family Handbook", topics=["tsd-topic-handbooks"],
+         audience="families,students", owner=["tsd-dept-administration"], reviewed="2026-08-01",
+         externalUrl="https://www.tsd.texas.gov/apps/pages/handbook",
+         summary="Everything families need for the school year: attendance, transportation, health "
+                 "services, communication and school rules.", body=[]),
+    dict(slug="code-of-conduct", title="Student Code of Conduct",
+         topics=["tsd-topic-handbooks", "tsd-topic-policies"], audience="families,students",
+         owner=["tsd-dept-administration"], reviewed="2026-08-01",
+         externalUrl="https://www.tsd.texas.gov/apps/pages/code_of_conduct",
+         summary="The expectations for student behavior on campus, on buses and at school events, "
+                 "and how TSD responds.", body=[]),
+    dict(slug="campus-tours", title="Visiting TSD and booking a campus tour", topics=["tsd-topic-visiting"],
+         audience="public,families", owner=["tsd-dept-administration"], reviewed="2026-09-01",
+         summary="All visits are by appointment. Tours run weekdays 9am–4pm during the school year; "
+                 "request them two weeks ahead (four for groups).",
+         body=[ns.p("TSD welcomes people learning ASL, students and professionals in Deaf Education, "
+                    "members of the Deaf community and community organizations."),
+               ns.ul(["Weekdays, Monday to Friday, 9am–4pm, during the school calendar year",
+                      "No tours May to August, except for prospective families",
+                      "At least two weeks' notice, four weeks for larger groups",
+                      "Interpreters arranged for visitors who don't sign; Spanish interpreters available"]),
+               ns.p("Check in at the Security Booth inside the main entrance at 1102 S. Congress Ave.")]),
+    dict(slug="weather-closures", title="Inclement weather and school closures", topics=["tsd-topic-safety"],
+         audience="families,staff,students", owner=["tsd-dept-administration"], reviewed="2026-09-15",
+         summary="Closures are announced in the alert banner on this website and through Residential "
+                 "Supervisors and principals. Missed days may be made up on the calendar's inclement "
+                 "weather days.",
+         body=[ns.p("When weather closes school, an alert appears at the top of every page of this site."),
+               ns.p("The school calendar sets aside inclement weather days. Built-in minutes can cover one "
+                    "day; further days are made up on those dates, with a regular residential return "
+                    "the evening before."),
+               ns.p("Questions: your child's Residential Supervisor or Principal.")]),
+    dict(slug="records-transcripts", title="Requesting school records and transcripts",
+         topics=["tsd-topic-admissions"], audience="families,public", owner=["tsd-dept-admissions"],
+         reviewed="2026-06-30",
+         summary="Former students and families can request records and transcripts from the School "
+                 "Records office, by videophone at (512) 670-8577.",
+         body=[ns.p("Include the student's full name at the time, date of birth and years attended.")]),
+    dict(slug="contacting-tsd-by-videophone", title="Contacting TSD by videophone or voice",
+         topics=["tsd-topic-accessibility"], audience="public,families", owner=["tsd-dept-administration"],
+         reviewed="2026-09-01",
+         summary="Every office lists a videophone (VP) number for direct calls in ASL beside its voice "
+                 "number. The main line is (512) 462-5353, VP (512) 580-6994.",
+         body=[ns.p("VP numbers connect you directly to signing staff, with no relay. Voice callers reach "
+                    "the same offices; interpreters join when needed."),
+               ns.p("The Staff Directory lists VP and voice numbers for every staff member.")]),
+    dict(slug="campus-living", title="Campus Living (residential program)", topics=["tsd-topic-student-life"],
+         audience="families,students", owner=["tsd-dept-student-life"], reviewed="2026-08-20",
+         summary="Students from second grade up can live on campus during the school week, in "
+                 "age-appropriate dorms. Enrollment in TSD doesn't guarantee a place.",
+         body=[ns.p("Students personalize their space with photos, bedding and decorations. Social "
+                    "Emotional Learning runs through dorm life: cooking, budgeting, storytelling, clubs "
+                    "and outings."),
+               ns.p("Campus Living is a separate decision from admission, even for students already in "
+                    "the day program. Ask the Student Life Division.")]),
+    dict(slug="accessibility-policy", title="Website accessibility policy", topics=["tsd-topic-accessibility",
+         "tsd-topic-policies"], audience="public", owner=["tsd-dept-administration"], reviewed="2026-07-15",
+         externalUrl="https://www.tsd.texas.gov/apps/pages/index.jsp?uREC_ID=170317&type=d&pREC_ID=541951",
+         summary="TSD's commitment to an accessible website, and how to report a problem with any page.",
+         body=[]),
+    dict(slug="editing-the-website", title="Staff guide: editing the website", topics=["tsd-topic-staff"],
+         audience="staff", owner=["tsd-dept-administration"], reviewed="2026-10-06",
+         summary="How staff update pages in dotCMS: edit in place, submit for review, and what the "
+                 "accessibility check looks for.",
+         body=[ns.h(2, "Edit a page"),
+               ns.ul(["Sign in to dotCMS, open Site → Pages and the page you need",
+                      "Click any text to change it; drag new sections from the palette",
+                      "The Accessibility box at the bottom right lists anything to fix"]),
+               ns.h(2, "Get it published"),
+               ns.ul(["Open the section's workflow menu and choose Submit for review, with a comment",
+                      "A Web Publisher approves it or sends it back with notes",
+                      "Department editors can change only their own department's pages"]),
+               ns.h(2, "What the accessibility check needs"),
+               ns.ul(["A description for every image", "Link and button text that says where it goes",
+                      "Headings in order, starting at Heading 2",
+                      "Videos captioned or signed in ASL"])]),
+    dict(slug="posting-an-alert", title="Staff guide: posting a website alert", topics=["tsd-topic-staff",
+         "tsd-topic-safety"], audience="staff", owner=["tsd-dept-administration"], reviewed="2026-10-06",
+         summary="Web Publishers can put an emergency, closure or information banner on every page in "
+                 "under a minute, with start and end times so it removes itself.",
+         body=[ns.h(2, "Post an alert"),
+               ns.ul(["Content → TSD Alert → Add", "Write a short headline and message",
+                      "Choose the severity: Emergency (red), Closure or weather (amber), Information (blue)",
+                      "Set when it starts and ends", "Add a link to the ASL version when there is one",
+                      "Publish: it's on every page within seconds"]),
+               ns.p("A ready-to-use \"Campus closed\" alert is saved as a draft: update the dates and "
+                    "publish it.")]),
+]
+
+
+def create_resources():
+    for r in RESOURCES:
+        extra = {k: r[k] for k in ("externalUrl", "documentDescription") if r.get(k)}
+        if r.get("document"):
+            extra["document"] = document(r["document"])
+        create("TsdResource", title=r["title"], urlTitle=f"tsd-resource-{r['slug']}", summary=r["summary"],
+               topics=r["topics"], audience=r["audience"], ownerDepartment=r["owner"],
+               lastReviewed=r["reviewed"], body=ns.doc(r["body"] or [ns.p(r["summary"])]), **extra)
+    print(f"  {len(RESOURCES)} resources")
+
+
+def document(name):
+    """A file in the media library's /documents folder, uploaded once."""
+    if name not in _media:
+        ns.create_folders(SITE, ["/documents"])
+        e = ns._entity(ns.fire({"contentType": "FileAsset", "hostFolder": f"{SITE_ID}:/documents",
+                                "title": name, "fileName": name, "languageId": 1,
+                                "fileAsset": ns.upload_image(os.path.join(ASSETS, "documents", name))}),
+                       f"document {name}")
+        _media[name] = e.get("identifier")
+    return _media[name]
+
+
+def create_alerts():
+    """A live information alert, and a closure alert saved as a draft to
+    publish during the demo. No emergency alert is published: visitors would
+    take it for real."""
+    create("TsdAlert", title="Family Weekend Retreat: registration closes October 30",
+           message="Families of deaf and hard of hearing children: join us on campus November 6–8.",
+           severity="info", ctaText="See the calendar", ctaLink="/calendar?category=tsd-family",
+           startDate="2026-10-01 00:00:00", endDate="2026-10-31 23:59:00", scope="all")
+    e = ns._entity(ns.fire({"contentType": "TsdAlert", "site": SITE_ID, "languageId": 1,
+                            "title": "Campus closed today due to winter weather",
+                            "message": "All classes and activities are cancelled. Residential students "
+                                       "stay home. We'll post an update by 3 PM.",
+                            "severity": "closure", "ctaText": "Read about weather closures",
+                            "ctaLink": "/resources/tsd-resource-weather-closures",
+                            "startDate": "2027-01-15 05:00:00", "endDate": "2027-01-15 23:59:00",
+                            "scope": "all"}, action="NEW"), "closure alert draft")
+    print(f"  alerts: 1 live, 1 draft ({e.get('identifier')})")
+
+
 def create_news():
     for n in NEWS:
         create("TsdNews", title=n["title"], urlTitle=f"tsd-{n['slug']}",
@@ -1374,6 +1602,23 @@ def build_pages(home_tpl, page_tpl, detail_id):
                    ctaText="See every office", ctaLink="/contact", theme="mist")],
     })
 
+    resources = page("Resources", "/resources", page_tpl,
+                     description="Handbooks, policies, guides and answers for TSD families, students, "
+                                 "staff and visitors.")
+    fill(resources, {
+        1: [banner("Resources", "Handbooks, policies, guides and answers, kept up to date by the "
+                   "offices that own them.", "Knowledge base")],
+        2: [create("TsdResourceLibrary", title="Resources — all", heading="",
+                   options="search,filter,audience")],
+    })
+    resource_detail = ns.api("GET", f"/api/v1/page/json/resources/resource-detail?host_id={SITE_ID}&language_id=1")
+    fill(resource_detail["entity"]["page"]["identifier"], {
+        1: [create("TsdCallout", title="Resource — help", eyebrow="Need more help?",
+                   text="Call (512) 462-5353 or VP (512) 580-6994, or find the right person in the "
+                        "Staff Directory.", ctaText="Open the Staff Directory", ctaLink="/staff",
+                   theme="mist")],
+    })
+
     calendar = page("2026-2027 TSD Calendar", "/calendar", page_tpl,
                     description="Upcoming events, testing dates and school holidays at TSD.")
     fill(calendar, {
@@ -1481,10 +1726,13 @@ def main():
     # The news detail page must exist before TsdNews names it as its detail page.
     detail_id = page("News article", "/news", article_tpl, url="news-detail")
     staff_detail_id = page("Staff profile", "/staff", article_tpl, url="staff-detail")
-    create_record_types(detail_id, staff_detail_id)
+    resource_detail_id = page("Resource", "/resources", article_tpl, url="resource-detail")
+    create_record_types(detail_id, staff_detail_id, resource_detail_id)
     create_news()
     create_events()
     create_staff()
+    create_resources()
+    create_alerts()
     build_pages(home_tpl, page_tpl, detail_id)
     create_settings_type()
     create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="", **SITE_SETTINGS)

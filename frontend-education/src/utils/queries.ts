@@ -100,6 +100,53 @@ TsdStaffCollection(query: "${filter(editor)}", limit: 300) {
 }
 `;
 
+// The knowledge base, for resource libraries and resource pages (the page
+// API's urlContentMap gives a File field only as an identifier).
+const resourcesQuery = (editor: boolean) => `
+TsdResourceCollection(query: "${filter(editor)}", limit: 300) {
+    identifier
+    title
+    urlTitle
+    summary
+    topics {
+        key
+        name
+    }
+    audience
+    ownerDepartment {
+        key
+        name
+    }
+    lastReviewed
+    document {
+        identifier
+        ... on FileAsset {
+            fileName
+            fileAsset { idPath name size mime }
+        }
+    }
+    documentDescription
+    externalUrl
+}
+`;
+
+// Alert banners. Their start and end times are checked on each request
+// (dotCMS also unpublishes them at the end time).
+const alertsQuery = (editor: boolean) => `
+TsdAlertCollection(query: "${filter(editor)}", limit: 20) {
+    identifier
+    title
+    message
+    severity
+    ctaText
+    ctaLink
+    aslVideoUrl
+    startDate
+    endDate
+    scope
+}
+`;
+
 // Always the published settings: an unpublished analytics ID shouldn't
 // switch tracking on, nor a draft footer go live.
 const settingsQuery = `
@@ -123,6 +170,8 @@ function buildPageContentQuery(editor: boolean) {
       events: eventsQuery(editor),
       promos: promosQuery(editor),
       staff: staffQuery(editor),
+      resources: resourcesQuery(editor),
+      alerts: alertsQuery(editor),
       settings: settingsQuery,
     },
   };
