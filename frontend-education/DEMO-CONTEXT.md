@@ -46,12 +46,12 @@ Site aliases: `educationdemo.localhost` and `dotcms-demo-sites-45sr.vercel.app`
 Every other page uses template **TSD Full Width** (8 rows).
 
 ### Content types (all `Tsd*`, each with a Site field)
-Sections editors drag onto pages: **TsdStaffDirectory**, **TsdVideo**, **TsdSocialMedia**, **TsdHero**, **TsdPageBanner**,
+Sections editors drag onto pages: **TsdResourceLibrary**, **TsdStaffDirectory**, **TsdVideo**, **TsdSocialMedia**, **TsdHero**, **TsdPageBanner**,
 **TsdQuickLinks**, **TsdFeatureGrid** (cards / checklist / steps / stats),
 **TsdFeatureSplit**, **TsdCallout**, **TsdPromoCarousel**, **TsdNewsList**,
 **TsdEventList**, **TsdFaq**, **TsdContactList**, plus rich text
 (`webPageContent`). Records: **TsdNews** (9 real articles), **TsdEvent**
-(16, in categories), **TsdStaff** (20, fictional), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
+(16, in categories), **TsdStaff** (20, fictional), **TsdResource** (12), **TsdAlert** (1 live, 1 draft), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
 the Google Analytics ID).
 
 The pages use a **TSD Sections** container that accepts only those section
@@ -92,6 +92,51 @@ incident, media statements) was deliberately left out.
   last 60 days and are cached 5 minutes.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
+
+### Knowledge base (requirement 9)
+- **TSD Resource** entries (`/resources/{url title}`): summary (the answer in
+  brief, so nobody has to open a PDF to get it), topics, audience (families,
+  students, staff, public), owner department, **last reviewed** date, and any
+  of: an article, a document from the media library (`/documents`), a link
+  to another site.
+- **Topics** are a category tree (**TSD Resource Topics**, 8 topics).
+- **TSD Resource Library** section: A–Z, search, topic filter buttons
+  (`/resources?category=…`), "Show resources for" audience menu; scope by
+  topic or audience. In the editor, entries not reviewed for 12 months get a
+  **Review overdue** label. `/resources` is in the main menu.
+- 12 real entries from tsd.texas.gov: how to apply, **Board Policy FD** (the
+  real PDF, downloadable), the Student & Family Handbook and Code of Conduct
+  (links), tours, weather closures, transcripts, videophone contacts, Campus
+  Living, the accessibility policy — plus two staff guides on using this CMS
+  (editing and submitting pages; posting an alert).
+
+### Emergency alerts (requirement 10)
+- **TSD Alert**: headline, message, severity — **Emergency** (red),
+  **Closure or weather** (amber), **Information** (blue) — link, optional
+  **Watch in ASL** link, start and end times, every page or home page only.
+- Shown above the header on every page, most severe first. The type's
+  publish/expire dates are its start/end, so **dotCMS unpublishes it by
+  itself**; the site also checks the times on each request.
+- Emergencies are announced immediately to screen readers (`role="alert"`)
+  and can't be dismissed; information notices can be dismissed for the visit.
+- In the editor every alert shows as a preview, so an alert can be checked
+  before it starts.
+- Live now: an information alert (Family Weekend Retreat registration, until
+  October 31). Saved as a **draft** for the demo: "Campus closed today due to
+  winter weather". No emergency alert is published — visitors would take it
+  for real.
+- Found and fixed: inside the editor's iframe, reading `sessionStorage`
+  throws, which crashed the page; all storage access is now guarded.
+
+**Talk track (9 and 10)**
+1. `/resources` → search "transcript"; *Show resources for: Staff* → the two
+   staff guides; open Board Policy FD → download (PDF, 11 pages, 227 KB),
+   last reviewed, owner.
+2. In the editor, the Resources page flags anything not reviewed for a year.
+3. Content → TSD Alert → open the draft "Campus closed…" → set Starts to now
+   and Ends to tonight → Publish (Morgan) → every page shows the amber banner
+   within seconds. Change the severity to Emergency: red, read out at once by
+   screen readers. Archive it to end it early, or let dotCMS expire it.
 
 ### Staff directory and profiles (requirement 8)
 - **TSD Staff** profiles: name, job title, departments, e-mail, voice and

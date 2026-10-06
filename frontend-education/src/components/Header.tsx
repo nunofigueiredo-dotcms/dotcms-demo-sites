@@ -30,9 +30,6 @@ export default function Header({ navItems, settings }: HeaderProps) {
 
   return (
     <header className="site-header">
-      <a className="skip-link" href="#main">
-        Skip to main content
-      </a>
       <div className="utility-bar">
         <div className="container-tsd utility-bar__inner">
           <nav aria-label="Audiences">

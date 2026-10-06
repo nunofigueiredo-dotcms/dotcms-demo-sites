@@ -56,6 +56,42 @@ export function dateRange(start: string, end?: string | null): string {
   return `${format(s, { month: "short", day: "numeric" })} – ${format(e, sameMonth ? { day: "numeric" } : { month: "short", day: "numeric" })}`;
 }
 
+/** "August 2026" */
+export function monthYear(value: string | null | undefined): string {
+  const d = parseDate(value);
+  return d ? format(d, { month: "long", year: "numeric" }) : "";
+}
+
+/**
+ * Now in Austin, as a wall-clock Date like the ones parseDate returns, so it
+ * can be compared with dotCMS dates directly.
+ */
+export function austinNow(): Date {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: TIME_ZONE,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hourCycle: "h23",
+    })
+      .formatToParts(new Date())
+      .map((p) => [p.type, Number(p.value)]),
+  );
+  return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute));
+}
+
+/** True when a date is more than `months` months before now. */
+export function olderThan(value: string | null | undefined, months: number): boolean {
+  const d = parseDate(value);
+  if (!d) return false;
+  const limit = austinNow();
+  limit.setUTCMonth(limit.getUTCMonth() - months);
+  return d < limit;
+}
+
 /** Today's date in Austin as "YYYY-MM-DD", comparable with parsed event dates. */
 function todayInAustin(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TIME_ZONE }).format(new Date());

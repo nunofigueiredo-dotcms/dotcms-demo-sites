@@ -56,6 +56,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   "tsd-dept-support": "#7a4a12",
   "tsd-dept-outreach": "#0e5f6e",
   "tsd-dept-hr": "#4c5869",
+  "tsd-topic-admissions": "#b5245f",
+  "tsd-topic-handbooks": "#041436",
+  "tsd-topic-policies": "#3e6581",
+  "tsd-topic-safety": "#a3470f",
+  "tsd-topic-student-life": "#0e5f6e",
+  "tsd-topic-visiting": "#1f6f43",
+  "tsd-topic-accessibility": "#5b3f99",
+  "tsd-topic-staff": "#4c5869",
 };
 const ORDER = Object.keys(CATEGORY_COLORS);
 

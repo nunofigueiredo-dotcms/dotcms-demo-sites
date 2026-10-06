@@ -140,8 +140,9 @@
   }
 
   /* ── Header ─ */
+  /* Off screen until focused; fixed, so alerts above the header can't reveal it. */
   .skip-link {
-    @apply absolute top-2 left-2 z-[100] -translate-y-24 rounded bg-white px-4 py-2 font-semibold text-brand-navy focus:translate-y-0;
+    @apply fixed top-2 left-2 z-[100] -translate-y-[200%] rounded bg-white px-4 py-2 font-semibold text-brand-navy shadow-lg focus:translate-y-0;
   }
   .site-header {
     @apply relative z-50;
@@ -987,6 +988,94 @@
   }
   .profile__fact {
     @apply mt-3 flex items-center gap-2 text-sm text-brand-muted;
+  }
+
+  /* ── Knowledge base ─ */
+  .library-tools {
+    @apply flex flex-wrap items-end gap-x-6;
+  }
+  .library-tools .staff-search {
+    @apply flex-1;
+  }
+  .library-audience {
+    @apply mb-5;
+  }
+  .library-audience label {
+    @apply mb-1.5 block font-semibold text-brand-navy;
+  }
+  .library-audience select {
+    @apply min-h-12 rounded-full border-2 border-brand-rule bg-white px-4 pr-10;
+  }
+  .resource-list {
+    @apply grid gap-4 lg:grid-cols-2;
+  }
+  .resource-card {
+    @apply flex gap-4 rounded-2xl border border-brand-rule bg-white p-5;
+  }
+  .resource-card__icon {
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-brand-mist text-brand-steel;
+  }
+  .resource-card h3 {
+    @apply text-lg text-brand-navy;
+  }
+  .resource-card h3 a:hover {
+    @apply underline underline-offset-4;
+  }
+  .resource-card__summary {
+    @apply mt-1 text-brand-muted;
+  }
+  .resource-card__meta {
+    @apply mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-brand-muted;
+  }
+  .resource-card__overdue {
+    @apply rounded-full bg-[#fef0c7] px-2.5 py-0.5 font-semibold text-[#7a2e0e];
+  }
+  .resource-facts {
+    @apply mt-5 grid gap-3;
+  }
+  .resource-facts dt {
+    @apply text-xs font-semibold tracking-wide text-brand-steel uppercase;
+  }
+  .resource-facts dd {
+    @apply text-brand-ink;
+  }
+  .profile__card .btn {
+    @apply mb-2 whitespace-normal;
+  }
+
+  /* ── Alerts ─ */
+  .alert {
+    @apply text-white;
+  }
+  .alert--emergency {
+    @apply bg-[#b42318];
+  }
+  .alert--closure {
+    @apply bg-[#fdb022] text-[#1b1305];
+  }
+  .alert--info {
+    @apply bg-brand-steel;
+  }
+  .alert__inner {
+    @apply flex flex-wrap items-center gap-x-4 gap-y-2 py-3;
+  }
+  .alert__icon {
+    @apply shrink-0;
+  }
+  .alert__text {
+    @apply min-w-0 flex-1;
+  }
+  .alert__scheduled {
+    @apply text-sm opacity-80;
+  }
+  .alert__links {
+    @apply flex flex-wrap gap-x-4;
+  }
+  .alert__link {
+    @apply inline-flex items-center gap-1.5 font-semibold underline underline-offset-4;
+  }
+  .alert__close {
+    @apply grid h-10 w-10 place-items-center rounded-full hover:bg-white/15;
   }
 
   /* ── Accessibility panel (editor only) ─ */
