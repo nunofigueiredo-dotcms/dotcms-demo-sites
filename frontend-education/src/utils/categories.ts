@@ -25,11 +25,11 @@ export function toCategories(field: unknown): Category[] {
 }
 
 /**
- * Colours for the TSD Event Categories in dotCMS (Content → Categories), in
- * display order. All pass WCAG AA with white text. A category editors add
- * later shows in the default navy, after these.
+ * Colours for the TSD Event Categories and TSD News Categories in dotCMS
+ * (Content → Categories), in display order. All pass WCAG AA with white
+ * text. A category editors add later shows in the default navy, after these.
  */
-const EVENT_CATEGORY_COLORS: Record<string, string> = {
+const CATEGORY_COLORS: Record<string, string> = {
   "tsd-academic": "#041436",
   "tsd-testing": "#3e6581",
   "tsd-no-school": "#b5245f",
@@ -38,11 +38,18 @@ const EVENT_CATEGORY_COLORS: Record<string, string> = {
   "tsd-student-life": "#5b3f99",
   "tsd-community": "#2c5e8c",
   "tsd-outreach": "#0e5f6e",
+  "tsd-news-announcements": "#b5245f",
+  "tsd-news-lone-star": "#041436",
+  "tsd-news-the-roots": "#5b3f99",
+  "tsd-news-programs": "#0e5f6e",
+  "tsd-news-recognition": "#a3470f",
+  "tsd-news-academics": "#3e6581",
+  "tsd-news-athletics": "#1f6f43",
 };
-const ORDER = Object.keys(EVENT_CATEGORY_COLORS);
+const ORDER = Object.keys(CATEGORY_COLORS);
 
 export function categoryColor(key: string | undefined): string {
-  return (key && EVENT_CATEGORY_COLORS[key]) || "#041436";
+  return (key && CATEGORY_COLORS[key]) || "#041436";
 }
 
 /** Known categories in their display order, then any others alphabetically. */

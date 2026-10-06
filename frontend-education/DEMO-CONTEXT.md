@@ -93,6 +93,24 @@ incident, media statements) was deliberately left out.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
 
+### News categories (requirement 3)
+- News categories are a second category tree: Content → Categories →
+  **TSD News Categories** (Announcements, Lone Star Journal, The Roots,
+  Programs, Recognition, Academics, Athletics). An article can be in several
+  (TsdNews → Categories).
+- **Pin to top** (TsdNews → Options): pinned articles lead every news list,
+  with a "Pinned" label. "Celebrating 170 Years: Legacy in Action" is a
+  sample announcement, pinned.
+- **TSD News List** options: *Only these categories*, category filter
+  buttons, RSS link. `/news` has filters and RSS on; the Academics page has a
+  list scoped to Academics.
+- On an article page, its categories link to `/news?category=…` (filtered),
+  and "More news" leaves out the article itself.
+- **RSS feeds** (`src/app/api/news/route.ts`): `/api/news` and
+  `/api/news?category=tsd-news-lone-star`.
+- The filter buttons, the `?category=` address and the screen-reader status
+  are shared with the calendar (`components/site/CategoryFilter.tsx`).
+
 ### Analytics (requirement 1)
 Two options, both live in the code; either can run alone.
 

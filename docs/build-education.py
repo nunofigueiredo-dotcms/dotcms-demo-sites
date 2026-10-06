@@ -71,9 +71,13 @@ ICONS = ["calendar", "users", "clipboard", "megaphone", "blocks", "book", "compa
 # Field hints are limited to 255 characters, so they list the icons in short.
 ICON_HINT = "Icons: " + ", ".join(ICONS[:18]) + " …"
 
-NEWS_CATEGORIES = [("Announcements", "announcements"), ("Lone Star Journal", "lone-star"),
-                   ("The Roots", "the-roots"), ("Programs", "programs"),
-                   ("Recognition", "recognition")]
+# The TSD News Categories tree; an article can be in several.
+NEWS_CATEGORY_PARENT = ("TSD News Categories", "tsdNewsCategories")
+NEWS_CATEGORIES = [("Announcements", "tsd-news-announcements"),
+                   ("Lone Star Journal", "tsd-news-lone-star"), ("The Roots", "tsd-news-the-roots"),
+                   ("Programs", "tsd-news-programs"), ("Recognition", "tsd-news-recognition"),
+                   ("Academics", "tsd-news-academics"), ("Athletics", "tsd-news-athletics")]
+NEWS_CATEGORY_ROOT = ""  # set by ensure_categories()
 # The TSD Event Categories tree (Content → Categories). Editors add or rename
 # categories there; the frontend gives the known keys their colours
 # (frontend-education/src/utils/categories.ts). Keys are global on the
@@ -156,31 +160,39 @@ def create_type(variable, name, description, fields, icon="article",
     sys.exit(f"  ! type {variable} failed: {str(resp)[:300]}")
 
 
-def ensure_event_categories():
-    """The TSD Event Categories tree. Reused if it already exists."""
-    global EVENT_CATEGORY_ROOT
-    name, key = EVENT_CATEGORY_PARENT
+def ensure_category_tree(parent, children):
+    """A category tree (Content → Categories): the parent and its children,
+    reused where they already exist. Returns the parent's inode."""
+    name, key = parent
     found = ns.api("GET", f"/api/v1/categories?filter={key}&per_page=50").get("entity") or []
     root = next((c for c in found if c.get("key") == key), None)
     if not root:
         root = ns.api("POST", "/api/v1/categories", {
             "categoryName": name, "key": key, "categoryVelocityVarName": key, "sortOrder": 0,
-            "active": True, "description": f"Calendar categories for {SITE}"})["entity"]
-    EVENT_CATEGORY_ROOT = root["inode"]
+            "active": True, "description": f"Categories for {SITE}"})["entity"]
     existing = {c["key"] for c in ns.api(
-        "GET", f"/api/v1/categories/children?inode={EVENT_CATEGORY_ROOT}&per_page=100").get("entity") or []}
-    for order, (child, child_key) in enumerate(EVENT_CATEGORIES, start=1):
+        "GET", f"/api/v1/categories/children?inode={root['inode']}&per_page=100").get("entity") or []}
+    for order, (child, child_key) in enumerate(children, start=1):
         if child_key not in existing:
+            # The search index matches categories by this variable name.
             ns.api("POST", "/api/v1/categories", {
                 "categoryName": child, "key": child_key,
                 "categoryVelocityVarName": child_key.replace("-", ""), "sortOrder": order,
-                "active": True, "parent": EVENT_CATEGORY_ROOT})
-    print(f"  categories {name}: {len(EVENT_CATEGORIES)}")
+                "active": True, "parent": root["inode"]})
+    print(f"  categories {name}: {len(children)}")
+    return root["inode"]
 
 
-def category_field(name, variable, hint):
+def ensure_categories():
+    global EVENT_CATEGORY_ROOT, NEWS_CATEGORY_ROOT
+    EVENT_CATEGORY_ROOT = ensure_category_tree(EVENT_CATEGORY_PARENT, EVENT_CATEGORIES)
+    NEWS_CATEGORY_ROOT = ensure_category_tree(NEWS_CATEGORY_PARENT, NEWS_CATEGORIES)
+
+
+def category_field(name, variable, hint, root):
+    """A field picking from a category tree (root: the tree's parent inode)."""
     return {**field("ImmutableCategoryField", name, variable, indexed=True, hint=hint),
-            "values": EVENT_CATEGORY_ROOT}
+            "values": root}
 
 
 def create_section_types():
@@ -285,12 +297,14 @@ def create_section_types():
         field("ImmutableTextField", "Heading", "heading"),
         field("ImmutableSelectField", "How many", "count",
               values=options([("3", "3"), ("6", "6"), ("9", "9"), ("All", "all")])),
-        field("ImmutableSelectField", "Category", "category",
-              values=options([("All categories", "all")] + NEWS_CATEGORIES)),
         field("ImmutableSelectField", "Layout", "layout",
               values=options([("Cards with photos", "cards"), ("Compact list", "list")])),
         field("ImmutableCheckboxField", "Options", "showAllLink",
-              values=options([("Show an 'All news' link", "true")])),
+              values=options([("Show an 'All news' link", "true"),
+                              ("Show category filter buttons", "filter"),
+                              ("Show RSS feed link", "rss")])),
+        category_field("Only these categories", "newsCategories",
+                       "Leave empty to show every category", NEWS_CATEGORY_ROOT),
     ], icon="newspaper")
 
     create_type("TsdEventList", "TSD Event List",
@@ -307,7 +321,7 @@ def create_section_types():
                               ("Show category filter buttons", "filter"),
                               ("Show 'Add to calendar' and subscribe links", "ics")])),
         category_field("Only these categories", "eventCategories",
-                       "Leave empty to show every category"),
+                       "Leave empty to show every category", EVENT_CATEGORY_ROOT),
     ], icon="event")
 
     create_type("TsdFaq", "TSD FAQ",
@@ -339,8 +353,12 @@ def create_record_types(news_detail_page):
         field("ImmutableTextField", "Title", "title", required=True, listed=True),
         field("ImmutableTextField", "URL title", "urlTitle", required=True, unique=True,
               hint="Unique across the instance, e.g. tsd-winter-weather-make-up-day"),
-        field("ImmutableSelectField", "Category", "category", required=True, listed=True,
-              values=options(NEWS_CATEGORIES)),
+        {**category_field("Categories", "newsCategories",
+                          "Pick one or more. Manage the list under Content > Categories > "
+                          "TSD News Categories.", NEWS_CATEGORY_ROOT), "listed": True},
+        field("ImmutableCheckboxField", "Options", "pinned",
+              values=options([("Pin to the top of news lists", "pinned")]),
+              hint="For important announcements. Unpin when it's no longer news."),
         field("ImmutableDateTimeField", "Publish date", "publishDate", required=True, listed=True),
         field("ImmutableTextAreaField", "Teaser", "teaser", required=True,
               hint="One or two sentences for lists and search results"),
@@ -358,7 +376,7 @@ def create_record_types(news_detail_page):
         field("ImmutableTextField", "Location", "location"),
         {**category_field("Categories", "eventCategories",
                           "Pick one or more. Manage the list under Content > Categories > "
-                          "TSD Event Categories."), "listed": True},
+                          "TSD Event Categories.", EVENT_CATEGORY_ROOT), "listed": True},
         field("ImmutableTextAreaField", "Description", "description"),
     ], icon="event")
 
@@ -608,8 +626,19 @@ PROMOS = [
 ]
 
 NEWS = [
+    # Sample: pinned to the top of every news list.
+    dict(title="Celebrating 170 Years: Legacy in Action", slug="celebrating-170-years",
+         categories=["tsd-news-announcements"], pinned=True, date="2026-09-23 09:00:00",
+         image="promo-170th.jpg",
+         imageAlt="Legacy in Action: Texas School for the Deaf celebrates its 170th anniversary, "
+                  "2026–2027. #WeAreTSD",
+         teaser="Texas School for the Deaf was founded in 1856. All through the 2026–2027 school "
+                "year, we celebrate 170 years of Deaf education in Texas.",
+         body=[ns.p("Under the theme Legacy in Action, the anniversary year brings events for "
+                    "students, families, alumni and the community. Watch the calendar for details."),
+               ns.p("#WeAreTSD")]),
     dict(title="Lone Star Journal Summer 2026; Vol. 146. No.1", slug="lone-star-summer-2026",
-         category="lone-star", date="2026-09-10 09:00:00", image="news-lonestar-summer-2026.jpg",
+         categories=["tsd-news-lone-star", "tsd-news-athletics"], date="2026-09-10 09:00:00", image="news-lonestar-summer-2026.jpg",
          imageAlt="Two TSD graduates smiling at the camera on the cover of the Lone Star Journal",
          teaser="The Lone Star Journal of the Texas School for the Deaf. In this issue: Message from "
                 "the Superintendent, Meet the Security Officers, TSD VEX V5 Robotics Journey, 2026 "
@@ -620,7 +649,7 @@ NEWS = [
                ns.ul(["Message from the Superintendent", "Meet the Security Officers",
                       "TSD VEX V5 Robotics Journey", "2026 Graduation", "ACCESS Program Expansion",
                       "TSD Athletes in Action"])]),
-    dict(title="The Roots - Lisa Cochran", slug="the-roots-lisa-cochran", category="the-roots",
+    dict(title="The Roots - Lisa Cochran", slug="the-roots-lisa-cochran", categories=["tsd-news-the-roots"],
          date="2026-01-12 09:00:00", image="news-roots-cochran.jpg",
          imageAlt="The front cover of The Roots, with Lisa Cochran leaning against a wall",
          teaser="Learn more about Lisa Cochran’s 30-year journey at TSD and her role bringing ASL "
@@ -631,7 +660,7 @@ NEWS = [
                     "as a dorm supervisor to bringing ASL storytelling to Deaf children across "
                     "Texas.")]),
     dict(title="Lone Star: Winter/Spring 2026", slug="lone-star-winter-spring-2026",
-         category="lone-star", date="2026-04-03 09:00:00", image="news-lonestar-winter-2026.jpg",
+         categories=["tsd-news-lone-star"], date="2026-04-03 09:00:00", image="news-lonestar-winter-2026.jpg",
          imageAlt="Lone Star Journal Winter/Spring 2026 cover: students in hard hats, "
                   "“Hard hats, bright futures!”",
          teaser="The Lone Star, Journal of the Texas School for the Deaf. In this issue: New "
@@ -641,7 +670,7 @@ NEWS = [
                ns.ul(["New Governing Board Members", "Clerc Classic Champions",
                       "TSD Foundation Gala 2026", "Building a Playground", "Student Stories",
                       "Electric Vehicles"])]),
-    dict(title="The Roots - Valorie Clemons", slug="the-roots-valorie-clemons", category="the-roots",
+    dict(title="The Roots - Valorie Clemons", slug="the-roots-valorie-clemons", categories=["tsd-news-the-roots"],
          date="2026-03-25 09:00:00", image="news-roots-clemons.jpg",
          imageAlt="Valorie Clemons smiling in a black dress against a blue background",
          teaser="Discover Valorie Clemons’ 40+ years at TSD, where her dedication, care, and strong "
@@ -651,7 +680,7 @@ NEWS = [
                     "eat. Through decades of service, she supported students, built lasting "
                     "relationships, and became a familiar and trusted presence on campus.")]),
     dict(title="Winter weather make up date!", slug="winter-weather-make-up-date",
-         category="announcements", date="2026-02-02 09:00:00", image="news-winter-weather.jpg",
+         categories=["tsd-news-announcements"], date="2026-02-02 09:00:00", image="news-winter-weather.jpg",
          imageAlt="Weather make-up information",
          teaser="School closed January 27–28 for extreme cold and icing. March 23 will be the "
                 "inclement weather make-up day, with a regular residential return on Sunday, March 22.",
@@ -671,7 +700,7 @@ NEWS = [
                ns.p("If you should have any questions, please contact your child’s Residential "
                     "Supervisor or Principal.")]),
     dict(title="Leading TSD into the National Spotlight", slug="leading-tsd-national-spotlight",
-         category="recognition", date="2026-01-14 09:00:00", image="news-welding.jpg",
+         categories=["tsd-news-recognition", "tsd-news-academics"], date="2026-01-14 09:00:00", image="news-welding.jpg",
          imageAlt="Welding instructor Richard Layton sitting with arms crossed in the TSD welding shop",
          teaser="Richard Layton’s impact on welding education is featured in the latest issue of "
                 "Modern Steel Construction.",
@@ -680,7 +709,7 @@ NEWS = [
                     "our 9–12 Secondary Program, where students gain transferable skills and "
                     "industry-based experience.")]),
     dict(title="Check out our Summer Camps and Programs in English and Spanish!",
-         slug="summer-camps-and-programs", category="programs", date="2025-10-16 09:00:00",
+         slug="summer-camps-and-programs", categories=["tsd-news-programs"], date="2025-10-16 09:00:00",
          image="news-summer-camps.jpg", imageAlt="Summer Camps and Programs 2026 logo with a "
                                                   "galloping horse, pineapples and watermelon",
          teaser="Summer Camps and Programs are designed to foster learning, social skills "
@@ -692,7 +721,7 @@ NEWS = [
                ns.p("Information is available in English and Spanish. The programs are run by "
                     "TSD’s Statewide Outreach Center.")]),
     dict(title="Texas Governor Abbott Proclaimed September 22 through 27 to be Deaf Awareness Week",
-         slug="deaf-awareness-week-2025", category="recognition", date="2025-09-22 09:00:00",
+         slug="deaf-awareness-week-2025", categories=["tsd-news-recognition"], date="2025-09-22 09:00:00",
          image="news-deaf-awareness.jpg", imageAlt="The Governor’s proclamation of Deaf Awareness Week",
          teaser="Governor Greg Abbott proclaimed September 22–27, 2025 as Deaf Awareness Week in "
                 "Texas, recognizing the contributions of deaf and hard of hearing citizens.",
@@ -700,7 +729,7 @@ NEWS = [
                     "in Texas, recognizing the contributions of deaf and hard of hearing citizens "
                     "and encouraging all Texans to celebrate and support them.")]),
     dict(title="TSD Press Release: Celebrity Guest to Keynote TSD's 2025 Commencement",
-         slug="2025-commencement", category="announcements", date="2025-05-29 09:00:00",
+         slug="2025-commencement", categories=["tsd-news-announcements", "tsd-news-academics"], date="2025-05-29 09:00:00",
          image="graduation.jpg", imageAlt="The TSD Class of 2025 in caps and gowns on the steps",
          teaser="TSD celebrates the Class of 2025 on May 29 with 31 graduates. Keynote speaker Nyle "
                 "DiMarco, a former TSD student, will receive the Claire Bugen Legacy Award.",
@@ -761,7 +790,8 @@ EVENTS = [
 
 def create_news():
     for n in NEWS:
-        create("TsdNews", title=n["title"], urlTitle=f"tsd-{n['slug']}", category=n["category"],
+        create("TsdNews", title=n["title"], urlTitle=f"tsd-{n['slug']}",
+               newsCategories=n["categories"], pinned="pinned" if n.get("pinned") else "",
                publishDate=n["date"], teaser=n["teaser"], image=image(n["image"]),
                imageAlt=n["imageAlt"], body=ns.doc(n["body"]))
     print(f"  {len(NEWS)} news articles")
@@ -887,7 +917,7 @@ def build_pages(home_tpl, page_tpl, detail_id):
         4: [create("TsdPromoCarousel", title="Home — promotions", interval="8",
                    banners=",".join(promos))],
         5: [create("TsdNewsList", title="Home — latest news", heading="Latest News", count="3",
-                   category="all", layout="cards", showAllLink="true")],
+                   layout="cards", showAllLink="true")],
         6: [create("TsdEventList", title="Home — upcoming events", heading="Upcoming Events",
                    count="5", layout="compact", showAllLink="true")],
         7: [create("TsdCallout", title="Mission statement", eyebrow="Mission Statement",
@@ -1006,6 +1036,9 @@ def build_pages(home_tpl, page_tpl, detail_id):
                    image=image("graduation.jpg"),
                    imageAlt="The TSD Class of 2025 in caps and gowns on the steps of a campus building",
                    imagePosition="left", theme="mist")],
+        # Only Academics news: a News List scoped to one category.
+        4: [create("TsdNewsList", title="Academics — news", heading="Academics news", count="3",
+                   layout="cards", showAllLink="true", newsCategories=["tsd-news-academics"])],
     })
     for slug, s in SCHOOL_PAGES.items():
         pid = page(s["title"], f"/academics/{slug}", page_tpl, description=s["subtitle"])
@@ -1102,12 +1135,12 @@ def build_pages(home_tpl, page_tpl, detail_id):
     fill(news, {
         1: [banner("News & Announcements", "Stories, announcements and the Lone Star Journal.",
                    "News")],
-        2: [create("TsdNewsList", title="News — all", heading="", count="all", category="all",
-                   layout="cards")],
+        2: [create("TsdNewsList", title="News — all", heading="", count="all",
+                   layout="cards", showAllLink="filter,rss")],
     })
     fill(detail_id, {
         1: [create("TsdNewsList", title="News detail — more news", heading="More news", count="3",
-                   category="all", layout="cards", showAllLink="true")],
+                   layout="cards", showAllLink="true")],
     })
 
     calendar = page("2026-2027 TSD Calendar", "/calendar", page_tpl,
@@ -1204,7 +1237,7 @@ def set_menu():
 def main():
     ensure_site()
     set_menu()
-    ensure_event_categories()
+    ensure_categories()
     create_section_types()
     ensure_container()
     # Home: hero, quick links, school cards, promos, then latest news beside

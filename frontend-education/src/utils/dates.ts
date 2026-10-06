@@ -1,4 +1,5 @@
 import type { CalendarEvent, NewsArticle } from "@/types/page";
+import { isChecked } from "./content";
 
 // Every date on the site is shown in the school's own time zone, so the
 // server render and the browser always agree.
@@ -68,9 +69,12 @@ export function upcomingEvents(events: CalendarEvent[]): CalendarEvent[] {
     .sort((a, b) => (parseDate(a.startDate)?.getTime() ?? 0) - (parseDate(b.startDate)?.getTime() ?? 0));
 }
 
-/** Newest first. */
+/** Pinned articles first, then newest first. */
 export function latestNews(news: NewsArticle[]): NewsArticle[] {
+  const pinned = (n: NewsArticle) => (isChecked(n.pinned, "pinned") ? 1 : 0);
   return [...news].sort(
-    (a, b) => (parseDate(b.publishDate)?.getTime() ?? 0) - (parseDate(a.publishDate)?.getTime() ?? 0),
+    (a, b) =>
+      pinned(b) - pinned(a) ||
+      (parseDate(b.publishDate)?.getTime() ?? 0) - (parseDate(a.publishDate)?.getTime() ?? 0),
   );
 }

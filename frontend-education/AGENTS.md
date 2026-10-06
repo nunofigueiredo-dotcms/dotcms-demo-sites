@@ -41,6 +41,9 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
   Categories" (`utils/categories.ts` for colours and the three API shapes of
   a category field); `TsdEventList` filters by category (`?category=` in the
   URL); `app/api/calendar/route.ts` serves iCalendar feeds (`utils/ics.ts`).
+- News: categories from the tree "TSD News Categories", pinned articles first
+  (`utils/dates.ts → latestNews`); `TsdNewsList` filters like the calendar
+  (`components/site/CategoryFilter.tsx`); `app/api/news/route.ts` serves RSS.
 - Analytics: dotCMS Content Analytics in `app/layout.tsx`
   (`utils/analytics.ts`, needs `NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY` and the
   site opened at http://educationdemo.localhost:3008); Google Analytics from

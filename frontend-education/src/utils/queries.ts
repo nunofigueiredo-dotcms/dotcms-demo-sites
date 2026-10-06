@@ -34,7 +34,11 @@ TsdNewsCollection(query: "${filter(editor)}", limit: 100) {
     identifier
     title
     urlTitle
-    category
+    newsCategories {
+        key
+        name
+    }
+    pinned
     publishDate
     teaser
     image { idPath }

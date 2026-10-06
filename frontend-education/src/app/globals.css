@@ -561,6 +561,12 @@
   .news-card h3 a:hover {
     @apply underline underline-offset-4;
   }
+  .news-card--pinned {
+    @apply border-brand-pink;
+  }
+  .news-card__pinned {
+    @apply inline-flex items-center gap-1 text-brand-pink;
+  }
   .news-card__teaser {
     @apply mt-2 line-clamp-3 text-brand-muted;
   }
@@ -722,8 +728,19 @@
   .article__image {
     @apply relative aspect-[4/5] self-start overflow-hidden rounded-2xl bg-brand-mist;
   }
+  /* Contain, not cover: article images range from tall magazine covers to
+     wide promotional graphics, and both must show whole. */
   .article__image img {
-    @apply object-cover object-top;
+    @apply object-contain;
+  }
+  .article__categories {
+    @apply mb-5 flex list-none! flex-wrap gap-2 pl-0!;
+  }
+  .article__categories li {
+    @apply mb-0;
+  }
+  .category-chip--link {
+    @apply px-3 py-1 text-sm no-underline! hover:bg-brand-rule;
   }
   .article__teaser {
     @apply font-serif text-xl text-brand-navy italic;

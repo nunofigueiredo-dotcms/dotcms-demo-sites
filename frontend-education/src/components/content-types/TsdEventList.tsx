@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { ArrowRight, CalendarPlus, Clock, Download, MapPin, Rss } from "lucide-react";
 import type { DotCMSBasicContentlet } from "@dotcms/types";
+import { CategoryChip, CategoryFilter, useCategoryFilter } from "@/components/site/CategoryFilter";
 import { useSiteData } from "@/components/site/SiteData";
 import { useIsInEditor } from "@/hooks/useIsEditing";
 import type { CalendarEvent } from "@/types/page";
@@ -22,15 +22,6 @@ type TsdEventListProps = DotCMSBasicContentlet & {
   /** Options checkbox: "true" (All events link), "filter", "ics". */
   showAllLink?: unknown;
 };
-
-function CategoryChip({ category }: { category: Category }) {
-  return (
-    <span className="category-chip">
-      <span className="category-chip__dot" style={{ background: categoryColor(category.key) }} aria-hidden />
-      {category.name}
-    </span>
-  );
-}
 
 function EventItem({ event, full, calendarLinks }: { event: CalendarEvent; full: boolean; calendarLinks: boolean }) {
   const { month, day, weekday } = dateParts(event.startDate);
@@ -112,7 +103,6 @@ function FeedLinks({ category }: { category?: Category }) {
  */
 export default function TsdEventList({ heading, count = "5", layout = "compact", eventCategories, showAllLink }: TsdEventListProps) {
   const inEditor = useIsInEditor();
-  const searchParams = useSearchParams();
   const scope = toCategories(eventCategories).map((c) => c.key);
   const upcoming = upcomingEvents(useSiteData().events).filter(
     (e) => !scope.length || (e.eventCategories ?? []).some((c) => scope.includes(c.key)),
@@ -120,18 +110,7 @@ export default function TsdEventList({ heading, count = "5", layout = "compact",
   const showFilter = isChecked(showAllLink, "filter");
   const calendarLinks = isChecked(showAllLink, "ics");
   const filters = distinctCategories(upcoming.map((e) => e.eventCategories ?? []));
-  const requested = searchParams.get("category") ?? "";
-  const [selected, setSelected] = useState(showFilter && filters.some((c) => c.key === requested) ? requested : "");
-
-  const select = (key: string) => {
-    setSelected(key);
-    // Update the address without a navigation (Next.js keeps useSearchParams in sync).
-    const url = new URL(window.location.href);
-    if (key) url.searchParams.set("category", key);
-    else url.searchParams.delete("category");
-    // A string: Next.js's patched replaceState doesn't accept a URL object.
-    window.history.replaceState(null, "", url.toString());
-  };
+  const [selected, select] = useCategoryFilter(filters, showFilter);
 
   const filtered = selected ? upcoming.filter((e) => (e.eventCategories ?? []).some((c) => c.key === selected)) : upcoming;
   const events = count === "all" ? filtered : filtered.slice(0, Number(count) || 5);
@@ -164,24 +143,8 @@ export default function TsdEventList({ heading, count = "5", layout = "compact",
             )}
           </header>
         )}
-        {showFilter && filters.length > 1 && (
-          <div className="category-filter" role="group" aria-label="Filter events by category">
-            <button type="button" aria-pressed={!selected} onClick={() => select("")}>
-              All
-            </button>
-            {filters.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                aria-pressed={selected === c.key}
-                onClick={() => select(c.key)}
-                style={{ "--category": categoryColor(c.key) } as React.CSSProperties}
-              >
-                <span className="category-chip__dot" aria-hidden />
-                {c.name}
-              </button>
-            ))}
-          </div>
+        {showFilter && (
+          <CategoryFilter label="Filter events by category" filters={filters} selected={selected} onSelect={select} />
         )}
         {calendarLinks && <FeedLinks category={selectedCategory} />}
         {/* Announces how many events match after a filter change. */}
