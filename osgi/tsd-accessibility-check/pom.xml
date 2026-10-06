@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.dotcms.demo</groupId>
+  <artifactId>tsd-accessibility-check</artifactId>
+  <version>1.0.0</version>
+  <packaging>bundle</packaging>
+  <name>TSD accessibility check</name>
+  <description>
+    dotCMS OSGi plugin: a workflow step that stops Texas School for the Deaf content from being
+    submitted or published while it has accessibility problems, and a REST endpoint that reports them.
+  </description>
+
+  <properties>
+    <!-- The dotCMS build this plugin is compiled against: the one on awesomedemo-dev.
+         Its classes are Java 25, so build with JDK 25; the plugin itself targets 21. -->
+    <dotcms.version>26.09.28-02</dotcms.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>dotcms</id>
+      <url>https://repo.dotcms.com/artifactory/libs-release</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- Provided by dotCMS at runtime. Only the core jar is needed to compile. -->
+    <dependency>
+      <groupId>com.dotcms</groupId>
+      <artifactId>dotcms-core</artifactId>
+      <version>${dotcms.version}</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
+      <version>8.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.1.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>5.1.9</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>com.dotcms.demo.tsd.accessibility</Bundle-SymbolicName>
+            <Bundle-Activator>com.dotcms.demo.tsd.accessibility.Activator</Bundle-Activator>
+            <Private-Package>com.dotcms.demo.tsd.accessibility</Private-Package>
+            <Export-Package>!*</Export-Package>
+            <!-- dotCMS classes come from the host; resolve them when first used. -->
+            <Import-Package>org.osgi.framework;version=0</Import-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

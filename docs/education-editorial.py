@@ -70,13 +70,16 @@ ROLES = {
 # Permissions, inherited by everything below the asset they're set on.
 # Templates are drawn ("template layouts"), which dotCMS permissions as their
 # own type. Add Children lets a role create pages and content there.
+# CONTENT_TYPE READ + WRITE lets a role create content of the site's types
+# (WRITE is needed to create, not only to edit the type; changing a type's
+# fields still needs the Content Types tool, which these roles don't have).
+EDIT = ["READ", "WRITE"]
 READ_ONLY = {"INDIVIDUAL": ["READ"], "FOLDER": ["READ"], "CONTENT": ["READ"], "PAGE": ["READ"],
              "TEMPLATE": ["READ"], "TEMPLATE_LAYOUT": ["READ"], "CONTAINER": ["READ"],
-             "STRUCTURE": ["READ"]}
-EDIT = ["READ", "WRITE"]
+             "CONTENT_TYPE": EDIT}
 CONTRIBUTE = {"INDIVIDUAL": ["READ", "CAN_ADD_CHILDREN"], "FOLDER": ["READ", "CAN_ADD_CHILDREN"],
               "CONTENT": EDIT, "PAGE": EDIT, "TEMPLATE": ["READ"], "TEMPLATE_LAYOUT": ["READ"],
-              "CONTAINER": ["READ"], "STRUCTURE": ["READ"]}
+              "CONTAINER": ["READ"], "CONTENT_TYPE": EDIT}
 PUBLISH = {**CONTRIBUTE, "FOLDER": ["READ", "WRITE", "PUBLISH", "CAN_ADD_CHILDREN"],
            "CONTENT": EDIT + ["PUBLISH"], "PAGE": EDIT + ["PUBLISH"]}
 # (role, where, permissions): the site, or a folder path on it.
@@ -175,6 +178,12 @@ def grant_permissions(role_ids, site):
         asset = site if path == "/" else folder_id(site, path)
         entity(ns.api("PUT", f"/api/v1/permissions/role/{role_ids[key]}/asset/{asset}?cascade=true",
                       {"permissions": permissions}), f"permissions {key} on {path}")
+    # Categories (the news and event category trees) inherit from the System
+    # Host; without READ there, staff can't put content in a category. Not
+    # cascaded: it only adds category read access.
+    for role_id in role_ids.values():
+        entity(ns.api("PUT", f"/api/v1/permissions/role/{role_id}/asset/SYSTEM_HOST?cascade=false",
+                      {"permissions": {"CATEGORY": ["READ"]}}), "categories")
     # Users keep cached permissions until this is flushed.
     ns.api("DELETE", "/api/v1/caches/region/Permission")
     print(f"  permissions on {SITE}: contributor edit, publisher edit + publish, "

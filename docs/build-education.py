@@ -8,7 +8,8 @@ outreach, news, calendar, contact) with their sections, news articles and
 calendar events, and the site's media library (/images). Then it points UVE
 at the deployed frontend on Vercel (the local :3008 server is a dev URL),
 and runs education-editorial.py (roles, permissions, the TSD Page Approval
-workflow, demo users) and install-publish-page-sections.py.
+workflow, demo users), install-publish-page-sections.py and
+install-accessibility-check.py (build the plugin jar first, see its docstring).
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-education.py
@@ -1267,7 +1268,8 @@ def main():
     # Last, once the content exists (it's created with the System Workflow):
     # staff roles, permissions, the approval workflow and demo users, then the
     # page-publish step that takes a page's waiting sections live with it.
-    for script in ("education-editorial.py", "install-publish-page-sections.py"):
+    for script in ("education-editorial.py", "install-publish-page-sections.py",
+                   "install-accessibility-check.py"):
         print(f"\n{script}")
         subprocess.run([sys.executable, os.path.join(HERE, script)], check=True)
     print(f"\nDone. Site id: {SITE_ID}")

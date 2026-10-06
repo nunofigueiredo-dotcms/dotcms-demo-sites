@@ -784,6 +784,47 @@
     @apply border-t border-white/15 py-5 text-sm text-white/70;
   }
 
+  /* ── Accessibility panel (editor only) ─ */
+  .a11y-panel {
+    @apply fixed right-4 bottom-4 z-[60] w-[min(26rem,calc(100vw-2rem))] overflow-hidden rounded-xl border-2 border-[#1f6f43] bg-white text-sm text-brand-ink shadow-2xl;
+  }
+  .a11y-panel--errors {
+    @apply border-[#b42318];
+  }
+  .a11y-panel__summary {
+    @apply flex w-full items-center gap-2 px-4 py-3 text-left font-semibold text-[#1f6f43];
+  }
+  .a11y-panel--errors .a11y-panel__summary {
+    @apply text-[#b42318];
+  }
+  .a11y-panel__summary span {
+    @apply flex-1;
+  }
+  .a11y-panel__body {
+    @apply max-h-[50vh] overflow-y-auto border-t border-brand-rule px-4 py-3;
+  }
+  .a11y-panel__body section + section {
+    @apply mt-3;
+  }
+  .a11y-panel__body h3 {
+    @apply font-sans text-sm font-bold text-brand-navy;
+  }
+  .a11y-panel__body li {
+    @apply mt-1.5 border-l-4 pl-2;
+  }
+  .a11y-panel__error {
+    @apply border-[#b42318];
+  }
+  .a11y-panel__warning {
+    @apply border-[#b54708] text-brand-muted;
+  }
+  .a11y-panel__note {
+    @apply mt-3 text-brand-muted;
+  }
+  .a11y-panel__recheck {
+    @apply mt-3 inline-flex items-center gap-1.5 font-semibold text-brand-steel hover:underline;
+  }
+
   /* ── 404 ─ */
   .not-found {
     @apply flex min-h-screen flex-col items-center justify-center gap-4 bg-brand-mist p-8 text-center;

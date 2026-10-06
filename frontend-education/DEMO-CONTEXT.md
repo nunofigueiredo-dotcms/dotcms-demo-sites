@@ -93,6 +93,40 @@ incident, media statements) was deliberately left out.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
 
+### Accessibility enforced in approval (requirement 5)
+- **Java plugin** `osgi/tsd-accessibility-check` (see its README), installed
+  by `docs/install-accessibility-check.py`. Its workflow step *Check
+  accessibility* runs first on Submit for review, Approve & publish and
+  Publish: content with errors can't be submitted or published, by anyone,
+  and the editor gets each problem and the fix. Publishing a page whose
+  waiting sections fail is refused too — nothing goes half live.
+- Errors: images without a description (or a file name as description),
+  buttons/links with no or vague text ("click here", "read more"…), rich text
+  with a Heading 1, skipped heading levels, images without alt, vague links.
+  Warnings (don't block): "image of…", alt over 150 characters, long
+  headings in capitals.
+- **Editor panel** (`components/site/AccessibilityPanel.tsx`): inside the
+  dotCMS editor only, a box at the bottom right lists the page's problems
+  from the same rules, and re-checks after every change. Through
+  `/api/accessibility?path=…` → plugin REST endpoint.
+- The design system covers the rest (contrast-checked colours, focus ring,
+  skip link, reduced motion, pausable carousel), so editors can't break it.
+- First audit found two real problems in the demo content (an image without
+  alt text on Elementary, a "Read more" button on High School); both fixed
+  through the workflow as the test.
+
+**Talk track**
+1. Log in as **Dana** → Elementary page → select the "Supplies" section →
+   clear its *Image description*. The panel turns red: "1 accessibility
+   problem to fix".
+2. *Submit for review* → refused: "Accessibility check: fix 1 problem…
+   Image description (alt text): The image has no description…".
+3. Type a description → the panel goes green → submit goes through.
+4. In a news article's body, add a Heading 1 or a "click here" link → submit
+   → refused with each problem listed.
+5. As **Morgan**, even publishing the whole page is refused while a section
+   fails. Accessibility isn't a checklist; it's built into publishing.
+
 ### Staff permissions and page approval (requirements 4 and 7)
 Set up by `docs/education-editorial.py`. Demo users and passwords:
 `docs/education-users.local.csv` (gitignored — never commit or paste).
@@ -230,6 +264,13 @@ Two options, both live in the code; either can run alone.
 - On phones, the home page's 7 + 5 row must drop its column gap: the SDK's
   12-column grid with 40px gaps is wider than the screen.
 - The build script refuses to run if the site already has a home page.
+- Staff need CATEGORY READ (on the System Host, not cascaded) to put content
+  in a category, and CONTENT_TYPE READ + WRITE on the site to create new
+  content; both are in `education-editorial.py`. Content-type rights can't be
+  limited to a folder, so the Outreach Editor can *create* an item at the
+  site root — but can't edit or submit it afterwards, so it never goes live.
+- Creating new *pages* is for publishers/admins: the shared Page type's
+  permissions can't be set through REST, so staff roles are refused.
 - Changing a single field on awesomedemo-dev: `PUT/DELETE
   /api/v1/contenttype/{id}/fields/{fieldId}` return 404. Edit field options
   with a full `PUT /api/v1/contenttype/id/{id}` (resend its workflows), and
