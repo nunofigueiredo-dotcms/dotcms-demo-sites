@@ -5,8 +5,9 @@ import type { DotCMSComposedPageResponse } from "@dotcms/types";
 import { pageComponents } from "@/components/content-types";
 import { AccessibilityPanel } from "@/components/site/AccessibilityPanel";
 import { SiteDataProvider } from "@/components/site/SiteData";
-import type { DotCMSPageContent, NewsArticle } from "@/types/page";
+import type { DotCMSPageContent, NewsArticle, StaffMember } from "@/types/page";
 import { NewsDetail } from "./NewsDetail";
+import { StaffProfile } from "./StaffProfile";
 
 interface PageProps {
   pageContent: DotCMSComposedPageResponse<{ content: DotCMSPageContent }>;
@@ -22,16 +23,23 @@ export function Page({ pageContent }: PageProps) {
   const editablePage = useEditableDotCMSPage(pageContent);
   const content = editablePage?.content;
   const pageAsset = editablePage?.pageAsset;
-  // /news/{urlTitle} carries the matched article in urlContentMap. The
-  // sections below it come from the news detail page in dotCMS, so editors
-  // control what appears underneath every article.
+  // /news/{urlTitle} and /staff/{urlTitle} carry the matched article or
+  // person in urlContentMap. The sections below come from the detail page in
+  // dotCMS, so editors control what appears underneath.
   const mapped = pageAsset?.urlContentMap;
   const article = mapped?.contentType === "TsdNews" ? (mapped as unknown as NewsArticle) : undefined;
+  const person = mapped?.contentType === "TsdStaff" ? (mapped as unknown as StaffMember) : undefined;
 
   return (
-    <SiteDataProvider news={content?.news ?? []} events={content?.events ?? []} promos={content?.promos ?? []}>
+    <SiteDataProvider
+      news={content?.news ?? []}
+      events={content?.events ?? []}
+      promos={content?.promos ?? []}
+      staff={content?.staff ?? []}
+    >
       <main id="main" tabIndex={-1}>
         {article && <NewsDetail article={article} />}
+        {person && <StaffProfile person={person} />}
         <DotCMSLayoutBody page={pageAsset} components={pageComponents} />
       </main>
       {/* In the editor only. Re-checks each time the editor sends the page. */}

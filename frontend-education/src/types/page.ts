@@ -50,6 +50,25 @@ export interface PromoBanner {
   link?: string | null;
 }
 
+/** A staff member (content type `TsdStaff`). Their page is /staff/{urlTitle}. */
+export interface StaffMember {
+  identifier: string;
+  title: string;
+  lastName: string;
+  urlTitle: string;
+  jobTitle: string;
+  /** From the TSD Departments tree in dotCMS (page data gives another shape: see toCategories). */
+  departments?: unknown;
+  email?: string | null;
+  phone?: string | null;
+  videophone?: string | null;
+  languages?: string | null;
+  office?: string | null;
+  photo?: DotCMSImageField;
+  photoAlt?: string | null;
+  bio?: BlockField | null;
+}
+
 /** Site-wide settings (content type `TsdSiteSettings`, one item per site). */
 export interface SiteSettings {
   /** GA4 measurement ID; empty turns Google Analytics off. */
@@ -73,4 +92,5 @@ export interface DotCMSPageContent {
   news?: NewsArticle[];
   events?: CalendarEvent[];
   promos?: PromoBanner[];
+  staff?: StaffMember[];
 }

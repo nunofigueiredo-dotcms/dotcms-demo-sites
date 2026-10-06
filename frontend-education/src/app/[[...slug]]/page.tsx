@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDotCMSPage, type PageMode } from "@/utils/getDotCMSPage";
-import type { NewsArticle } from "@/types/page";
+import type { NewsArticle, StaffMember } from "@/types/page";
 import { buildPageMetadata } from "@/utils/seo";
 import { Page } from "@/views/Page";
 import Header from "@/components/Header";
@@ -37,10 +37,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   // A news article's own title and teaser, not the shared detail page's.
   const article =
     urlContentMap?.contentType === "TsdNews" ? (urlContentMap as unknown as NewsArticle) : undefined;
-  const title = article?.title || page?.friendlyName || page?.title;
+  const person = urlContentMap?.contentType === "TsdStaff" ? (urlContentMap as unknown as StaffMember) : undefined;
+  const title = article?.title || (person && `${person.title}, ${person.jobTitle}`) || page?.friendlyName || page?.title;
   return buildPageMetadata({
     title: path === "/" ? title : `${title} | ${SITE_NAME}`,
-    description: article?.teaser || page?.seodescription,
+    description: article?.teaser || (person && `${person.jobTitle} at ${SITE_NAME}.`) || page?.seodescription,
     path,
     type: article ? "article" : "website",
   });

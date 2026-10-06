@@ -909,6 +909,86 @@
     @apply mx-auto! w-full! max-w-full! min-w-0!;
   }
 
+  /* ── Staff directory and profiles ─ */
+  .staff-search {
+    @apply mb-5 max-w-xl;
+  }
+  .staff-search label {
+    @apply mb-1.5 block font-semibold text-brand-navy;
+  }
+  .staff-search__field {
+    @apply flex items-center gap-2 rounded-full border-2 border-brand-rule bg-white px-4 focus-within:border-brand-steel;
+  }
+  .staff-search__field svg {
+    @apply shrink-0 text-brand-muted;
+  }
+  .staff-search input {
+    @apply min-h-12 w-full bg-transparent text-base outline-none;
+  }
+  .staff-count {
+    @apply mb-4 text-sm font-semibold text-brand-muted;
+  }
+  .staff-grid {
+    @apply grid gap-5 md:grid-cols-2 lg:grid-cols-3;
+  }
+  .staff-card {
+    @apply flex gap-4 rounded-2xl border border-brand-rule bg-white p-5;
+  }
+  .staff-card h3 {
+    @apply text-lg text-brand-navy;
+  }
+  .staff-card h3 a:hover {
+    @apply underline underline-offset-4;
+  }
+  .staff-card__job {
+    @apply text-brand-muted;
+  }
+  .staff-card__departments {
+    @apply mt-2 flex flex-wrap gap-1.5;
+  }
+  .staff-contact {
+    @apply mt-3 grid gap-1 text-sm;
+  }
+  .staff-contact li {
+    @apply flex items-center gap-2 text-brand-muted;
+  }
+  .staff-contact a {
+    @apply font-semibold break-all text-brand-steel hover:underline;
+  }
+  .staff-contact abbr {
+    @apply text-xs font-bold no-underline;
+  }
+  .avatar {
+    @apply relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-brand-steel font-serif font-bold text-white;
+  }
+  .avatar img {
+    @apply object-cover;
+  }
+  .avatar--small {
+    @apply h-16 w-16 text-xl;
+  }
+  .avatar--large {
+    @apply h-32 w-32 text-4xl ring-4 ring-white/70 sm:h-40 sm:w-40;
+  }
+  .profile__header {
+    @apply relative z-10 flex flex-col items-start gap-6 py-14 sm:flex-row sm:items-center lg:py-20;
+  }
+  .profile__header h1 {
+    @apply text-4xl sm:text-5xl;
+  }
+  .profile {
+    @apply grid gap-10 lg:grid-cols-[320px_1fr];
+  }
+  .profile__card {
+    @apply self-start rounded-2xl bg-brand-mist p-6;
+  }
+  .profile__card h2 {
+    @apply text-xl text-brand-navy;
+  }
+  .profile__fact {
+    @apply mt-3 flex items-center gap-2 text-sm text-brand-muted;
+  }
+
   /* ── Accessibility panel (editor only) ─ */
   .a11y-panel {
     @apply fixed right-4 bottom-4 z-[60] w-[min(26rem,calc(100vw-2rem))] overflow-hidden rounded-xl border-2 border-[#1f6f43] bg-white text-sm text-brand-ink shadow-2xl;

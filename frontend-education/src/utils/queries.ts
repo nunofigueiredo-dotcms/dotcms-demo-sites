@@ -78,6 +78,28 @@ TsdPromoBannerCollection(query: "${filter(editor)}", limit: 50) {
 }
 `;
 
+// Staff for directories; sorted by last name in the frontend.
+const staffQuery = (editor: boolean) => `
+TsdStaffCollection(query: "${filter(editor)}", limit: 300) {
+    identifier
+    title
+    lastName
+    urlTitle
+    jobTitle
+    departments {
+        key
+        name
+    }
+    email
+    phone
+    videophone
+    languages
+    office
+    photo { idPath }
+    photoAlt
+}
+`;
+
 // Always the published settings: an unpublished analytics ID shouldn't
 // switch tracking on, nor a draft footer go live.
 const settingsQuery = `
@@ -100,6 +122,7 @@ function buildPageContentQuery(editor: boolean) {
       news: newsQuery(editor),
       events: eventsQuery(editor),
       promos: promosQuery(editor),
+      staff: staffQuery(editor),
       settings: settingsQuery,
     },
   };
@@ -111,8 +134,9 @@ const PUBLIC_QUERY = buildPageContentQuery(false);
 const EDITOR_QUERY = buildPageContentQuery(true);
 
 /**
- * Loaded alongside every page: the menu, the news, events and promo banners
- * that the list sections and promo carousels pick from, and site settings.
+ * Loaded alongside every page: the menu, the news, events, promo banners and
+ * staff that the list sections, carousels and directories pick from, and
+ * site settings.
  */
 export function pageContentQuery(inEditor: boolean) {
   return inEditor ? EDITOR_QUERY : PUBLIC_QUERY;

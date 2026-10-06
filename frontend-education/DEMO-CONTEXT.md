@@ -46,12 +46,12 @@ Site aliases: `educationdemo.localhost` and `dotcms-demo-sites-45sr.vercel.app`
 Every other page uses template **TSD Full Width** (8 rows).
 
 ### Content types (all `Tsd*`, each with a Site field)
-Sections editors drag onto pages: **TsdVideo**, **TsdSocialMedia**, **TsdHero**, **TsdPageBanner**,
+Sections editors drag onto pages: **TsdStaffDirectory**, **TsdVideo**, **TsdSocialMedia**, **TsdHero**, **TsdPageBanner**,
 **TsdQuickLinks**, **TsdFeatureGrid** (cards / checklist / steps / stats),
 **TsdFeatureSplit**, **TsdCallout**, **TsdPromoCarousel**, **TsdNewsList**,
 **TsdEventList**, **TsdFaq**, **TsdContactList**, plus rich text
 (`webPageContent`). Records: **TsdNews** (9 real articles), **TsdEvent**
-(16, in categories), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
+(16, in categories), **TsdStaff** (20, fictional), **TsdPromoBanner** (3), **TsdSiteSettings** (1: integrations such as
 the Google Analytics ID).
 
 The pages use a **TSD Sections** container that accepts only those section
@@ -92,6 +92,37 @@ incident, media statements) was deliberately left out.
   last 60 days and are cached 5 minutes.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
+
+### Staff directory and profiles (requirement 8)
+- **TSD Staff** profiles: name, job title, departments, e-mail, voice and
+  videophone (VP), languages, office, optional photo (alt text enforced by
+  the accessibility check) and bio. Each has a page at `/staff/{url title}`
+  (URL map → `/staff/staff-detail`, which ends with a "can't find who you
+  need?" callout editors control).
+- **Departments** are a category tree (Content → Categories → **TSD
+  Departments**, 11 real TSD departments); a person can be in several.
+- **TSD Staff Directory** section: sorted by last name; options for a search
+  box (name, job, department or language; accents ignored, so "tomas" finds
+  Tomás) and department filter buttons (`/staff?category=tsd-dept-outreach`);
+  *Only these departments* scopes it. `/staff` has search and filters; the
+  Outreach page shows "Meet the Outreach team". The home page's *Staff
+  Directory* quick link now opens `/staff`.
+- **Sample people**: the 20 staff are fictional (in TSD's real departments),
+  with `@educationdemo.com` e-mail and 512-555-01xx numbers (the range kept
+  for fiction), no photos — initials instead. Real staff data would come
+  from HR; nothing about real employees is published by the demo.
+- Outreach staff live in `/outreach`: **Sam can update his team's profiles**
+  and nobody else's (verified).
+
+**Talk track**
+1. `/staff` → type "spanish": the four staff who sign and speak Spanish.
+   Click *Statewide Outreach Center*: the address is shareable.
+2. Open a profile: VP number beside voice, languages, office, bio.
+3. Log in as **Sam** → edit Emily Sanders's job title → submit for review →
+   Morgan approves → the directory, the profile and the Outreach page all
+   update. Try Maria Delgado (Admissions): read-only for Sam.
+4. Add a department under Content → Categories → TSD Departments: it's
+   available to profiles and filters right away.
 
 ### Design flexibility and social media (requirement 6)
 - **Every part of a page is editable.** Page bodies in the Universal Visual

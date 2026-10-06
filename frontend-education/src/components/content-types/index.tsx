@@ -11,6 +11,7 @@ import TsdPageBanner from "./TsdPageBanner";
 import TsdPromoCarousel from "./TsdPromoCarousel";
 import TsdQuickLinks from "./TsdQuickLinks";
 import TsdSocialMedia from "./TsdSocialMedia";
+import TsdStaffDirectory from "./TsdStaffDirectory";
 import TsdVideo from "./TsdVideo";
 import WebPageContent from "./WebPageContent";
 
@@ -32,6 +33,7 @@ export const pageComponents: Record<string, ComponentType<any>> = {
   TsdPromoCarousel,
   TsdQuickLinks,
   TsdSocialMedia,
+  TsdStaffDirectory,
   TsdVideo,
   webPageContent: WebPageContent,
 };
