@@ -6,7 +6,7 @@ Visual Editor only offers TSD components on this site), templates, folders and
 menu, the pages (home, about, admissions, academics and its five school pages,
 outreach, news, calendar, contact) with their sections, news articles and
 calendar events, and the site's media library (/images). Then it points UVE
-at the frontend on :3008.
+at the deployed frontend on Vercel (the local :3008 server is a dev URL).
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-education.py
@@ -36,7 +36,10 @@ os.environ.setdefault("DOTCMS_THEME_ID", "ce00bd28-5f66-47f9-96ca-bbf0722a79aa")
 import dotcms_site as ns  # noqa: E402
 
 SITE = os.environ.get("EDUCATION_SITE", "educationdemo.com")
-FRONTEND = os.environ.get("EDUCATION_FRONTEND", "http://localhost:3008")
+# The deployed frontend (Vercel). UVE loads pages from it; the local dev
+# server stays available in the editor as a dev URL.
+FRONTEND = os.environ.get("EDUCATION_FRONTEND", "https://dotcms-demo-sites-45sr.vercel.app")
+DEV_FRONTENDS = ["http://localhost:3008", "http://educationdemo.localhost:3008"]
 # Same identifier on every instance: it ships with dotCMS.
 SYSTEM_WORKFLOW = "d61a59e1-a49c-46f2-a929-db2b4bfa88b2"
 CONTAINER_TITLE = "TSD Sections"
@@ -353,6 +356,16 @@ def ensure_container():
     print(f"  container {CONTAINER_TITLE} -> {CONTAINER_ID}")
 
 
+def configure_uve():
+    """Point the Universal Visual Editor at the deployed frontend, with the
+    local dev server selectable as a dev URL."""
+    cfg = {"config": [{"pattern": ".*", "url": FRONTEND,
+                       "options": {"allowedDevURLs": DEV_FRONTENDS}}]}
+    ns.api("POST", f"/api/v1/apps/dotema-config-v2/{SITE_ID}",
+           {"configuration": {"value": json.dumps(cfg, indent=2), "hidden": False}})
+    print(f"  UVE -> {FRONTEND} (dev: {', '.join(DEV_FRONTENDS)})")
+
+
 def create_settings_type():
     """Site-wide settings, one item per site: integrations an administrator
     turns on or changes without a code deploy."""
@@ -383,8 +396,10 @@ def configure_analytics():
     # The analytics service finds the site from the browser's Origin header.
     # Browsers send *.localhost to this machine, so this alias lets the local
     # frontend (http://educationdemo.localhost:3008) record events.
+    # The deployed frontend's domain is an alias for the same reason.
+    aliases = ["educationdemo.localhost", FRONTEND.split("://", 1)[-1].rstrip("/")]
     ns.api("PUT", f"/api/v1/site?id={SITE_ID}", {
-        "siteName": SITE, "aliases": "educationdemo.localhost", "forceExecution": True})
+        "siteName": SITE, "aliases": "\n".join(aliases), "forceExecution": True})
     return key
 
 
@@ -1150,7 +1165,7 @@ def main():
     create_settings_type()
     create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="")
     analytics_key = configure_analytics()
-    ns.configure_uve(SITE_ID, FRONTEND)
+    configure_uve()
     for uri in ["/index", "/about/index", "/admissions/index", "/academics/index",
                 *[f"/academics/{s}/index" for s in SCHOOLS], "/outreach/index",
                 "/news/index", "/calendar/index", "/contact/index"]:

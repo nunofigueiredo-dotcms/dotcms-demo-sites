@@ -13,12 +13,16 @@ Last updated 2026-10-06.
 | Piece | Location | Notes |
 |---|---|---|
 | dotCMS content | site **educationdemo.com** on https://awesomedemo-dev.dotcms.dev | site id `5875220ead521d2fe31cedd1aad6b594` |
-| Website | `~/headless/generaldemos/frontend-education` | Next.js, port **3008**, `npm run dev:education` from `~/headless/generaldemos` |
+| Website (deployed) | https://dotcms-demo-sites-45sr.vercel.app | Vercel, branch `education-demo`, root directory `frontend-education` |
+| Website (local) | `~/headless/generaldemos/frontend-education` | Next.js, port **3008**, `npm run dev:education` from `~/headless/generaldemos` |
 | Build script | `~/headless/generaldemos/docs/build-education.py` | rebuilds educationdemo.com from scratch |
 | Brand assets | `~/headless/generaldemos/docs/education-assets/` | from tsd.texas.gov |
 
-UVE on educationdemo.com points at `http://localhost:3008`, so the frontend
-must be running for the editor to show pages.
+UVE on educationdemo.com loads pages from the Vercel deployment, so editing
+needs no local server. `http://localhost:3008` and
+`http://educationdemo.localhost:3008` are allowed dev URLs in the editor.
+Site aliases: `educationdemo.localhost` and `dotcms-demo-sites-45sr.vercel.app`
+(Content Analytics finds the site from the browser's Origin).
 
 ---
 
