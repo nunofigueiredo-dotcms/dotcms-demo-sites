@@ -348,6 +348,41 @@ def create_section_types():
               hint="One per line: Office | Description | Voice | Videophone (VP) | Fax"),
     ], icon="contact_phone")
 
+    create_type("TsdVideo", "TSD Video",
+                "A YouTube video with a heading and text. It must be captioned or signed in ASL "
+                "before it can be published.", [
+        site_field(),
+        field("ImmutableTextField", "Heading", "title", required=True, listed=True,
+              hint="Also the video's accessible name"),
+        field("ImmutableTextField", "Eyebrow", "eyebrow"),
+        field("ImmutableTextAreaField", "Text", "text", hint="Leave a blank line between paragraphs"),
+        field("ImmutableTextField", "YouTube link", "youtubeUrl", required=True,
+              hint="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/..."),
+        field("ImmutableCheckboxField", "Accessibility", "videoAccessibility",
+              values=options([("Captions (subtitles) are on the video", "captions"),
+                              ("Signed in ASL", "asl"),
+                              ("A transcript is provided below", "transcript")]),
+              hint="Required: tick at least captions or ASL. Publishing is refused otherwise."),
+        field("ImmutableTextAreaField", "Transcript", "transcript",
+              hint="Shown under the video in an expandable panel"),
+        field("ImmutableSelectField", "Layout", "layout",
+              values=options([("Video beside the text", "split"), ("Large video", "full")])),
+        theme_field([("White", "white"), ("Light blue", "mist"), ("Navy", "navy")]),
+    ], icon="smart_display")
+
+    create_type("TsdSocialMedia", "TSD Social Media",
+                "TSD's Facebook page and Instagram profile, as on tsd.texas.gov. Visitors choose to "
+                "load them (they come from Facebook and Instagram).", [
+        site_field(),
+        internal_name(),
+        field("ImmutableTextField", "Heading", "heading"),
+        field("ImmutableTextAreaField", "Intro", "intro"),
+        field("ImmutableTextField", "Facebook page", "facebookUrl",
+              hint="e.g. https://www.facebook.com/texasschoolforthedeaf — leave empty to hide"),
+        field("ImmutableTextField", "Instagram profile", "instagramUrl",
+              hint="e.g. https://www.instagram.com/texasschoolforthedeaf/ — leave empty to hide"),
+    ], icon="share")
+
 
 def create_record_types(news_detail_page):
     """Structured content that the list sections show."""
@@ -387,7 +422,8 @@ def create_record_types(news_detail_page):
 
 SECTION_TYPES = ["TsdHero", "TsdPageBanner", "TsdQuickLinks", "TsdFeatureGrid",
                  "TsdFeatureSplit", "TsdCallout", "TsdPromoCarousel", "TsdNewsList",
-                 "TsdEventList", "TsdFaq", "TsdContactList", "webPageContent"]
+                 "TsdEventList", "TsdFaq", "TsdContactList", "TsdVideo", "TsdSocialMedia",
+                 "webPageContent"]
 
 
 def ensure_container():
@@ -437,6 +473,18 @@ def create_settings_type():
         internal_name(),
         field("ImmutableTextField", "Google Analytics measurement ID", "gaMeasurementId",
               hint="GA4 ID such as G-ABC123XYZ. Leave empty to turn Google Analytics off."),
+        # Header and footer: everything outside the page body, editable here.
+        field("ImmutableTextAreaField", "Top bar links", "utilityLinks",
+              hint="The links above the logo. One per line: Label | link"),
+        field("ImmutableTextAreaField", "Social media", "socialLinks",
+              hint="Header and footer icons. One per line: Facebook | link (also Instagram, YouTube, X, LinkedIn)"),
+        field("ImmutableTextField", "Address", "address"),
+        field("ImmutableTextField", "Phone", "phone"),
+        field("ImmutableTextField", "Videophone (VP)", "videophone"),
+        field("ImmutableTextAreaField", "Footer column 2: Community", "footerCommunity",
+              hint="One per line: Label | link. The first column is the site menu."),
+        field("ImmutableTextAreaField", "Footer column 3: Useful links", "footerUseful",
+              hint="One per line: Label | link"),
     ], icon="settings")
 
 
@@ -792,6 +840,37 @@ EVENTS = [
 ]
 
 
+TSD = "https://www.tsd.texas.gov"
+# The header's top bar and the footer, as on tsd.texas.gov.
+SITE_SETTINGS = dict(
+    utilityLinks=lines([
+        f"Students | {TSD}/apps/pages/index.jsp?uREC_ID=170309&type=d",
+        f"Parents | {TSD}/apps/pages/index.jsp?uREC_ID=170252&type=d",
+        f"Staff | {TSD}/apps/pages/index.jsp?uREC_ID=170310&type=d",
+        f"TSD Careers | {TSD}/apps/pages/index.jsp?uREC_ID=170377&type=d&pREC_ID=860684"]),
+    socialLinks=lines([
+        "Facebook | https://www.facebook.com/texasschoolforthedeaf",
+        "Instagram | https://www.instagram.com/texasschoolforthedeaf/",
+        "YouTube | https://www.youtube.com/@StatewideOutreachCenterVideos"]),
+    address="1102 S. Congress Ave., Austin, TX 78704",
+    phone="(512) 462-5353",
+    videophone="(512) 580-6994",
+    footerCommunity=lines([
+        f"Ranger Press | {TSD}/apps/pages/index.jsp?uREC_ID=812292&type=d",
+        f"Ranger Sports | {TSD}/apps/pages/index.jsp?uREC_ID=170240&type=d",
+        "TSD Foundation | https://tsdfoundation.org/",
+        "TSD Alumni Association | https://tsdalumni.org/about-us",
+        f"Video Gallery | {TSD}/apps/video"]),
+    footerUseful=lines([
+        f"Accessibility Policy | {TSD}/apps/pages/index.jsp?uREC_ID=170317&type=d&pREC_ID=541951",
+        f"Privacy | {TSD}/apps/pages/index.jsp?uREC_ID=170317&type=d",
+        f"Anonymous Alerts | {TSD}/apps/pages/anonymous",
+        "Report Fraud | https://sao.fraud.texas.gov/ReportFraud/",
+        "Texas.gov | https://www.texas.gov/",
+        "Texas Veterans | https://veterans.portal.texas.gov/"]),
+)
+
+
 def create_news():
     for n in NEWS:
         create("TsdNews", title=n["title"], urlTitle=f"tsd-{n['slug']}",
@@ -924,7 +1003,11 @@ def build_pages(home_tpl, page_tpl, detail_id):
                    layout="cards", showAllLink="true")],
         6: [create("TsdEventList", title="Home — upcoming events", heading="Upcoming Events",
                    count="5", layout="compact", showAllLink="true")],
-        7: [create("TsdCallout", title="Mission statement", eyebrow="Mission Statement",
+        7: [create("TsdSocialMedia", title="Home — social media", heading="Follow TSD",
+                   intro="News, photos and celebrations from campus.",
+                   facebookUrl="https://www.facebook.com/texasschoolforthedeaf",
+                   instagramUrl="https://www.instagram.com/texasschoolforthedeaf/"),
+            create("TsdCallout", title="Mission statement", eyebrow="Mission Statement",
                    text=MISSION, ctaText="About TSD", ctaLink="/about", theme="navy")],
     })
 
@@ -1115,7 +1198,14 @@ def build_pages(home_tpl, page_tpl, detail_id):
                        "Parent Infant Program | Support for families of deaf and hard of hearing "
                        "babies and toddlers. | | baby",
                        "On The Road | Outreach staff bring workshops and training to communities "
-                       "across Texas. | | car"]))],
+                       "across Texas. | | car"])),
+            # A real video from the Statewide Outreach Center's YouTube channel.
+            create("TsdVideo", title="ASL Storytelling: Duck at the Door", eyebrow="ASL Storytelling",
+                   text="Our storytellers bring picture books to life in American Sign Language, "
+                        "for classrooms and families across Texas.\n\nThe ASL Storytelling library "
+                        "has dozens of stories, from Aesop's fables to Peter Rabbit.",
+                   youtubeUrl="https://www.youtube.com/watch?v=2pNPzHvz_iE",
+                   videoAccessibility="asl", layout="split", theme="white")],
         4: [create("TsdFeatureGrid", title="Outreach — goals", heading="Our goals",
                    layout="checklist", theme="white", items=lines([
                        "Connect families and professionals with the right agency, program, service, "
@@ -1258,7 +1348,7 @@ def main():
     create_events()
     build_pages(home_tpl, page_tpl, detail_id)
     create_settings_type()
-    create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="")
+    create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="", **SITE_SETTINGS)
     analytics_key = configure_analytics()
     configure_uve()
     for uri in ["/index", "/about/index", "/admissions/index", "/academics/index",

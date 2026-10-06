@@ -79,10 +79,17 @@ TsdPromoBannerCollection(query: "${filter(editor)}", limit: 50) {
 `;
 
 // Always the published settings: an unpublished analytics ID shouldn't
-// switch tracking on.
+// switch tracking on, nor a draft footer go live.
 const settingsQuery = `
 TsdSiteSettingsCollection(query: "${filter(false)}", limit: 1) {
     gaMeasurementId
+    utilityLinks
+    socialLinks
+    address
+    phone
+    videophone
+    footerCommunity
+    footerUseful
 }
 `;
 

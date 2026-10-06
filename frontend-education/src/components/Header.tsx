@@ -4,29 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
-import type { DotCMSPageNavigation } from "@/types/page";
+import type { DotCMSPageNavigation, SiteSettings } from "@/types/page";
 import { Logo } from "./Logo";
-import { SOCIAL } from "./social";
+import { links, socialLinks } from "./social";
 
-const TSD = "https://www.tsd.texas.gov";
-
-// The top bar, as on tsd.texas.gov. These go to TSD's own site; only the
-// main menu below comes from dotCMS.
-const AUDIENCES = [
-  { title: "Students", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170309&type=d` },
-  { title: "Parents", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170252&type=d` },
-  { title: "Staff", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170310&type=d` },
-  { title: "TSD Careers", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170377&type=d&pREC_ID=860684` },
-];
+// The search box is TSD's own site search.
+const SEARCH = "https://www.tsd.texas.gov/apps/search";
 
 type NavItem = DotCMSPageNavigation["children"][number];
 
 interface HeaderProps {
   /** Folders marked "Show on menu" in dotCMS, in menu order, with their subfolders. */
   navItems: NavItem[];
+  /** TSD Site Settings: the top bar's links and the social icons. */
+  settings?: SiteSettings;
 }
 
-export default function Header({ navItems }: HeaderProps) {
+/** The menu comes from dotCMS folders; the top bar from TSD Site Settings. */
+export default function Header({ navItems, settings }: HeaderProps) {
+  const audiences = links(settings?.utilityLinks);
+  const social = socialLinks(settings?.socialLinks);
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
@@ -40,7 +37,7 @@ export default function Header({ navItems }: HeaderProps) {
         <div className="container-tsd utility-bar__inner">
           <nav aria-label="Audiences">
             <ul>
-              {AUDIENCES.map((item) => (
+              {audiences.map((item) => (
                 <li key={item.title}>
                   <a href={item.href}>{item.title}</a>
                 </li>
@@ -48,7 +45,7 @@ export default function Header({ navItems }: HeaderProps) {
             </ul>
           </nav>
           <ul className="utility-bar__social">
-            {SOCIAL.map(({ label, href, Icon }) => (
+            {social.map(({ label, href, Icon }) => (
               <li key={label}>
                 <a href={href} aria-label={label} target="_blank" rel="noopener">
                   <Icon aria-hidden className="h-4 w-4" />
@@ -109,7 +106,7 @@ export default function Header({ navItems }: HeaderProps) {
               );
             })}
             <li className="main-nav__item main-nav__item--search">
-              <a className="main-nav__link" href={`${TSD}/apps/search`} aria-label="Search">
+              <a className="main-nav__link" href={SEARCH} aria-label="Search">
                 <Search aria-hidden className="h-5 w-5" />
                 <span className="lg:hidden">Search</span>
               </a>

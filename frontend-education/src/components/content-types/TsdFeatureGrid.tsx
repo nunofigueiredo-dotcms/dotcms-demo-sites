@@ -4,6 +4,13 @@ import { Icon } from "@/components/Icon";
 import { SmartLink } from "@/components/SmartLink";
 import { parseLines } from "@/utils/content";
 
+/** Style editor options (dotcms/style-schemas/TsdFeatureGrid.mjs). */
+interface GridStyles {
+  columns?: "auto" | "2" | "3" | "4";
+  alignment?: "left" | "center";
+  cardStyle?: "outlined" | "filled" | "minimal";
+}
+
 type TsdFeatureGridProps = DotCMSBasicContentlet & {
   eyebrow?: string;
   heading?: string;
@@ -14,6 +21,7 @@ type TsdFeatureGridProps = DotCMSBasicContentlet & {
   items: string;
   ctaText?: string;
   ctaLink?: string;
+  dotStyleProperties?: GridStyles;
 };
 
 function Card({ title, text, href, icon }: { title: string; text: string; href: string; icon: string }) {
@@ -42,12 +50,20 @@ function Card({ title, text, href, icon }: { title: string; text: string; href: 
 }
 
 /** A heading plus a grid of items: cards, a checklist, numbered steps or big stats. */
-export default function TsdFeatureGrid({ eyebrow, heading, intro, layout, theme = "white", items, ctaText, ctaLink }: TsdFeatureGridProps) {
+export default function TsdFeatureGrid(props: TsdFeatureGridProps) {
+  const { eyebrow, heading, intro, layout, theme = "white", items, ctaText, ctaLink, dotStyleProperties: styles = {} } = props;
   const rows = parseLines(items, 4);
-  // Three, six or nine cards sit in three columns rather than leaving a gap.
-  const thirds = layout === "cards" && rows.length % 3 === 0 ? "feature-grid--thirds" : "";
+  const columns = styles.columns ?? "auto";
+  // Automatic: three, six or nine cards sit in three columns rather than leaving a gap.
+  const thirds = columns === "auto" && layout === "cards" && rows.length % 3 === 0 ? "feature-grid--thirds" : "";
+  const styleClasses = [
+    columns !== "auto" && `feature-grid--cols-${columns}`,
+    `feature-grid--card-${styles.cardStyle ?? "outlined"}`,
+  ]
+    .filter(Boolean)
+    .join(" ");
   return (
-    <section className={`section section--${theme}`}>
+    <section className={`section section--${theme} ${styles.alignment === "center" ? "section--centered" : ""}`}>
       <div className="container-tsd">
         {(eyebrow || heading || intro) && (
           <header className="section__header">
@@ -56,7 +72,7 @@ export default function TsdFeatureGrid({ eyebrow, heading, intro, layout, theme 
             {intro && <p className="section__intro">{intro}</p>}
           </header>
         )}
-        <ul className={`feature-grid feature-grid--${layout} ${thirds}`}>
+        <ul className={`feature-grid feature-grid--${layout} ${thirds} ${styleClasses}`}>
           {rows.map(([title, text, href, icon], i) => (
             <li key={`${title}-${i}`}>
               {layout === "cards" && <Card title={title} text={text} href={href} icon={icon} />}

@@ -1,28 +1,8 @@
 import Link from "next/link";
 import { MapPin, Phone, Video } from "lucide-react";
-import type { DotCMSPageNavigation } from "@/types/page";
+import type { DotCMSPageNavigation, SiteSettings } from "@/types/page";
 import { Seal } from "./Logo";
-import { SOCIAL } from "./social";
-
-const TSD = "https://www.tsd.texas.gov";
-
-// The fixed footer links from tsd.texas.gov.
-const COMMUNITY = [
-  { title: "Ranger Press", href: `${TSD}/apps/pages/index.jsp?uREC_ID=812292&type=d` },
-  { title: "Ranger Sports", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170240&type=d` },
-  { title: "TSD Foundation", href: "https://tsdfoundation.org/" },
-  { title: "TSD Alumni Association", href: "https://tsdalumni.org/about-us" },
-  { title: "Video Gallery", href: `${TSD}/apps/video` },
-];
-
-const USEFUL = [
-  { title: "Accessibility Policy", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170317&type=d&pREC_ID=541951` },
-  { title: "Privacy", href: `${TSD}/apps/pages/index.jsp?uREC_ID=170317&type=d` },
-  { title: "Anonymous Alerts", href: `${TSD}/apps/pages/anonymous` },
-  { title: "Report Fraud", href: "https://sao.fraud.texas.gov/ReportFraud/" },
-  { title: "Texas.gov", href: "https://www.texas.gov/" },
-  { title: "Texas Veterans", href: "https://veterans.portal.texas.gov/" },
-];
+import { links, socialLinks } from "./social";
 
 function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
   return href.startsWith("/") ? <Link href={href}>{children}</Link> : <a href={href}>{children}</a>;
@@ -43,33 +23,50 @@ function Column({ title, links }: { title: string; links: { title: string; href:
   );
 }
 
-export default function Footer({ navItems }: { navItems: DotCMSPageNavigation["children"] }) {
+/** "(512) 462-5353" → "tel:+15124625353" */
+const tel = (number: string) => `tel:+1${number.replace(/\D/g, "")}`;
+
+interface FooterProps {
+  navItems: DotCMSPageNavigation["children"];
+  /** TSD Site Settings: contact details, social icons and the footer columns. */
+  settings?: SiteSettings;
+}
+
+/** Everything here is editable: the menu in dotCMS folders, the rest in TSD Site Settings. */
+export default function Footer({ navItems, settings }: FooterProps) {
+  const social = socialLinks(settings?.socialLinks);
+  const community = links(settings?.footerCommunity);
+  const useful = links(settings?.footerUseful);
   return (
     <footer className="site-footer">
       <div className="container-tsd site-footer__grid">
         <div className="site-footer__contact">
           <Seal size={96} />
           <p className="site-footer__name">Texas School for the Deaf</p>
-          <p>
-            <MapPin aria-hidden className="h-4 w-4" />
-            <a href="https://maps.google.com/?q=1102+S.+Congress+Ave.,+Austin,+TX+78704">
-              1102 S. Congress Ave., Austin, TX 78704
-            </a>
-          </p>
-          <p>
-            <Phone aria-hidden className="h-4 w-4" />
-            <span>
-              Phone: <a href="tel:+15124625353">(512) 462-5353</a>
-            </span>
-          </p>
-          <p>
-            <Video aria-hidden className="h-4 w-4" />
-            <span>
-              VP: <a href="tel:+15125806994">(512) 580-6994</a>
-            </span>
-          </p>
+          {settings?.address && (
+            <p>
+              <MapPin aria-hidden className="h-4 w-4" />
+              <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.address)}`}>{settings.address}</a>
+            </p>
+          )}
+          {settings?.phone && (
+            <p>
+              <Phone aria-hidden className="h-4 w-4" />
+              <span>
+                Phone: <a href={tel(settings.phone)}>{settings.phone}</a>
+              </span>
+            </p>
+          )}
+          {settings?.videophone && (
+            <p>
+              <Video aria-hidden className="h-4 w-4" />
+              <span>
+                VP: <a href={tel(settings.videophone)}>{settings.videophone}</a>
+              </span>
+            </p>
+          )}
           <ul className="site-footer__social">
-            {SOCIAL.map(({ label, href, Icon }) => (
+            {social.map(({ label, href, Icon }) => (
               <li key={label}>
                 <a href={href} aria-label={label} target="_blank" rel="noopener">
                   <Icon aria-hidden className="h-5 w-5" />
@@ -80,8 +77,8 @@ export default function Footer({ navItems }: { navItems: DotCMSPageNavigation["c
         </div>
         {/* This site's dotCMS menu, so new sections appear here too. */}
         <Column title="Explore TSD" links={navItems.map((item) => ({ title: item.title, href: item.href }))} />
-        <Column title="Community" links={COMMUNITY} />
-        <Column title="Useful Links" links={USEFUL} />
+        {community.length > 0 && <Column title="Community" links={community} />}
+        {useful.length > 0 && <Column title="Useful Links" links={useful} />}
       </div>
       <div className="site-footer__bottom">
         <div className="container-tsd">

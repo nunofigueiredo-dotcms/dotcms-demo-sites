@@ -8,6 +8,12 @@ import { useIsEditing } from "@/hooks/useIsEditing";
 import { paragraphs } from "@/utils/content";
 import { imageSrc, type DotCMSImageField } from "@/utils/images";
 
+/** Style editor options (dotcms/style-schemas/TsdFeatureSplit.mjs). */
+interface SplitStyles {
+  imageShape?: "rounded" | "square" | "arch";
+  imageWidth?: "half" | "wide" | "narrow";
+}
+
 type TsdFeatureSplitProps = DotCMSBasicContentlet & {
   title: string;
   eyebrow?: string;
@@ -19,16 +25,19 @@ type TsdFeatureSplitProps = DotCMSBasicContentlet & {
   imageAlt?: string;
   imagePosition?: "left" | "right";
   theme?: "white" | "mist" | "navy";
+  dotStyleProperties?: SplitStyles;
 };
 
 /** A photo on one side; heading, text and a button on the other. */
 export default function TsdFeatureSplit(props: TsdFeatureSplitProps) {
-  const { ctaText, ctaLink, imageAlt, imagePosition = "left", theme = "white" } = props;
+  const { ctaText, ctaLink, imageAlt, imagePosition = "left", theme = "white", dotStyleProperties: styles = {} } = props;
   const editing = useIsEditing();
   const src = imageSrc(props.image);
   return (
     <section className={`section section--${theme}`}>
-      <div className={`container-tsd split split--image-${imagePosition} ${src ? "" : "split--no-image"}`}>
+      <div
+        className={`container-tsd split split--image-${imagePosition} split--${styles.imageWidth ?? "half"} split--shape-${styles.imageShape ?? "rounded"} ${src ? "" : "split--no-image"}`}
+      >
         {src && (
           <div className="split__image">
             <Image src={src} alt={imageAlt ?? ""} fill sizes="(min-width: 1024px) 50vw, 100vw" />

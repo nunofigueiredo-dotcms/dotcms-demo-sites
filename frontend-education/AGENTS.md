@@ -35,8 +35,13 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
   `utils/dates.ts`, not in the query.
 - `src/utils/images.ts` / `imageLoader.ts` — image fields reference the
   media library; images are served resized from `/dA/{id}/{w}w/80q`.
-- `dotcms/style-schemas/` — Style editor options for TsdHero and
-  TsdPageBanner, pushed with `npm run style-schemas`.
+- `dotcms/style-schemas/` — Style editor options for TsdHero, TsdPageBanner,
+  TsdFeatureGrid, TsdFeatureSplit and TsdCallout, pushed with
+  `npm run style-schemas`; each component reads `dotStyleProperties`.
+- Header and footer read TSD Site Settings (`components/social.ts` parses
+  its `Label | link` lines). Video and social embeds load third-party content
+  only on the visitor's click; video posters come through
+  `app/api/video-thumbnail`.
 - Calendar: event categories come from the dotCMS category tree "TSD Event
   Categories" (`utils/categories.ts` for colours and the three API shapes of
   a category field); `TsdEventList` filters by category (`?category=` in the
