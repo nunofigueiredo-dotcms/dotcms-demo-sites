@@ -3,6 +3,7 @@
 import { DotCMSLayoutBody, useEditableDotCMSPage } from "@dotcms/react";
 import type { DotCMSComposedPageResponse } from "@dotcms/types";
 import { pageComponents } from "@/components/content-types";
+import { AccessibilityPanel } from "@/components/site/AccessibilityPanel";
 import { SiteDataProvider } from "@/components/site/SiteData";
 import type { DotCMSPageContent, NewsArticle } from "@/types/page";
 import { NewsDetail } from "./NewsDetail";
@@ -33,6 +34,8 @@ export function Page({ pageContent }: PageProps) {
         {article && <NewsDetail article={article} />}
         <DotCMSLayoutBody page={pageAsset} components={pageComponents} />
       </main>
+      {/* In the editor only. Re-checks each time the editor sends the page. */}
+      <AccessibilityPanel version={pageAsset} />
     </SiteDataProvider>
   );
 }

@@ -44,6 +44,9 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
 - News: categories from the tree "TSD News Categories", pinned articles first
   (`utils/dates.ts → latestNews`); `TsdNewsList` filters like the calendar
   (`components/site/CategoryFilter.tsx`); `app/api/news/route.ts` serves RSS.
+- Accessibility: `components/site/AccessibilityPanel.tsx` (editor only) via
+  `app/api/accessibility/route.ts` → the TSD accessibility plugin
+  (`../osgi/tsd-accessibility-check`), which also blocks submit/publish.
 - Analytics: dotCMS Content Analytics in `app/layout.tsx`
   (`utils/analytics.ts`, needs `NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY` and the
   site opened at http://educationdemo.localhost:3008); Google Analytics from

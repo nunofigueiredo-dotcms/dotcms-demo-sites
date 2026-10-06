@@ -3,17 +3,20 @@
 ##
 ## In dotCMS, publishing a page publishes the page only; each section on it
 ## is separate content with its own workflow. When a page is published, this
-## also publishes the Vodafone page sections on the page's site that have
-## unpublished changes (banners, slides, carousels, tiles, …; not records
-## such as plans, stores or subscriptions), through the Vodafone Editorial
-## workflow, as the same user — and only for administrators and Vodafone
-## Reviewers. Editors publishing a page publish just the page.
+## also publishes the demo's page sections on the page's site that have
+## unpublished changes (banners, grids, lists, …; not records such as plans,
+## stores, news or events), through that demo's review workflow, as the same
+## user — and only for administrators and the demo's reviewers:
+##   Vodafone (telcodemo.com):  Vodafone Reviewer, Vodafone Editorial
+##   TSD (educationdemo.com):   TSD Web Publisher, TSD Page Approval
+## Editors publishing a page publish just the page.
 ##
 ## Why the whole site, not just this page: a script step can't list a
 ## page's sections here (the page API needs a login this step can't pass on,
 ## GraphQL needs POST, and JavaScript steps fail on pages).
 ## Velocity can't catch errors, so who may publish is checked first.
-## __EDITORIAL_PUBLISH__ is filled in by docs/install-publish-page-sections.py.
+## __EDITORIAL_PUBLISH__ and __TSD_PUBLISH__ are filled in by
+## docs/install-publish-page-sections.py ("" when that workflow is missing).
 ## ─────────────────────────────────────────────────────────────────────────
 #if("$contentlet.getContentType().baseType()" == "HTMLPAGE")
 #if($user.isAdmin() || $cmsuser.isUserRole($user, "Vodafone Reviewer"))
@@ -23,6 +26,16 @@
   #set($section = $draft.contentObject)
   #if(!$section.isArchived())
     #set($ok = $workflowtool.fire({"identifier": $section.identifier, "contentType": "$section.contentType.variable()", "languageId": $section.languageId}, "__EDITORIAL_PUBLISH__"))
+  #end
+#end
+#end
+#if("__TSD_PUBLISH__" != "" && ($user.isAdmin() || $cmsuser.isUserRole($user, "TSD Web Publisher")))
+#set($sectionTypes = "TsdHero OR TsdPageBanner OR TsdQuickLinks OR TsdFeatureGrid OR TsdFeatureSplit OR TsdCallout OR TsdPromoCarousel OR TsdNewsList OR TsdEventList OR TsdFaq OR TsdContactList")
+#set($drafts = $dotcontent.pull("+conHost:${contentlet.getHost()} +working:true +live:false +deleted:false +contentType:(${sectionTypes})", 200, "modDate desc"))
+#foreach($draft in $drafts)
+  #set($section = $draft.contentObject)
+  #if(!$section.isArchived())
+    #set($ok = $workflowtool.fire({"identifier": $section.identifier, "contentType": "$section.contentType.variable()", "languageId": $section.languageId}, "__TSD_PUBLISH__"))
   #end
 #end
 #end

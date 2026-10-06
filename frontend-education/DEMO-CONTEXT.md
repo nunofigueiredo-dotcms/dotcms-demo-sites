@@ -93,6 +93,104 @@ incident, media statements) was deliberately left out.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
 
+### Accessibility enforced in approval (requirement 5)
+- **Java plugin** `osgi/tsd-accessibility-check` (see its README), installed
+  by `docs/install-accessibility-check.py`. Its workflow step *Check
+  accessibility* runs first on Submit for review, Approve & publish and
+  Publish: content with errors can't be submitted or published, by anyone,
+  and the editor gets each problem and the fix. Publishing a page whose
+  waiting sections fail is refused too — nothing goes half live.
+- Errors: images without a description (or a file name as description),
+  buttons/links with no or vague text ("click here", "read more"…), rich text
+  with a Heading 1, skipped heading levels, images without alt, vague links.
+  Warnings (don't block): "image of…", alt over 150 characters, long
+  headings in capitals.
+- **Editor panel** (`components/site/AccessibilityPanel.tsx`): inside the
+  dotCMS editor only, a box at the bottom right lists the page's problems
+  from the same rules, and re-checks after every change. Through
+  `/api/accessibility?path=…` → plugin REST endpoint.
+- The design system covers the rest (contrast-checked colours, focus ring,
+  skip link, reduced motion, pausable carousel), so editors can't break it.
+- First audit found two real problems in the demo content (an image without
+  alt text on Elementary, a "Read more" button on High School); both fixed
+  through the workflow as the test.
+
+**Talk track**
+1. Log in as **Dana** → Elementary page → select the "Supplies" section →
+   clear its *Image description*. The panel turns red: "1 accessibility
+   problem to fix".
+2. *Submit for review* → refused: "Accessibility check: fix 1 problem…
+   Image description (alt text): The image has no description…".
+3. Type a description → the panel goes green → submit goes through.
+4. In a news article's body, add a Heading 1 or a "click here" link → submit
+   → refused with each problem listed.
+5. As **Morgan**, even publishing the whole page is refused while a section
+   fails. Accessibility isn't a checklist; it's built into publishing.
+
+### Staff permissions and page approval (requirements 4 and 7)
+Set up by `docs/education-editorial.py`. Demo users and passwords:
+`docs/education-users.local.csv` (gitignored — never commit or paste).
+
+| User | Role | Can do |
+|---|---|---|
+| Dana Reyes, contributor@educationdemo.com | TSD Contributor | Edit any page and content, submit for review. No publish. |
+| Sam Ortiz, outreach@educationdemo.com | TSD Outreach Editor | Same, but only in `/outreach` (the Outreach page, its sections, Outreach events). Read-only elsewhere. |
+| Morgan Lee, publisher@educationdemo.com | TSD Web Publisher | Approve & publish, send back with a comment, publish pages. |
+
+**Workflow "TSD Page Approval"** on every TSD content type:
+
+```
+Draft ──Submit for review──▶ In Review ──Approve & publish──▶ Published
+  ▲                             │
+  └──────── Send back ──────────┘        (editing a published item → Draft)
+```
+
+- Pages keep the System Workflow (the Page type is shared by every site), but
+  contributors have no publish permission: on a page they see only *Save*.
+- When the publisher publishes a page, the TSD sections waiting on the site
+  go live with it — a Velocity step on System Workflow → Publish, shared with
+  the Vodafone demo (`docs/install-publish-page-sections.py`).
+- Department restriction works by location: the Outreach page's sections and
+  the Outreach events live in `/outreach`, where Sam has edit rights. A
+  folder with its own permissions stops inheriting the site's, so the script
+  grants contributor and publisher on `/outreach` too.
+
+**Talk track**
+1. Log in as **Dana** → Outreach page in the editor → edit a heading inline
+   (saves a draft) → the section's workflow menu shows *Submit for review*;
+   there is no *Publish* on the page. Submit with a comment.
+2. Log in as **Sam** → the Outreach page is editable; open the About page:
+   read-only. Department editors can't touch other departments.
+3. Log in as **Morgan** → Workflow tasks: Dana's item is assigned to TSD
+   Web Publisher → preview it on the page → *Send back* with a comment, or
+   *Approve & publish*. Or publish the whole page: its waiting sections go
+   live together.
+4. The public site only ever shows approved content.
+
+Verified by API as each user (2026-10-06): contributor publish denied,
+outreach editor blocked outside `/outreach`, page publish takes drafts live.
+Note: the REST "default action" call (`/workflow/actions/default/fire/
+PUBLISH`) on a page is denied to these roles (it checks the shared Page
+type's permissions, which REST can't set); the editor's Publish button
+fires the action by id, which works.
+
+**SSO (walkthrough, not connected)** — dotCMS supports SAML 2.0 and OAuth /
+OpenID Connect sign-in for staff, configured in **System → dotAuth** (the
+classic *Apps → SSO - SAML* screen also works). For TSD it would typically be
+Microsoft Entra ID or Google Workspace:
+1. In dotAuth, add a SAML configuration for the site: an IdP name, the SP
+   issuer URL (the dotCMS admin URL) and endpoint hostname, and generate
+   dotCMS's service-provider metadata.
+2. In the IdP, create an enterprise application from that metadata and paste
+   the IdP's metadata XML back into dotCMS; set which parts the IdP signs.
+3. Staff then sign in to dotCMS with their school account (MFA and password
+   policy enforced by the IdP); disabling the account in the IdP removes
+   their access.
+4. Map IdP groups to these dotCMS roles (TSD Contributor, Outreach Editor,
+   Web Publisher), so who-can-publish is managed where HR manages staff.
+   Check the attribute and role-mapping settings in the dotCMS SAML
+   documentation (dotcms.com/docs/latest/sso-saml) before showing step 4.
+
 ### News categories (requirement 3)
 - News categories are a second category tree: Content → Categories →
   **TSD News Categories** (Announcements, Lone Star Journal, The Roots,
@@ -166,6 +264,13 @@ Two options, both live in the code; either can run alone.
 - On phones, the home page's 7 + 5 row must drop its column gap: the SDK's
   12-column grid with 40px gaps is wider than the screen.
 - The build script refuses to run if the site already has a home page.
+- Staff need CATEGORY READ (on the System Host, not cascaded) to put content
+  in a category, and CONTENT_TYPE READ + WRITE on the site to create new
+  content; both are in `education-editorial.py`. Content-type rights can't be
+  limited to a folder, so the Outreach Editor can *create* an item at the
+  site root — but can't edit or submit it afterwards, so it never goes live.
+- Creating new *pages* is for publishers/admins: the shared Page type's
+  permissions can't be set through REST, so staff roles are refused.
 - Changing a single field on awesomedemo-dev: `PUT/DELETE
   /api/v1/contenttype/{id}/fields/{fieldId}` return 404. Edit field options
   with a full `PUT /api/v1/contenttype/id/{id}` (resend its workflows), and
