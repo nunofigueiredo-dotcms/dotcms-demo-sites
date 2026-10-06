@@ -5,12 +5,14 @@ In dotCMS, publishing a page publishes the page only; each section placed on
 it (banner, slides, tiles, …) is separate content with its own workflow.
 This adds one Velocity step to System Workflow → Publish (source:
 workflow/publish-page-sections/publish-page-sections.vtl): when a page is
-published by an administrator or a Vodafone Reviewer, the Vodafone page
-sections on that page's site that have unpublished changes are published
-too, through the Vodafone Editorial workflow, as the same user.
+published by an administrator or a demo's reviewer, that demo's page
+sections on the page's site that have unpublished changes are published
+too, through the demo's review workflow, as the same user. Two demos use it:
+Vodafone (Vodafone Reviewer → Vodafone Editorial) and Texas School for the
+Deaf (TSD Web Publisher → TSD Page Approval).
 
 The System Workflow is shared by every site on the instance; the step only
-acts on Vodafone content, so other sites' pages publish as before.
+acts on Vodafone and TSD content, so other sites' pages publish as before.
 
 Only Velocity is used: on this dotCMS version a JavaScript step makes any
 page publish fail (HTTP 500), even an empty script.
@@ -27,7 +29,8 @@ os.environ.setdefault("DOTCMS_HOST", "https://awesomedemo-dev.dotcms.dev")
 import dotcms_site as ns  # noqa: E402
 
 SYSTEM_WORKFLOW = "d61a59e1-a49c-46f2-a929-db2b4bfa88b2"
-EDITORIAL = "Vodafone Editorial"
+# Placeholder in the script → the review workflow whose Publish it fires.
+EDITORIALS = {"__EDITORIAL_PUBLISH__": "Vodafone Editorial", "__TSD_PUBLISH__": "TSD Page Approval"}
 SOURCE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                       "workflow", "publish-page-sections", "publish-page-sections.vtl")
 VTL = "com.dotmarketing.portlets.workflows.actionlet.VelocityScriptActionlet"
@@ -62,10 +65,13 @@ def install(publish):
         if clazz(step) not in STANDARD:
             ns.api("DELETE", f"/api/v1/workflow/actionlets/{step['id']}")
     if "--remove" not in sys.argv:
-        editorial = next(s["id"] for s in ns.api("GET", "/api/v1/workflow/schemes")["entity"]
-                         if s["name"] == EDITORIAL)
-        script = open(SOURCE, encoding="utf-8").read().replace(
-            "__EDITORIAL_PUBLISH__", action_ids(editorial, "Publish")[0])
+        # Each demo's review workflow → its Publish action; "" when a demo's
+        # workflow doesn't exist on this instance (the script then skips it).
+        schemes = {sc["name"]: sc["id"] for sc in ns.api("GET", "/api/v1/workflow/schemes")["entity"]}
+        script = open(SOURCE, encoding="utf-8").read()
+        for placeholder, name in EDITORIALS.items():
+            publish_ids = action_ids(schemes[name], "Publish") if name in schemes else []
+            script = script.replace(placeholder, publish_ids[0] if publish_ids else "")
         r = ns.api("POST", f"/api/v1/workflow/actions/{publish}/actionlets",
                    {"actionletClass": VTL, "order": len(steps(publish)),
                     "parameters": {"script": script, "resultKey": "publishPageSections"}})

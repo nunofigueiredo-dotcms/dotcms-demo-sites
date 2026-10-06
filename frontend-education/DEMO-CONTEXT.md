@@ -93,6 +93,70 @@ incident, media statements) was deliberately left out.
 - Search-index gotcha: Lucene matches categories by variable name
   (`+categories:tsdtesting`), not by key — the feed filters by key in code.
 
+### Staff permissions and page approval (requirements 4 and 7)
+Set up by `docs/education-editorial.py`. Demo users and passwords:
+`docs/education-users.local.csv` (gitignored — never commit or paste).
+
+| User | Role | Can do |
+|---|---|---|
+| Dana Reyes, contributor@educationdemo.com | TSD Contributor | Edit any page and content, submit for review. No publish. |
+| Sam Ortiz, outreach@educationdemo.com | TSD Outreach Editor | Same, but only in `/outreach` (the Outreach page, its sections, Outreach events). Read-only elsewhere. |
+| Morgan Lee, publisher@educationdemo.com | TSD Web Publisher | Approve & publish, send back with a comment, publish pages. |
+
+**Workflow "TSD Page Approval"** on every TSD content type:
+
+```
+Draft ──Submit for review──▶ In Review ──Approve & publish──▶ Published
+  ▲                             │
+  └──────── Send back ──────────┘        (editing a published item → Draft)
+```
+
+- Pages keep the System Workflow (the Page type is shared by every site), but
+  contributors have no publish permission: on a page they see only *Save*.
+- When the publisher publishes a page, the TSD sections waiting on the site
+  go live with it — a Velocity step on System Workflow → Publish, shared with
+  the Vodafone demo (`docs/install-publish-page-sections.py`).
+- Department restriction works by location: the Outreach page's sections and
+  the Outreach events live in `/outreach`, where Sam has edit rights. A
+  folder with its own permissions stops inheriting the site's, so the script
+  grants contributor and publisher on `/outreach` too.
+
+**Talk track**
+1. Log in as **Dana** → Outreach page in the editor → edit a heading inline
+   (saves a draft) → the section's workflow menu shows *Submit for review*;
+   there is no *Publish* on the page. Submit with a comment.
+2. Log in as **Sam** → the Outreach page is editable; open the About page:
+   read-only. Department editors can't touch other departments.
+3. Log in as **Morgan** → Workflow tasks: Dana's item is assigned to TSD
+   Web Publisher → preview it on the page → *Send back* with a comment, or
+   *Approve & publish*. Or publish the whole page: its waiting sections go
+   live together.
+4. The public site only ever shows approved content.
+
+Verified by API as each user (2026-10-06): contributor publish denied,
+outreach editor blocked outside `/outreach`, page publish takes drafts live.
+Note: the REST "default action" call (`/workflow/actions/default/fire/
+PUBLISH`) on a page is denied to these roles (it checks the shared Page
+type's permissions, which REST can't set); the editor's Publish button
+fires the action by id, which works.
+
+**SSO (walkthrough, not connected)** — dotCMS supports SAML 2.0 and OAuth /
+OpenID Connect sign-in for staff, configured in **System → dotAuth** (the
+classic *Apps → SSO - SAML* screen also works). For TSD it would typically be
+Microsoft Entra ID or Google Workspace:
+1. In dotAuth, add a SAML configuration for the site: an IdP name, the SP
+   issuer URL (the dotCMS admin URL) and endpoint hostname, and generate
+   dotCMS's service-provider metadata.
+2. In the IdP, create an enterprise application from that metadata and paste
+   the IdP's metadata XML back into dotCMS; set which parts the IdP signs.
+3. Staff then sign in to dotCMS with their school account (MFA and password
+   policy enforced by the IdP); disabling the account in the IdP removes
+   their access.
+4. Map IdP groups to these dotCMS roles (TSD Contributor, Outreach Editor,
+   Web Publisher), so who-can-publish is managed where HR manages staff.
+   Check the attribute and role-mapping settings in the dotCMS SAML
+   documentation (dotcms.com/docs/latest/sso-saml) before showing step 4.
+
 ### News categories (requirement 3)
 - News categories are a second category tree: Content → Categories →
   **TSD News Categories** (Announcements, Lone Star Journal, The Roots,

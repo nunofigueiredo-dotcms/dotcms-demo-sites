@@ -6,7 +6,9 @@ Visual Editor only offers TSD components on this site), templates, folders and
 menu, the pages (home, about, admissions, academics and its five school pages,
 outreach, news, calendar, contact) with their sections, news articles and
 calendar events, and the site's media library (/images). Then it points UVE
-at the deployed frontend on Vercel (the local :3008 server is a dev URL).
+at the deployed frontend on Vercel (the local :3008 server is a dev URL),
+and runs education-editorial.py (roles, permissions, the TSD Page Approval
+workflow, demo users) and install-publish-page-sections.py.
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-education.py
@@ -25,6 +27,7 @@ six testing events and all news articles are real; the other calendar events
 import json
 import os
 import secrets
+import subprocess
 import sys
 import time
 
@@ -1261,6 +1264,12 @@ def main():
                 *[f"/academics/{s}/index" for s in SCHOOLS], "/outreach/index",
                 "/news/index", "/calendar/index", "/contact/index"]:
         ns.verify(SITE_ID, uri)
+    # Last, once the content exists (it's created with the System Workflow):
+    # staff roles, permissions, the approval workflow and demo users, then the
+    # page-publish step that takes a page's waiting sections live with it.
+    for script in ("education-editorial.py", "install-publish-page-sections.py"):
+        print(f"\n{script}")
+        subprocess.run([sys.executable, os.path.join(HERE, script)], check=True)
     print(f"\nDone. Site id: {SITE_ID}")
     print(f"Content Analytics site key (NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY): {analytics_key}")
 
