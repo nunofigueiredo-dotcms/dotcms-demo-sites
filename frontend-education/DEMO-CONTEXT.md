@@ -148,3 +148,8 @@ Two options, both live in the code; either can run alone.
 - On phones, the home page's 7 + 5 row must drop its column gap: the SDK's
   12-column grid with 40px gaps is wider than the screen.
 - The build script refuses to run if the site already has a home page.
+- Changing a single field on awesomedemo-dev: `PUT/DELETE
+  /api/v1/contenttype/{id}/fields/{fieldId}` return 404. Edit field options
+  with a full `PUT /api/v1/contenttype/id/{id}` (resend its workflows), and
+  delete fields with `DELETE /api/v3/contenttype/{id}/fields` and body
+  `{"fieldsID": [...]}`.
