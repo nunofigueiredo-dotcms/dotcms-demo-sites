@@ -11,7 +11,7 @@ const SEVERITY = {
   info: { Icon: Info, label: "Notice" },
 };
 
-const DISMISSED = "tsd-dismissed-alerts";
+export const DISMISSED = "tsd-dismissed-alerts";
 const noSubscribe = () => () => {};
 
 /**
@@ -50,6 +50,17 @@ function parseList(value: string): string[] {
   }
 }
 
+/**
+ * Runs before the banner is drawn: hides notices this tab already dismissed,
+ * so they don't flash on screen until React catches up. Storage may be
+ * blocked (the editor's iframe): then nothing is hidden.
+ */
+const HIDE_DISMISSED = `try{var d=JSON.parse(sessionStorage.getItem("${DISMISSED}")||"[]");if(Array.isArray(d)&&d.length){var s=document.createElement("style");s.textContent=d.map(function(i){return '[data-alert-id="'+String(i).replace(/[^A-Za-z0-9-]/g,"")+'"]'}).join(",")+"{display:none}";document.head.appendChild(s)}}catch(e){}`;
+
+export function DismissedAlertsScript() {
+  return <script dangerouslySetInnerHTML={{ __html: HIDE_DISMISSED }} />;
+}
+
 export function AlertBanner({ alerts, scheduledNote }: { alerts: SiteAlert[]; scheduledNote?: boolean }) {
   // Dismissed notices, from this browser tab only ([] during the server render).
   const stored = useSyncExternalStore(noSubscribe, storedDismissed, () => "[]");
@@ -75,6 +86,7 @@ export function AlertBanner({ alerts, scheduledNote }: { alerts: SiteAlert[]; sc
         return (
           <div
             key={alert.identifier}
+            data-alert-id={alert.identifier}
             className={`alert alert--${alert.severity}`}
             role={alert.severity === "emergency" ? "alert" : "status"}
           >

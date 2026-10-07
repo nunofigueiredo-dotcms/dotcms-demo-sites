@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDotCMSPage, type PageMode } from "@/utils/getDotCMSPage";
 import type { NewsArticle, Resource, SiteAlert, StaffMember } from "@/types/page";
-import { AlertBanner } from "@/components/site/AlertBanner";
+import { AlertBanner, DismissedAlertsScript } from "@/components/site/AlertBanner";
 import { austinNow, parseDate } from "@/utils/dates";
 import { buildPageMetadata } from "@/utils/seo";
 import { Page } from "@/views/Page";
@@ -87,6 +87,7 @@ export default async function CatchAllPage({ params, searchParams }: PageProps) 
       <a className="skip-link" href="#main">
         Skip to main content
       </a>
+      <DismissedAlertsScript />
       <AlertBanner alerts={activeAlerts(pageContent.content?.alerts ?? [], path, mode !== "LIVE")} scheduledNote={mode !== "LIVE"} />
       {layout?.header && <Header navItems={navItems} settings={settings} />}
       <Page pageContent={pageContent} />
