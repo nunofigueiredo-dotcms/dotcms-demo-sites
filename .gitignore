@@ -42,6 +42,8 @@ frontend/
 docs/franchisee-users.local.csv
 docs/vodafone-users.local.csv
 docs/education-users.local.csv
+# Demo scripts with screenshots: shared directly, not kept in the repo.
+docs/*-demo-script.pdf
 docs/vodafone-placements-backup.local.json
 
 # Python bytecode

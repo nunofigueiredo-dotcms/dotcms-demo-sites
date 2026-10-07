@@ -58,8 +58,8 @@ host, token and site id. No test suite: check with `npx tsc --noEmit`,
 - Knowledge base: `TsdResourceLibrary` and `views/ResourceDetail.tsx`
   (`/resources/{urlTitle}`); helpers in `utils/resources.ts`.
 - Alerts: `components/site/AlertBanner.tsx`, chosen per request in
-  `app/[[...slug]]/page.tsx` (`activeAlerts`, Austin time). Never read
-  browser storage unguarded: it throws inside the editor's iframe.
+  `app/[[...slug]]/page.tsx` (`activeAlerts`, Austin time). Avoid browser
+  storage; if needed, guard it: it throws inside the editor's iframe.
 - Analytics: dotCMS Content Analytics in `app/layout.tsx`
   (`utils/analytics.ts`, needs `NEXT_PUBLIC_DOTCMS_ANALYTICS_SITE_KEY` and the
   site opened at http://educationdemo.localhost:3008); Google Analytics from
