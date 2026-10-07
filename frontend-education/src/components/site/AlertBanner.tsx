@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { AlertTriangle, CloudSnow, Hand, Info, X } from "lucide-react";
 import { SmartLink } from "@/components/SmartLink";
 import type { SiteAlert } from "@/types/page";
@@ -11,70 +11,17 @@ const SEVERITY = {
   info: { Icon: Info, label: "Notice" },
 };
 
-export const DISMISSED = "tsd-dismissed-alerts";
-const noSubscribe = () => () => {};
-
-/**
- * The dismissed notices, as stored. Storage can be blocked — e.g. inside the
- * dotCMS editor's iframe, where reading sessionStorage throws — so this must
- * never fail, or the whole page would.
- */
-function storedDismissed(): string {
-  try {
-    return sessionStorage.getItem(DISMISSED) ?? "[]";
-  } catch {
-    return "[]";
-  }
-}
-
-function readDismissed(): string[] {
-  try {
-    return JSON.parse(storedDismissed());
-  } catch {
-    return [];
-  }
-}
-
 /**
  * Site-wide alerts above the header (which ones are active is decided on the
  * server, from their start and end times). Emergencies are announced at once
  * to screen readers (role="alert") and can't be dismissed; closures and
- * notices are announced politely, and notices can be dismissed for the visit.
+ * notices are announced politely. A notice can be dismissed for the page
+ * being viewed; it shows again on the next page or reload, so nobody misses
+ * it later, and nothing is stored in the browser.
  */
-function parseList(value: string): string[] {
-  try {
-    const list = JSON.parse(value);
-    return Array.isArray(list) ? list : [];
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Runs before the banner is drawn: hides notices this tab already dismissed,
- * so they don't flash on screen until React catches up. Storage may be
- * blocked (the editor's iframe): then nothing is hidden.
- */
-const HIDE_DISMISSED = `try{var d=JSON.parse(sessionStorage.getItem("${DISMISSED}")||"[]");if(Array.isArray(d)&&d.length){var s=document.createElement("style");s.textContent=d.map(function(i){return '[data-alert-id="'+String(i).replace(/[^A-Za-z0-9-]/g,"")+'"]'}).join(",")+"{display:none}";document.head.appendChild(s)}}catch(e){}`;
-
-export function DismissedAlertsScript() {
-  return <script dangerouslySetInnerHTML={{ __html: HIDE_DISMISSED }} />;
-}
-
 export function AlertBanner({ alerts, scheduledNote }: { alerts: SiteAlert[]; scheduledNote?: boolean }) {
-  // Dismissed notices, from this browser tab only ([] during the server render).
-  const stored = useSyncExternalStore(noSubscribe, storedDismissed, () => "[]");
-  const [dismissedNow, setDismissedNow] = useState<string[]>([]);
-  const dismissed = [...parseList(stored), ...dismissedNow];
-
-  const dismiss = (id: string) => {
-    try {
-      sessionStorage.setItem(DISMISSED, JSON.stringify([...readDismissed(), id]));
-    } catch {
-      // Private mode: dismiss for this page view only.
-    }
-    setDismissedNow((d) => [...d, id]);
-  };
+  const [dismissed, setDismissed] = useState<string[]>([]);
+  const dismiss = (id: string) => setDismissed((d) => [...d, id]);
 
   const visible = alerts.filter((a) => a.severity !== "info" || !dismissed.includes(a.identifier));
   if (!visible.length) return null;
@@ -86,7 +33,6 @@ export function AlertBanner({ alerts, scheduledNote }: { alerts: SiteAlert[]; sc
         return (
           <div
             key={alert.identifier}
-            data-alert-id={alert.identifier}
             className={`alert alert--${alert.severity}`}
             role={alert.severity === "emergency" ? "alert" : "status"}
           >

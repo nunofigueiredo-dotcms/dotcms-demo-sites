@@ -118,7 +118,8 @@ incident, media statements) was deliberately left out.
   publish/expire dates are its start/end, so **dotCMS unpublishes it by
   itself**; the site also checks the times on each request.
 - Emergencies are announced immediately to screen readers (`role="alert"`)
-  and can't be dismissed; information notices can be dismissed for the visit.
+  and can't be dismissed; an information notice can be dismissed for the page
+  being viewed — it shows again on the next page or reload (nothing stored).
 - In the editor every alert shows as a preview, so an alert can be checked
   before it starts.
 - Live now: an information alert (Family Weekend Retreat registration, until
@@ -126,7 +127,7 @@ incident, media statements) was deliberately left out.
   winter weather". No emergency alert is published — visitors would take it
   for real.
 - Found and fixed: inside the editor's iframe, reading `sessionStorage`
-  throws, which crashed the page; all storage access is now guarded.
+  throws, which crashed the page. Dismissals are no longer stored at all.
 
 **Talk track (9 and 10)**
 1. `/resources` → search "transcript"; *Show resources for: Staff* → the two
