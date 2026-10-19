@@ -1,0 +1,1887 @@
+{
+  "_notes": [
+    "Source: www.expocitydubai.com EN + AR pages (server-rendered Nuxt payloads), fetched 2026-10-19. All copy is the site's own; Arabic is the site's /ar/ copy unless listed below.",
+    "Events: the site's Events & Workshops listing shows only 7 upcoming events (24 Oct - 31 Dec 2026); all 7 are included. Dates/times are the site's eventTimingJson (Gulf time, +04:00). Winter City runs daily 11-31 Dec, 4-10 PM; startDate/endDate span the whole run. timeText strings (EN and AR) were composed by us from those times.",
+    "Not on the site any more (404): Alif, Garden in the Sky, Women's Pavilion attraction pages. Garden in the Sky is only mentioned inside the Jubilee Park copy. Cinema Akil and the Adventurous Octopus Playground are listed but temporarily closed (all days closed) so they were left out. No item on the site is a pure 'wellness' attraction, so no attraction uses that category.",
+    "Our own Arabic (not from the site): opening-hours strings (day names, 'يومياً', 'مفتوح على مدار الساعة طوال أيام الأسبوع', 'آخر دخول' for 'Last entry'), event timeText, 'مجاناً' where the AR CMS left the English word 'Free', capacity labels where the AR CMS left 'Seated' in English, the about.stats labels/values (worded from the site's AR master-plan, about, venues and FAQ sentences), and the Terra Rooftop venue title (see below).",
+    "Prices: the site renders the UAE Dirham with a custom glyph (stored as 'ê'). It is written as 'AED' in English and 'د.إ' in Arabic where the AR copy used the glyph; Arabic strings that already said 'درهم' are unchanged.",
+    "Hours are derived from the CMS weekly opening-hours (Monday-first). Terra's CMS label says '12:00 - 20:00' but its actual times and the site FAQ say 10:00-18:00; we used 10:00-18:00.",
+    "Light fixes to site copy: AR getting-here heading typo 'لسيارة الخاصة' -> 'السيارة الخاصة'; EN venue attribute 'Accessibile' -> 'Accessible'; markdown/HTML stripped; marketing link lines ('View detailed timings...', parking map links) dropped from FAQ answers.",
+    "eventTypes.festivals EN text: the site's EN Festivals page header reuses the fitness/wellness paragraph, so we used the Festivals card line from /en/event-venues/ instead. The AR Festivals page text is correct and used as-is.",
+    "Venues: urlTitle drops the site's 'event-venue-' prefix. capacity = the CMS headline capacity (C3's body copy quotes 5,000 standing but the CMS capacity field says 2,000). area is only filled where the copy states m2/sqm. eventTypes = venues the site lists as 'Flagship venues' on each event-type page, plus the venue's CMS subtypes (gala dinners/private -> weddings, business -> meetings, sport -> fitness, entertainment/public -> festivals). flagship=true for the four top-level destinations shown under 'Flagship venues' on /en/event-venues/ (C3, Nexus, Terra, Jubilee Park). highlights = the site's price, capacity breakdown and venue attributes.",
+    "imageAlt uses the item title, because the CMS alt text is mostly file names. Images are Contentful originals resized with ?w=1600&fm=jpg&q=75; venue-c3-hall.jpg is only 768px wide (largest available).",
+    "footer.address is composed from the site (no postal address is published): Expo City Dubai on Expo Road (E77). Phone and email come from /en/support/ (the AR support page lists info@expocitydubai.ae instead of connect@). The footer has no tagline, so the About page strapline is used.",
+    "Kept as published: AR dining page title 'الطعام داخل الصالة', AR Brasserie location (in English on the AR site), and the EN cuisine tags (e.g. Talhan = International).",
+    "Venue 'terra-rooftop': the Arabic CMS title is wrongly set to 'نبذة عن المكان' ('About the place'); replaced with our own Arabic title 'سطح تيرّا'."
+  ],
+  "brand": {
+    "logo": "logo-en.png",
+    "logoWhite": "logo-en-white.png",
+    "logoAr": "logo-ar.png",
+    "logoArWhite": "logo-ar-white.png",
+    "flower": "logo-flower.png"
+  },
+  "attractions": [
+    {
+      "urlTitle": "terra-pavilion",
+      "category": "attraction",
+      "image": "terra-pavilion.jpg",
+      "ticketLink": "https://terra.expocitydubai.com/en/tickets",
+      "en": {
+        "title": "Terra",
+        "teaser": "When did you last examine your relationship with nature?",
+        "body": [
+          "Go on an immersive journey through the forest’s roots and the ocean’s depths to explore the impact humanity’s choices are having on the environment and gain skills to protect and preserve our planet for generations to come.",
+          "This engaging, playful and reflective experience is designed to take visitors of all ages - particularly children - on an emotional journey to understand their impact on the environment and empower them to build a brighter future.",
+          "Terra is LEED Certified and designed to be net zero in energy and water. The building's iconic architecture includes a 120-metre-wide canopy and 18 Energy Trees which help generate 4GWh of alternative energy per year."
+        ],
+        "location": "Sidr Avenue, Sustainability District",
+        "hours": "Daily 10:00–18:00 (last entry 17:30)",
+        "price": "Adult: AED 100 · Child (4+): AED 80 · Visitors aged 3 and under and people of determination: Free",
+        "imageAlt": "Terra"
+      },
+      "ar": {
+        "title": "تيرّا",
+        "teaser": "هل سبق وفكّرت في علاقتك مع الطبيعة والكوكب؟",
+        "body": [
+          "انطلق معنا في رحلة تفاعلية مدهشة بين جذور الغابات وفي أعماق المحيطات، وتعرّف على أثر اختيارات البشر وقراراتهم على البيئة، واكتسب مهارات جديدة لحماية كوكبنا والحفاظ عليه لأجيال المستقبل.",
+          "صُمّمت هذه التجربة التثقيفية الغامرة لتحمل كل الزوار من مختلف الأعمار في رحلة آسرة يشاهدون خلالها أثرهم على البيئة ويستعدّون للمشاركة في صنع مستقبل أفضل للجميع.",
+          "تيرّا حائز على شهادة (LEED)، وهو مصمّم ليحقق الاكتفاء الذاتي من الطاقة والماء. ويضمّ تصميمه المعماري الفريد مظلة عرضها 120 متراً و18 شجرة طاقة تساعد في توليد 4 جيجاوات ساعة من الطاقة البديلة سنوياً."
+        ],
+        "location": "تيرّا، مدينة إكسبو دبي",
+        "hours": "يومياً 10:00–18:00 (آخر دخول 17:30)",
+        "price": "100 درهماً · الصغار (4+): 80 درهم إماراتي · للأطفال من عمر ثلاث أعوام أو أقل ولأصحاب الهمم: مجاناً",
+        "imageAlt": "تيرّا"
+      }
+    },
+    {
+      "urlTitle": "vision-pavilion",
+      "category": "attraction",
+      "image": "vision-pavilion.jpg",
+      "ticketLink": "https://vision.expocitydubai.com/en#tickets",
+      "en": {
+        "title": "Vision Dubai",
+        "teaser": "Embark on a journey of transformation from the deserts of the UAE to Dubai's modern metropolis",
+        "body": [
+          "Witness the great transformation of Dubai into a modern metropolis through the Vision Pavilion, a unique experience that celebrates the insight, values and leadership of His Highness Sheikh Mohammed bin Rashid Al Maktoum, Vice President and Prime Minister of the UAE and Ruler of Dubai. Through stunning displays, immersive exhibits and personal stories narrating the evolution of Dubai, the Vision Pavilion tells a story of childhood wonder and how our environment and values can support our ambition and shape our future."
+        ],
+        "location": "Sustainability District",
+        "hours": "Daily 10:00–18:00 (last entry 17:30)",
+        "price": "Adult (12+): AED 75 · Free of charge for visitors aged 12 and under and people of determination",
+        "imageAlt": "Vision Dubai"
+      },
+      "ar": {
+        "title": "رؤية دبي",
+        "teaser": "انطلق في رحلة مشوّقة واكتشف كيف تحوّلت دبي من صحراء قاحلة إلى مدينة عصرية تجمع العالم",
+        "body": [
+          "تعرّف على مسيرة دبي المذهلة وكيف تحوّلت إلى محور عالمي رائد وعصري. يقدّم جناح الرؤية تجربة فريدة تحتفي بأسمى القيم والأفكار والإنجازات القيادية لصاحب السمو الشيخ محمد بن راشد آل مكتوم، نائب رئيس الدولة، رئيس مجلس الوزراء، حاكم دبي. ومن خلال عروض تفاعلية مدهشة وقصص شخصية تروي مسيرة تطور دبي، يعرض جناح الرؤية حكايات طفولة مشوّقة وكيف يمكن لقيمنا وبيئتنا أن تسهم في تحقيق طموحاتنا وبناء مستقبلنا."
+        ],
+        "location": "منطقة الاستدامة",
+        "hours": "يومياً 10:00–18:00 (آخر دخول 17:30)",
+        "price": "للبالغين (12+): 75 درهم إماراتي · مجاني للأطفال دون 12 سنوات وأصحاب الهمم",
+        "imageAlt": "رؤية دبي"
+      }
+    },
+    {
+      "urlTitle": "al-wasl-plaza",
+      "category": "attraction",
+      "image": "al-wasl-plaza.jpg",
+      "ticketLink": "",
+      "en": {
+        "title": "Al Wasl Plaza",
+        "teaser": "Discover the iconic structure at the heart of Expo City Dubai",
+        "body": [
+          "Named after the Arabic word for “connection”, this unique architectural achievement was known as the beating heart of Expo 2020 Dubai. Its massive steel trellis dome, measuring 67.5 meters high houses the largest 360-degree projection surface in the world. Al Wasl Plaza hosted some of the largest events held at Expo 2020, including the opening and closing ceremonies and incredible live concerts by world-renowned artists including Coldplay, Alicia Keys and Kadim Al Saher."
+        ],
+        "location": "Al Wasl Plaza",
+        "hours": "Open 24/7",
+        "price": "Free",
+        "imageAlt": "Al Wasl Plaza"
+      },
+      "ar": {
+        "title": "ساحة الوصل",
+        "teaser": "اكتشف التحفة المعمارية الأخّاذة في قلب مدينة إكسبو دبي",
+        "body": [
+          "الوصل اسم على مسمى، إنجاز معماري تاريخي مثّل القلب النابض لإكسبو 2020 دبي ونقطة وصل موقعه بالكامل. يبلغ ارتفاع قبة ساحل الوصل الفولاذية الهائلة 67.5 متراً، وتضم أكبر سطح عرض بنطاق 360 درجة في العالم. احتضنت ساحة الوصل بعضاً من كبرى الفعاليات التي أقيمت خلال إكسبو 2020، كان منها حفلا الافتتاح والختام، وحفلات مباشرة مذهلة لفنانين عالميين مثل \"كولد بلاي\" و\"أليشيا كيز\" وكاظم الساهر وغيرهم."
+        ],
+        "location": "ساحة الوصل",
+        "hours": "مفتوح على مدار الساعة طوال أيام الأسبوع",
+        "price": "مجاناً",
+        "imageAlt": "ساحة الوصل"
+      }
+    },
+    {
+      "urlTitle": "surreal",
+      "category": "attraction",
+      "image": "surreal.jpg",
+      "ticketLink": "",
+      "en": {
+        "title": "Surreal",
+        "teaser": "Behold a synchronised spectacle of water, fire and music in this mesmerising experience",
+        "body": [
+          "Be transformed by Surreal, which blends mesmerising sights and sounds in a synchronised spectacle of music, water and fire. Larger-than-life immersive walls are swept over by gushing water which then appears to flow upwards in a gravity-defying feat of engineering. Central spirals produce roaring hydrogen flames, unexpected colors. Every element, right down to splashes of water at certain moments, is meticulously designed and choreographed in a spectacular collaboration between LA-based WET Design (designers of the Burj Khalifa fountain), and Ramin Djawadi (award-winning composer of the Game of Thrones score)."
+        ],
+        "location": "Jubilee District",
+        "hours": "Daily 10:00–22:00",
+        "price": "Free · The venue may be closed to the public during special/private events",
+        "imageAlt": "Surreal"
+      },
+      "ar": {
+        "title": "شلالات إكسبو - سيريل",
+        "teaser": "استعد للعيش في انسجام الماء والنار والموسيقى في تجربة ساحرة",
+        "body": [
+          "يمزج عرض شلالات إكسبو - سيريل، الموجود في منطقة الواحة، بين فنون الضوء والتأثيرات الصوتية وتدفّق الماء لخلق تجربة فنّية بصرية لا تُنسى. تبث هذه التجربة الغامرة، المحاطة بحديقة عمودية، مشاهد بصرية وصوتية فاتنة للحواس طوال اليوم، ولكن سحرها يصل إلى ذروته في عتمة الليل تحت النجوم، حيث ستشاهدون روعة هذه السيمفونية المكوّنة من الموسيقى والمياه المتدفّقة بأشكالها المبدعة حول لهيب النار. نعدكم بتجربة فريدة لا تشبه أيّ شيء رأيتموه من قبل! صُمّمت شلالات إكسبو - سيريل بمعرفة شركة ويت ديزاين (مصمّمة نافورة برج خليفة) ومقرّها في لوس أنجلوس، والتي اهتمّت بكلّ تفصيل صغير في تصميمها، ورامين جوادي (المؤلّف الحائز على جوائز لمسلسل صراع العروش)."
+        ],
+        "location": "منطقة اليوبيل",
+        "hours": "يومياً 10:00–22:00",
+        "price": "مجاناً · قد يكون المكان مغلقًا أمام الجمهور أثناء المناسبات الخاصة/الخاصة",
+        "imageAlt": "شلالات إكسبو - سيريل"
+      }
+    },
+    {
+      "urlTitle": "house-of-arts",
+      "category": "attraction",
+      "image": "house-of-arts.jpg",
+      "ticketLink": "https://visit.houseofarts.com/booking/selection",
+      "en": {
+        "title": "House of Arts",
+        "teaser": "Where the Gulf's creative soul finds its home",
+        "body": [
+          "House of Arts at Expo City Dubai is a multidisciplinary cultural centre celebrating regional art and making it accessible to all. Drawing on the Gulf’s weaving traditions, it brings together diverse disciplines, voices and stories to form a vibrant shared cultural tapestry.",
+          "At House of Arts we spotlight untold stories and meaningful artistic encounters empowering Emirati and GCC talent to shine. With exhibitions, workshops and community-led programmes, we honour our culture while connecting with the world.",
+          "Our inaugural exhibition, Interwoven, weaves together the stories and practices of 20 regional artists from across the Arabic Gulf, honouring Expo 2020 Dubai's legacy of bringing the world together through creativity and collaboration."
+        ],
+        "location": "House of Arts - Unit 20, Unity Quarter B, Opportunity district",
+        "hours": "Mon closed; Tue–Sun 12:00–20:00",
+        "price": "Membership starts from AED 65",
+        "imageAlt": "House of Arts"
+      },
+      "ar": {
+        "title": "بيت الفن",
+        "teaser": "وجهة الروح الإبداعية الخليجية",
+        "body": [
+          "بيت الفن في مدينة إكسبو دبي هو مركز ثقافي متعدّد التخصصات، يهدف لدعم الفنون في المنطقة واتاحتها للجميع من خلال المساهمة في إثراء التعبير الفني والسرد الإبداعي.ويستلهم بيت الفن مفهومه من فن النسيج التراثي المنتشر في المنطقة، ليجمع بذلك بين مختلف التخصّصات والأصوات والتجارب، في نسيجٍ ثقافي مشترك، يحتفي بالإرث ويلهم الإبداع الثقافي.",
+          "وانطلاقاً من الأصالة وأهمية التأثير الفني، نسعى إلى رواية القصص غير المعروفة، وخلق تجارب فنيةٍ ملهمة، لنكون منصةً تحتضن المواهب الإماراتية والإقليمية وتسهم في تألقها ونموها، وذلك من خلال تنظيم المعارض وورش العمل والبرامج المجتمعية، والتي تهدف أيضاً لترسيخ وتكريم الثقافة المحلية، مع الانفتاحٍ على الرؤى العالمية.",
+          "ويقدم بيت الفن معرضه الافتتاحي \"تشابُك\"، الذي ننسج فيه معاً قصص وإبداعات 20 فناناً من أنحاء الخليج العربي، في ترسيخ مباشر لإرث إكسبو 2020 دبي في جمع العالم عبر الإبداع والتعاون."
+        ],
+        "location": "B بيت الفن - الوحدة 20، حي الوحدة - منطقة الفرص",
+        "hours": "الاثنين مغلق؛ الثلاثاء–الأحد 12:00–20:00",
+        "price": "65 درهم إماراتيا",
+        "imageAlt": "بيت الفن"
+      }
+    },
+    {
+      "urlTitle": "expo-city-mosque",
+      "category": "attraction",
+      "image": "expo-city-mosque.jpg",
+      "ticketLink": "",
+      "en": {
+        "title": "Expo City Mosque",
+        "teaser": "Located in the heart of Expo City Dubai, the mosque is a peaceful and welcoming space for worshippers to perform their prayers.",
+        "body": [
+          "Located in the heart of Expo City Dubai, the mosque is a peaceful and welcoming space for worshippers to perform their prayers. Designed with a blend of traditional Islamic architecture and modern simplicity, the mosque features open spaces that create a calm and spiritual atmosphere for daily prayers.",
+          "The Imam will only be available to lead the Jumma prayers. At other times, while the Mosque remains open, the Imam will not be present."
+        ],
+        "location": "Horizon Avenue",
+        "hours": "Daily 04:00–21:00",
+        "price": "Free",
+        "imageAlt": "Expo City Mosque"
+      },
+      "ar": {
+        "title": "مسجد مدينة إكسبو",
+        "teaser": "يتميّز مسجد مدينة إكسبو دبي بسكينته ومزجه بين المظاهر المعمارية الحديثة والتقليدية بصورة آسرة، ويُعدّ ملاذاً هادئاً للمصلّين والزوّار على حد سواء.",
+        "body": [
+          "يتميّز مسجد مدينة إكسبو دبي بسكينته ومزجه بين المظاهر المعمارية الحديثة والتقليدية بصورة آسرة، ويُعدّ ملاذاً هادئاً للمصلّين والزوّار على حد سواء. فإنّ قبابه المهيبة وقاعاته المزخرفة وحدائقه المورقة تشكّل واحة من الهدوء التام وتدعو إلى التأمّل والتضرّع إلى الله وعيش تجربة غنية ثقافياً وروحياً.",
+          "الإمام سيكون حاضراً فقط لإمامة صلاة الجمعة. في الأوقات الأخرى، سيبقى المسجد مفتوحاً ولكن بدون إمامة."
+        ],
+        "location": "شارع الأفق",
+        "hours": "يومياً 04:00–21:00",
+        "price": "مجاناً",
+        "imageAlt": "مسجد مدينة إكسبو"
+      }
+    },
+    {
+      "urlTitle": "jubilee-park",
+      "category": "park",
+      "image": "jubilee-park.jpg",
+      "ticketLink": "",
+      "en": {
+        "title": "Jubilee Park",
+        "teaser": "Relax in the Jubilee Park",
+        "body": [
+          "Named in honour of the UAE’s 50th anniversary, Jubilee Park is a space built for celebration. You can take a ride on the iconic Garden in the Sky observation tower for a panoramic view of Expo City Dubai."
+        ],
+        "location": "Jubilee District",
+        "hours": "Open 24/7",
+        "price": "Free",
+        "imageAlt": "Jubilee Park"
+      },
+      "ar": {
+        "title": "حديقة اليوبيل",
+        "teaser": "استرخاء ومرح في حديقة اليوبيل",
+        "body": [
+          "سُمّيت حديقة اليوبيل بهذا الاسم احتفالاً بالذكرى الخمسين لتأسيس دولة الإمارات العربية المتحدة، وهي مساحة مخصّصة لإقامة الاحتفالات. ومن أعلى برج المراقبة \"حديقة الثريا\"، يمكنك الاستمتاع بإطلالات بانورامية خلّابة لمدينة إكسبو دبي."
+        ],
+        "location": "منطقة اليوبيل",
+        "hours": "مفتوح على مدار الساعة طوال أيام الأسبوع",
+        "price": "مجاناً",
+        "imageAlt": "حديقة اليوبيل"
+      }
+    },
+    {
+      "urlTitle": "rashids-playground",
+      "category": "park",
+      "image": "rashids-playground.jpg",
+      "ticketLink": "",
+      "en": {
+        "title": "Rashid’s Adventures Playground",
+        "teaser": "Have a whale of a time with Rashid!",
+        "body": [
+          "Rashid’s playground, where kids can have fun on whale slides, ocean liners and sharks on springs. Here, kids can also roam around the 3D maze, modelled after the majestic humpback whale."
+        ],
+        "location": "Wadi Avenue",
+        "hours": "Daily 14:00–22:00",
+        "price": "Free",
+        "imageAlt": "Rashid’s Adventures Playground"
+      },
+      "ar": {
+        "title": "ملعب مغامرات راشد",
+        "teaser": "متعة لا حدود لها مع راشد!",
+        "body": [
+          "في ملعب راشد، يمكن للأطفال قضاء أروع الأوقات على منزلقات الحيتان وعابرات المحيطات وزنبركات أسماك القرش. ويمكنهم أيضاً الاستمتاع بالتجوّل داخل متاهة ثلاثية الأبعاد مصمّمة على شكل حوت أحدب ضخم."
+        ],
+        "location": "شارع وادي",
+        "hours": "يومياً 14:00–22:00",
+        "price": "مجاني",
+        "imageAlt": "ملعب مغامرات راشد"
+      }
+    },
+    {
+      "urlTitle": "taqa-island",
+      "category": "park",
+      "image": "taqa-island.jpg",
+      "ticketLink": "https://tickets.expocitydubai.com/event/attractions-pass",
+      "en": {
+        "title": "Taqa Island",
+        "teaser": "The best of science, technology, art, music and sculpture",
+        "body": [
+          "Located in Terra, Taqa Island offers Expo City Dubai’s youngest guests the best of science, technology, art, music and sculpture. ‘Taqa’ means ‘energy’ in Arabic, and kids will step into a vibrant and fun-filled island that reacts to their every move, invigorating young hearts and minds through problem-solving and collaboration to keep all the inhabitants of our shared planet healthy and happy.",
+          "Free for children aged 3 and under. All children at Taqa Island are required to be supervised by their parents."
+        ],
+        "location": "Sidr Avenue, Sustainability District",
+        "hours": "Daily 10:00–18:00",
+        "price": "Included in Terra and Attractions pass tickets",
+        "imageAlt": "Taqa Island"
+      },
+      "ar": {
+        "title": "ملعب جزيرة طاقة",
+        "teaser": "أروع ما في العلوم والتكنولوجيا والفنون والموسيقى والمنحوتات",
+        "body": [
+          "تقع جزيرة طاقة في تيرّا – جناح الاستدامة، وتقدّم لزوار مدينة إكسبو دبي الصغار أروع التجارب مع العلوم والتكنولوجيا والفنون والموسيقى والمنحوتات. واسم \"جزيرة طاقة\" يعبّر عن مضمونها، إذ توفّر للأطفال أجواء كلها طاقة وحيوية ومرح وتتفاعل مع حركاتهم كلها، ما ينشّط عقولهم وقلوبهم بتحفيز مهارات حل المشاكل والعمل معاً من أجل الحفاظ على صحة وسعادة سكان كوكبنا.",
+          "مجاناً للأطفال بعمر 3 سنوات وما دون. في منطقة اللعب \"جزيرة طاقة\" يجب أن يرافق ولي الأمر أو أحد الوالدين الأطفال."
+        ],
+        "location": "تيرّا، مدينة إكسبو دبي",
+        "hours": "يومياً 10:00–18:00",
+        "price": "ضمن تذاكرالمعالم وتيرّا",
+        "imageAlt": "ملعب جزيرة طاقة"
+      }
+    }
+  ],
+  "events": [
+    {
+      "urlTitle": "fall-celebrations-the-spirit-of-mexico",
+      "startDate": "2026-10-24 16:00:00",
+      "endDate": "2026-10-24 22:00:00",
+      "category": "festival",
+      "image": "fall-celebrations-the-spirit-of-mexico.jpg",
+      "ticketLink": "https://dubai.platinumlist.net/event-tickets/108589/fall-celebration-the-spirit-of-mexico",
+      "en": {
+        "title": "Fall Celebrations - The Spirit of Mexico",
+        "teaser": "Al Wasl Season turns every season into a reason to celebrate, bringing communities together through celebrations inspired by cultures, traditions and stories from around the world.",
+        "body": [
+          "Al Wasl Season turns every season into a reason to celebrate, bringing communities together through celebrations inspired by cultures, traditions and stories from around the world.",
+          "This Fall, Al Wasl celebrates Mexico with their Fall Celebration: The Spirit of Mexico, a vibrant celebration created in collaboration with Dubai’s Mexican community, bringing the colours, rhythms, and traditions of Mexico to Al Wasl Plaza.",
+          "Experience live performances, music and dance, Mexican flavours, local makers, creative workshops and family-friendly experiences, as Mexican heritage and contemporary culture come together for an evening of celebration.",
+          "Families from all nationalities are invited to discover a culture where heritage is cherished, life is celebrated and togetherness is at the heart of it all."
+        ],
+        "venue": "Al Wasl Plaza",
+        "timeText": "4 PM – 10 PM",
+        "price": "AED 30 · Children 3 years and under: Free",
+        "imageAlt": "Fall Celebrations - The Spirit of Mexico"
+      },
+      "ar": {
+        "title": "احتفالية الخريف - من وحيّ ثقافة المكسيك",
+        "teaser": "تعود احتفالية الخريف، احدى الفعاليات الرئيسية لموسم الوصل، لتدعو الزوار والعائلات من مختلف الجنسيات للمشاركة في فعالية ترفيهية وثقافية ممتعة، حيث ستحتفي ساحة الوصل بتراث دولة المكسيك وثقافتها وتقاليدها في أمسية نابضة بالحياة والموسيقى والأنشطة الترفيهية المستوحاة من الاحتفالات الشعبية المكسيكية.",
+        "body": [
+          "تعود احتفالية الخريف، احدى الفعاليات الرئيسية لموسم الوصل، لتدعو الزوار والعائلات من مختلف الجنسيات للمشاركة في فعالية ترفيهية وثقافية ممتعة، حيث ستحتفي ساحة الوصل بتراث دولة المكسيك وثقافتها وتقاليدها في أمسية نابضة بالحياة والموسيقى والأنشطة الترفيهية المستوحاة من الاحتفالات الشعبية المكسيكية. ليوم واحد، تتحول ساحة الوصل إلى وجهة تنبض بروح المكسيك، من خلال أهلها وموسيقاها وألوانها وتقاليدها."
+        ],
+        "venue": "ساحة الوصل",
+        "timeText": "4 مساءً – 10 مساءً",
+        "price": "30 درهم إماراتي · الأطفال 3 سنوات وما دون: مجانًا",
+        "imageAlt": "احتفالية الخريف - من وحيّ ثقافة المكسيك"
+      }
+    },
+    {
+      "urlTitle": "blue-at-jubilee-park",
+      "startDate": "2026-10-25 20:00:00",
+      "endDate": "2026-10-25 23:59:00",
+      "category": "concert",
+      "image": "blue-at-jubilee-park.jpg",
+      "ticketLink": "https://www.livenation.me/event/blue-25th-anniversary-tour-dubai-dubai-tickets-edp1653105",
+      "en": {
+        "title": "Blue at Jubilee Park",
+        "teaser": "Blue will perform in Dubai on 25 October at Jubilee Park",
+        "body": [
+          "Iconic UK boyband Blue brings their high-energy live show to Jubilee Park on 25 October. With original members Antony Costa, Duncan James, Lee Ryan and Simon Webbe, Blue deliver a spectacular celebration of their legacy—from chart-topping hits like All Rise, Too Close and One Love to exciting new material. The Dubai show marks the final stop on their Middle East tour."
+        ],
+        "venue": "Jubilee District",
+        "timeText": "8 PM – midnight",
+        "price": "From AED 299",
+        "imageAlt": "Blue at Jubilee Park"
+      },
+      "ar": {
+        "title": "حفلة Blue في حديقة اليوبيل",
+        "teaser": "ستؤدي فرقة بلو عرضاً موسيقياً في دبي في 25 أكتوبر بحديقة اليوبيل",
+        "body": [
+          "تحضر فرقة بلو البريطانية الأيقونية عرضها الموسيقي الحي المليء بالطاقة إلى حديقة اليوبيل في 25 أكتوبر. مع الأعضاء الأصليين أنطوني كوستا ودانكان جيمس وليه رايان وسايمون ويب، تقدم فرقة بلو احتفالاً مذهلاً بإرثها—من أغانيها الناجحة والحاصلة على صدارة المخططات مثل All Rise و Too Close و One Love إلى مواد جديدة مثيرة. يعتبر العرض في دبي المحطة الأخيرة في جولتهم بالشرق الأوسط."
+        ],
+        "venue": "منطقة اليوبيل",
+        "timeText": "8 مساءً – منتصف الليل",
+        "price": "ابتداءً من 299 درهماً",
+        "imageAlt": "حفلة Blue في حديقة اليوبيل"
+      }
+    },
+    {
+      "urlTitle": "beyond-the-pink-ribbon-rethinking-breast-cancer-awareness",
+      "startDate": "2026-10-27 10:00:00",
+      "endDate": "2026-10-27 12:30:00",
+      "category": "workshop",
+      "image": "beyond-the-pink-ribbon.jpg",
+      "ticketLink": "https://assets-uae.mkt.dynamics.com/1c16b135-19c3-ed11-a10b-6045bd14cd69/digitalassets/standaloneforms/56d494d1-8abc-f111-aaae-70a8a5219865?readableEventId=Her_Health_Majlis_Rethinking_Breast_Cancer_Awareness2543972544",
+      "en": {
+        "title": "Beyond the Pink Ribbon: Rethinking Breast Cancer Awareness",
+        "teaser": "Breast cancer awareness has transformed early detection, yet many women still misunderstand their personal risk, overlook important symptoms, or feel unprepared for what comes during and after diagnosis.",
+        "body": [
+          "Breast cancer awareness has transformed early detection, yet many women still misunderstand their personal risk, overlook important symptoms, or feel unprepared for what comes during and after diagnosis. This Her Health Majlis goes beyond awareness to explore screening, diagnosis and treatment alongside the wider realities of living with and beyond breast cancer.",
+          "Bringing together medical expertise, psychological insight and lived experience, the session will look at breast health through the whole woman - from understanding risk and navigating treatment to nutrition, movement, relationships, work, finances and emotional wellbeing."
+        ],
+        "venue": "Nexus, 1st Floor, Opportunity District",
+        "timeText": "10 AM – 12:30 PM",
+        "price": "Free",
+        "imageAlt": "Beyond the Pink Ribbon: Rethinking Breast Cancer Awareness"
+      },
+      "ar": {
+        "title": "ما بعد الشريط الوردي: رؤية جديدة للتوعية بسرطان الثدي",
+        "teaser": "أسهمت التوعية بسرطان الثدي في إحداث تحوّل كبير في الكشف المبكر، ومع ذلك لا تزال كثير من النساء يسئن فهم مستوى الخطر الشخصي لديهن، أو يغفلن عن أعراض مهمة، أو يشعرن بعدم الاستعداد لما يأتي خلال التشخيص وبعده.",
+        "body": [
+          "أسهمت التوعية بسرطان الثدي في إحداث تحوّل كبير في الكشف المبكر، ومع ذلك لا تزال كثير من النساء يسئن فهم مستوى الخطر الشخصي لديهن، أو يغفلن عن أعراض مهمة، أو يشعرن بعدم الاستعداد لما يأتي خلال التشخيص وبعده. وتتجاوز جلسة مجلس Her Health هذه حدود التوعية، لتستكشف الفحص والتشخيص والعلاج، إلى جانب الواقع الأوسع للعيش مع سرطان الثدي وما بعده.",
+          "ومن خلال الجمع بين الخبرة الطبية والرؤية النفسية والتجارب الشخصية، تتناول الجلسة صحة الثدي من منظور شامل للمرأة، بدءاً من فهم عوامل الخطر والتعامل مع رحلة العلاج، وصولاً إلى التغذية والحركة والعلاقات والعمل والشؤون المالية والصحة النفسية."
+        ],
+        "venue": "نيكسس، الطابق الأول، منطقة الفرص",
+        "timeText": "10 صباحاً – 12:30 مساءً",
+        "price": "مجاناً",
+        "imageAlt": "ما بعد الشريط الوردي: رؤية جديدة للتوعية بسرطان الثدي"
+      }
+    },
+    {
+      "urlTitle": "expo-city-and-rics-wlca-training",
+      "startDate": "2026-11-19 09:00:00",
+      "endDate": "2026-11-19 17:00:00",
+      "category": "workshop",
+      "image": "expo-city-and-rics-wlca-training.jpg",
+      "ticketLink": "https://www.expocitydubai.com/en/things-to-do/events-and-workshops/expo-city-and-rics-wlca-training/",
+      "en": {
+        "title": "Expo City and RICS WLCA Training",
+        "teaser": "Future-proof your skills and gain practical carbon assessment expertise for today’s evolving built environment.",
+        "body": [
+          "Future-proof your skills and gain practical carbon assessment expertise for today’s evolving built environment.",
+          "Join Expo City Dubai and RICS for a full-day Whole Life Carbon Assessment (WLCA) training designed for professionals in the built environment. Led by an expert trainer, the session will help you build practical skills in assessing carbon across the full life cycle of buildings and projects.",
+          "The training includes coffee and lunch breaks, and places are limited to 40 participants."
+        ],
+        "venue": "Terra, Expo City Dubai",
+        "timeText": "9 AM – 5 PM",
+        "price": "AED 950",
+        "imageAlt": "Expo City and RICS WLCA Training"
+      },
+      "ar": {
+        "title": "تدريب مدينة إكسبو دبي و RICS حول تقييم الكربون على مدى دورة الحياة الكاملة (WLCA)",
+        "teaser": "طوّر مهاراتك للمستقبل، واكتسب خبرة عملية في تقييم الكربون لمواكبة البيئة العمرانية المتطورة اليوم.",
+        "body": [
+          "طوّر مهاراتك للمستقبل، واكتسب خبرة عملية في تقييم الكربون لمواكبة البيئة العمرانية المتطورة اليوم.",
+          "انضم إلى مدينة إكسبو دبي و RICS في تدريب ليوم كامل حول تقييم الكربون على مدى دورة الحياة الكاملة (WLCA)، مصمم خصيصاً للمهنيين العاملين في قطاع البيئة العمرانية. يقدّم التدريب مدرّب خبير، ويساعدك على اكتساب مهارات عملية في تقييم الكربون عبر دورة الحياة الكاملة للمباني والمشاريع.",
+          "يشمل التدريب استراحات للقهوة والغداء، وعدد المقاعد محدود بـ 40 مشاركاً."
+        ],
+        "venue": "تيرّا، مدينة إكسبو دبي",
+        "timeText": "9 صباحاً – 5 مساءً",
+        "price": "950 درهماً",
+        "imageAlt": "تدريب مدينة إكسبو دبي و RICS حول تقييم الكربون على مدى دورة الحياة الكاملة (WLCA)"
+      }
+    },
+    {
+      "urlTitle": "anuv-jain-live-in-dubai",
+      "startDate": "2026-11-20 18:30:00",
+      "endDate": "2026-11-20 23:59:00",
+      "category": "concert",
+      "image": "anuv-jain-live-in-dubai.jpg",
+      "ticketLink": "https://www.ticketmaster.ae/event/anuv-jain-tickets/59869255",
+      "en": {
+        "title": "Anuv Jain Live in Dubai",
+        "teaser": "Chart-topping singer-songwriter Anuv Jain brings his debut world tour Dastakhat to Jubilee Park, Expo City Dubai on 20 Nov 2026!",
+        "body": [
+          "Chart-topping singer-songwriter Anuv Jain brings his debut world tour Dastakhat to Jubilee Park, Expo City Dubai on 20 Nov 2026!",
+          "Marking his third performance in the region, the intimate, one-night-only show highlights Jain’s deep connection with Middle Eastern audiences and the emotional pull of his music across borders.",
+          "Designed as a close-knit live experience, the concert offers fans a rare opportunity to immerse themselves in Anuv Jain’s evocative soundscapes through heartfelt performances and thoughtfully curated production. As the first chapter of his first-ever world tour, Dastakhat captures the quiet intimacy, honesty and resonance that have defined Jain’s music from the very beginning."
+        ],
+        "venue": "Jubilee Park",
+        "timeText": "6:30 PM – midnight",
+        "price": "Starts from AED 149",
+        "imageAlt": "Anuv Jain Live in Dubai"
+      },
+      "ar": {
+        "title": "أنوف جين يحيي حفلاً مباشراً في دبي",
+        "teaser": "يحيي المغني وكاتب الأغاني أنوف جين، الذي تصدرت أغانيه قوائم الأغاني الأكثر رواجاً، حفلاً في حديقة اليوبيل بمدينة إكسبو دبي يوم 20 نوفمبر 2026، ضمن جولته العالمية الأولى «داستاخات»!",
+        "body": [
+          "يحيي المغني وكاتب الأغاني أنوف جين، الذي تصدرت أغانيه قوائم الأغاني الأكثر رواجاً، حفلاً في حديقة اليوبيل بمدينة إكسبو دبي يوم 20 نوفمبر 2026، ضمن جولته العالمية الأولى «داستاخات»!",
+          "ويمثل هذا الحفل ظهوره الثالث في المنطقة، ويُقام لليلة واحدة فقط في أجواء حميمية تعكس ارتباطه الوثيق بجمهوره في الشرق الأوسط، وقدرة موسيقاه على ملامسة المشاعر وتجاوز الحدود.",
+          "صُمم الحفل ليقدم تجربة موسيقية مباشرة في أجواء حميمية، تتيح للجمهور فرصة نادرة للانغماس في عالم أنوف جين الموسيقي المؤثر، من خلال أداء مفعم بالمشاعر وإنتاج فني مدروس بعناية. وباعتبارها الفصل الأول من جولته العالمية الأولى، تجسد «داستاخات» الأجواء الحميمية والصدق والعمق العاطفي التي ميّزت موسيقى أنوف جين منذ بداياته."
+        ],
+        "venue": "حديقة اليوبيل",
+        "timeText": "6:30 مساءً – منتصف الليل",
+        "price": "تبدأ من 149 درهماً",
+        "imageAlt": "أنوف جين يحيي حفلاً مباشراً في دبي"
+      }
+    },
+    {
+      "urlTitle": "secondhand-serenade-live-in-dubai",
+      "startDate": "2026-12-05 20:30:00",
+      "endDate": "2026-12-05 23:59:00",
+      "category": "concert",
+      "image": "secondhand-serenade-live-in-dubai.jpg",
+      "ticketLink": "https://www.livenation.me/event/secondhand-serenade-live-in-dubai-dubai-tickets-edp1684182",
+      "en": {
+        "title": "Secondhand Serenade Live in Dubai",
+        "teaser": "Secondhand Serenade returns to Dubai for one night only as part of the Long Night Tour - Live with full band.",
+        "body": [
+          "Due to overwhelming demand from fans across the region, Live Nation Middle East is thrilled to announce the return of Secondhand Serenade to Dubai as part of The Long Night Tour — Live With Full Band. The acclaimed emo-pop project led by singer-songwriter John Vesely will perform at Jubilee Park, Expo City Dubai on Saturday, 5 December 2026, bringing an unforgettable night of nostalgia, emotion, and fan-favourite anthems to one of the city's most iconic venues. The announcement follows the band's previous Dubai appearance, which sold out quickly."
+        ],
+        "venue": "Jubilee Park",
+        "timeText": "8:30 PM – midnight",
+        "price": "From AED 199",
+        "imageAlt": "Secondhand Serenade Live in Dubai"
+      },
+      "ar": {
+        "title": "حفلة Secondhand Serenade في دبي",
+        "teaser": "تعود فرقة Secondhand Serenade إلى دبي لإحياء حفل استثنائي لليلة واحدة فقط، ضمن جولة The Long Night Tour، بمشاركة الفرقة الموسيقية الكاملة.",
+        "body": [
+          "نظراً للإقبال الكبير من الجمهور في مختلف أنحاء المنطقة، يسر Live Nation Middle East الإعلان عن عودة Secondhand Serenade إلى دبي ضمن جولة The Long Night Tour – Live With Full Band. ويحيي المشروع الموسيقي الشهير في عالم الإيمو بوب، بقيادة المغني وكاتب الأغاني John Vesely، حفلاً في حديقة اليوبيل بمدينة إكسبو دبي يوم السبت 5 ديسمبر 2026، مقدماً أمسية لا تُنسى تجمع بين الحنين والمشاعر والأغاني المفضلة لدى الجمهور في أحد أبرز الوجهات الترفيهية في المدينة.",
+          "ويأتي هذا الإعلان بعد النجاح الكبير الذي حققته الفرقة في ظهورها السابق في دبي، حيث نفدت تذاكر الحفل بالكامل خلال فترة وجيزة."
+        ],
+        "venue": "حديقة اليوبيل",
+        "timeText": "8:30 مساءً – منتصف الليل",
+        "price": "ابتداءً من 199 درهماً",
+        "imageAlt": "حفلة Secondhand Serenade في دبي"
+      }
+    },
+    {
+      "urlTitle": "winter-city-and-disney-present-once-upon-a-holiday",
+      "startDate": "2026-12-11 16:00:00",
+      "endDate": "2026-12-31 22:00:00",
+      "category": "family",
+      "image": "winter-city-once-upon-a-holiday.jpg",
+      "ticketLink": "https://dubai.platinumlist.net/event-tickets/109164/winter-city-disney-present-once-upon-a-holiday",
+      "en": {
+        "title": "Winter City & Disney+ Present Once upon a holiday…",
+        "teaser": "Once upon a holiday… A destination full of celebrations and a world full of stories came together to create something extraordinary.",
+        "body": [
+          "This December, Winter City returns to Al Wasl Plaza with Disney+ joining the celebration and bringing a lifetime of great stories to the heart of the holidays.",
+          "Watch toys come to life, join the superheroes in action, enjoy princess-worthy moments and explore a sparkling snowy kingdom. Step inside a holiday home packed with mischief and surprises. When the sun goes down, settle in for an outdoor movie marathon featuring your favourite holiday films, the perfect way to end a winter night.",
+          "And of course, the traditions you love are all here. Write your letter to Santa and visit him at his Grotto. Watch the Christmas tree light up, then stop by Mrs. Claus’ Bakery for something sweet and head into the snow. Wander the festive markets, savour seasonal treats and soak up all the sights and sounds of the season.",
+          "Familiar favourites, new discoveries and a story waiting at every turn. Bring your favourite people and make this holiday one to remember."
+        ],
+        "venue": "Al Wasl Plaza",
+        "timeText": "Daily, 4 PM – 10 PM",
+        "price": "General Admission: AED 60 · Winter City Express Entry Pass: AED 175 · POD +1 Caregiver: Free · Children 3 years and under: Free",
+        "imageAlt": "Winter City & Disney+ Present Once upon a holiday…"
+      },
+      "ar": {
+        "title": "مدينة الشتاء مع ديزني+ تقدم لكل شتاء حكاية",
+        "teaser": "لكل شتاء حكاية مدينة الشتاء تعود إلى ساحة الوصل هذا العام بالشراكة مع ديزني+ لتنقل الشخصيات والحكايات المحبوبة من الشاشة إلى أرض الواقع في تجارب تفاعلية غامرة تجسد فرحة موسم العطلات الشتوية والأعياد لكافة الجمهور.",
+        "body": [
+          "ضمن فعاليات \"موسم الوصل\" الأكثر تشويقاً في شهر ديسمبر، تعود \"مدينة الشتاء\" إلى ساحة الوصل، لتضفي مزيداً من البهجة والمرح على موسم الأعياد والعطلات الشتوية. وبالشراكة مع \"ديزني+\"، تفتح \"مدينة الشتاء\" أبوابها أمام عالم من الحكايات والشخصيات المحبوبة، لتعيشوا معها تجربة تفاعلية استثنائية تنبض بالسحر والخيال.",
+          "انطلقوا في مغامرات استثنائية، وشاهدوا الألعاب وهي تدبّ فيها الحياة، وانضموا إلى أبطال مارفل الخارقين في رحلات مليئة بالحماس والتشويق. واستمتعوا بلحظات ساحرة تليق بالأميرات، واكتشفوا مملكة ثلجية تتلألأ بالجمال، واحتفلوا بأجواء العيد في بيت مليء بالمفاجآت والمواقف المرحة. ومع حلول المساء، اجتمعوا لتستمعوا بتجربة السينما في الهواء الطلق لمشاهدة أفلام ديزني المفضلة لديكم، كل ذلك والمزيد لتصنعوا ذكريات لاتنسى وحكايات تستحق أن تروى.",
+          "ولأن الأعياد لا تكتمل من دون تقاليدها المحببة، شاركونا لحظة إضاءة شجرة الاحتفالات، واكتبوا رسائلكم إلى سانتا كلوز، وتفضلوا بزيارة مخبز السيدة كلوز لتذوّق أشهى الحلويات. ولا تفوّتوا فرصة التجوّل بين الأسواق الاحتفالية، واكتشاف الأنشطة المتنوعة، وتذوّق النكهات الموسمية، قبل ان تتساقط الثلوج في \"مدينة الشتاء\". اصطحبوا أطفالكم وأحبّاءكم، واستعدّوا لتجربة استثنائية تنبض بالسحر والخيال، وتصنعون فيها ذكريات عائلية لا تُنسى."
+        ],
+        "venue": "ساحة الوصل",
+        "timeText": "يومياً، 4 مساءً – 10 مساءً",
+        "price": "تذكرة الدخول: 60 درهم إماراتي · تذكرة المسار السريع لمدينة الشتاء: 175 درهماً · أصحاب الهمم مع مرافق واحد: مجانًا · الأطفال 3 سنوات وما دون: مجانًا",
+        "imageAlt": "مدينة الشتاء مع ديزني+ تقدم لكل شتاء حكاية"
+      }
+    }
+  ],
+  "restaurants": [
+    {
+      "urlTitle": "yuan-restaurant",
+      "category": "restaurant",
+      "image": "yuan-restaurant.jpg",
+      "en": {
+        "title": "YUAN Restaurant",
+        "cuisine": "Chinese, Culture",
+        "teaser": "Taste of China in the heart of Expo City Dubai",
+        "body": [
+          "YUAN Restaurant brings the vibrant flavors of Chinese cuisine to the heart of Expo City Dubai. Our culinary team combines fresh ingredients, traditional techniques, and contemporary presentation to create dishes that are flavorful, balanced, and enjoyable for guests from all around the world.",
+          "Our menu highlights a curated selection of classic Chinese flavors, offering a mix of savory, aromatic, and comforting dishes. From lighter options to hearty specialties, each plate is prepared with attention to balance, texture, and authentic taste, reflecting the depth and diversity of Chinese cuisine.",
+          "During lunchtime, we offer a well loved Daily Lunch Combo, which includes a main dish, vegetables, steamed rice, salad, pickles, and soup of the day. It is a convenient and satisfying choice for residents and visitors exploring Expo City Dubai.",
+          "To accommodate different dining needs, YUAN Restaurant provides flexible reservation options: Group Meals for corporate gatherings, team events, or casual get togethers. Private Room for up to 10 Guests with a curated Chinese set menu, ideal for business meetings or special celebrations. Chinese Buffet for events, parties, and large groups."
+        ],
+        "location": "China Pavilion, Opportunity District",
+        "hours": "Mon–Sat 11:00–16:00; Sun closed",
+        "imageAlt": "YUAN Restaurant"
+      },
+      "ar": {
+        "title": "مطعم يوان",
+        "cuisine": "صيني، ثقافة",
+        "teaser": "نكهات الصين في قلب مدينة إكسبو دبي",
+        "body": [
+          "يقدم مطعم يوان نكهات المطبخ الصيني الغنية إلى قلب مدينة إكسبو دبي. ويجمع فريق الطهاة لدينا بين المكونات الطازجة والأساليب التقليدية والتقديم العصري لإعداد أطباق غنية بالنكهات ومتوازنة ترضي الضيوف من مختلف أنحاء العالم.",
+          "تضم قائمتنا تشكيلة مختارة من النكهات الصينية الكلاسيكية، مع مزيج من الأطباق الشهية والعطرية والمريحة. ومن الخيارات الخفيفة إلى الأطباق الغنية، يُحضَّر كل طبق بعناية لتحقيق التوازن في النكهة والقوام والطعم الأصيل، بما يعكس تنوع وعمق المطبخ الصيني.",
+          "وخلال فترة الغداء، نقدم عرض «وجبة الغداء اليومية» المحبوب، والذي يشمل طبقاً رئيسياً وخضروات وأرزاً مطهواً على البخار وسلطة ومخللات وحساء اليوم. ويُعد خياراً عملياً ومشبِعاً للمقيمين والزوار الذين يستكشفون مدينة إكسبو دبي.",
+          "ولتلبية مختلف احتياجات الضيوف، يوفر مطعم يوان خيارات مرنة للحجز: وجبات جماعية لاجتماعات الشركات وفعاليات الفرق والتجمعات الودية. غرفة خاصة تتسع لما يصل إلى 10 ضيوف مع قائمة صينية محددة، مناسبة لاجتماعات العمل أو المناسبات الخاصة. بوفيه صيني للفعاليات والحفلات والمجموعات الكبيرة."
+        ],
+        "location": "جناح الصين، منطقة الفرص",
+        "hours": "الاثنين–السبت 11:00–16:00؛ الأحد مغلق",
+        "imageAlt": "مطعم يوان"
+      }
+    },
+    {
+      "urlTitle": "choy-restaurant",
+      "category": "restaurant",
+      "image": "choy-restaurant.jpg",
+      "en": {
+        "title": "Choy restaurant & lounge",
+        "cuisine": "Grilled",
+        "teaser": "Immerse yourself in Uzbekistan's culinary and cultural delights",
+        "body": [
+          "Choy Restaurant & Lounge is a vibrant dining destination located in Expo City Sidr Quarter A Building 7 Sustainability District (near the Vision Pavilion). It celebrates the rich culinary heritage of Uzbekistan, offering guests a casual yet culturally immersive experience featuring traditional Uzbek cuisine and lively ambience. The restaurant is known for serving hearty classics such as plov, shashlik, lagman, and other Central Asian specialities, complemented by a warm, welcoming setting suitable for lunch, dinner, and social gatherings. Live music, colourful décor, and performances reflecting Uzbek traditions often enhance the atmosphere, making it more than just a meal but a memorable cultural experience"
+        ],
+        "location": "Sustainability District",
+        "hours": "Daily 11:00–22:00",
+        "imageAlt": "Choy restaurant & lounge"
+      },
+      "ar": {
+        "title": "مطعم ومقهى تشوي",
+        "cuisine": "مشاوي",
+        "teaser": "انطلق في رحلة استكشاف للثقافة والمذاق الأوزبكي",
+        "body": [
+          "يُعدّ مطعم ومقهى تشوي وجهةً نابضةً بالحياة لتناول الطعام، ويقع في حيّ الاستدامة، مبنى 7، منطقة سيدر، إكسبو سيتي (بالقرب من جناح الرؤية). يحتفي المطعم بتراث الطهي الأوزبكي العريق، مُقدّماً لضيوفه تجربةً ثقافيةً مميزةً تجمع بين الأجواء المريحة والغنية، حيث يُقدّم أطباقاً أوزبكيةً تقليديةً في أجواءٍ مفعمةٍ بالحيوية. يشتهر المطعم بتقديم أطباقٍ كلاسيكيةٍ شهيةٍ مثل البلوف، والشاشليك، واللغمان، وغيرها من أطباق آسيا الوسطى، في أجواءٍ دافئةٍ ومرحبةٍ تُناسب الغداء والعشاء والتجمعات الاجتماعية. تُضفي الموسيقى الحية والديكورات الملونة والعروض التي تُجسّد التقاليد الأوزبكية لمسةً ساحرةً على المكان، مما يجعله أكثر من مجرد وجبة، بل تجربةً ثقافيةً لا تُنسى."
+        ],
+        "location": "منطقة الاستدامة",
+        "hours": "يومياً 11:00–22:00",
+        "imageAlt": "مطعم ومقهى تشوي"
+      }
+    },
+    {
+      "urlTitle": "ten-11",
+      "category": "restaurant",
+      "image": "ten-11.jpg",
+      "en": {
+        "title": "TEN11",
+        "cuisine": "Coffee, International",
+        "teaser": "Established in Abu Dhabi in 2018, our company is dedicated to developing the food and beverage sector.",
+        "body": [
+          "Established in Abu Dhabi in 2018, our company is dedicated to developing the food and beverage sector. We take pride in our commitment to delivering premium products and pioneering culinary experiences. Our goal is to enhance our guests' experiences by crafting exceptional cuisine that are seamlessly integrated with luxurious & high-quality products."
+        ],
+        "location": "Al Wasl Plaza",
+        "hours": "Daily 07:00–17:00",
+        "imageAlt": "TEN11"
+      },
+      "ar": {
+        "title": "تين 11",
+        "cuisine": "قهوة، عالمي",
+        "teaser": "تأسست شركتنا في أبوظبي عام 2018، وهي مكرسة لتطوير قطاع الأغذية والمشروبات.",
+        "body": [
+          "تأسست شركتنا في أبوظبي عام 2018، وهي مكرسة لتطوير قطاع الأغذية والمشروبات. نحن نفخر بالتزامنا بتقديم منتجات فاخرة وتجارب طهي رائدة. هدفنا هو تعزيز تجارب ضيوفنا من خلال ابتكار أطباق استثنائية يتم دمجها بسلاسة مع منتجات فاخرة وعالية الجودة."
+        ],
+        "location": "ساحة الوصل",
+        "hours": "يومياً 07:00–17:00",
+        "imageAlt": "تين 11"
+      }
+    },
+    {
+      "urlTitle": "brasserie-by-mcgettigans",
+      "category": "restaurant",
+      "image": "brasserie-by-mcgettigans.jpg",
+      "en": {
+        "title": "Brasserie by McGettigan’s",
+        "cuisine": "Chicken, Breakfast & Brunch, Grilled, Coffee, Ice cream",
+        "teaser": "Irish Quality",
+        "body": [
+          "Brasserie by McGettigan’s is a contemporary brasserie and bar located in the heart of Expo City Dubai, bringing together modern European dining and signature Irish hospitality the McGettigan’s brand is known for. Designed as an all-day social hub, it’s ideal for business lunches, after-work drinks, relaxed dinners, and pre or post-event meet-ups. Expect live sports coverage daily of all major sports events and live music weekly.",
+          "Enjoy your favourite drinks for less daily at Brasserie before 8pm. Prices starting from just AED 35."
+        ],
+        "location": "Sky Quarter A - Building 7 - GF - Unit 001",
+        "hours": "Mon–Thu 12:00–22:00; Fri 12:00–23:00; Sat–Sun 12:00–22:00",
+        "imageAlt": "Brasserie by McGettigan’s"
+      },
+      "ar": {
+        "title": "براسيري باي مك جيتيجانس",
+        "cuisine": "دجاج، سلطات، مشاوي، قهوة، مثلجات",
+        "teaser": "جودة أيرلندية",
+        "body": [
+          "براسيري مك جيتيجانس هو مطعم وبار عصري يقع في قلب مدينة إكسبو دبي، يجمع بين المأكولات الأوروبية العصرية والضيافة الأيرلندية المميزة التي تشتهر بها مك جيتيجانس. صُمم ليكون ملتقىً اجتماعيًا مفتوحًا طوال اليوم، وهو مثالي لغداءات العمل، ومشروبات ما بعد العمل، وعشاءات مريحة، ولقاءات قبل أو بعد الفعاليات. توقعوا تغطية رياضية حية يوميًا لجميع الأحداث الرياضية الرئيسية، بالإضافة إلى موسيقى حية أسبوعيًا.",
+          "استمتع بمشروباتك المفضلة بأسعار أقل يومياً في براسيري قبل الساعة 8 مساءً. تبدأ الأسعار من 35 درهماً فقط."
+        ],
+        "location": "Sky Quarter A - Building 7 - GF - Unit 001",
+        "hours": "الاثنين–الخميس 12:00–22:00؛ الجمعة 12:00–23:00؛ السبت–الأحد 12:00–22:00",
+        "imageAlt": "براسيري باي مك جيتيجانس"
+      }
+    },
+    {
+      "urlTitle": "talhan",
+      "category": "restaurant",
+      "image": "talhan.jpg",
+      "en": {
+        "title": "Talhan",
+        "cuisine": "International",
+        "teaser": "Dive into the delights of Turkmenistan",
+        "body": [
+          "Talhan is a culinary gem, with a menu featuring traditional Turkmen cuisine passed down through generations and expertly crafted dishes that incorporate global influences. Enjoy the authentic interior and explore the entrance store retailing Turkmen products."
+        ],
+        "location": "Opportunity district",
+        "hours": "Daily 11:00–23:00",
+        "imageAlt": "Talhan"
+      },
+      "ar": {
+        "title": "تلهان",
+        "cuisine": "عالمي",
+        "teaser": "انغمس في المأكولات التركمانستانية الذيذة",
+        "body": [
+          "تالهان جوهرة مُتميزة في عالمِ الطبخ، يقدم قائمة طعام تعرض المطبخ التركماني التقليدي المتناقل عبر الأجيال، بالإضافة إلى أطباق مبتكرة تدمج تأثيرات عالمية. استمتع بالديكورِ الأصيل واكتشف متجر عند المدخل الذي يبيع منتجات تركمانية."
+        ],
+        "location": "منطقة الفرص",
+        "hours": "يومياً 11:00–23:00",
+        "imageAlt": "تلهان"
+      }
+    },
+    {
+      "urlTitle": "the-daily",
+      "category": "restaurant",
+      "image": "the-daily.jpg",
+      "en": {
+        "title": "The Daily",
+        "cuisine": "Coffee, International, Burger, Indian, Asian",
+        "teaser": "Your essential neighbourhood hangout",
+        "body": [
+          "Whether for a breezy breakfast, business lunch or dinner meet-up, The Daily at Rove Expo City is your essential neighbourhood hangout, known for its fantastic international flavours and great service. Its fun and friendly local vibes keep you coming back, whether for an early morning cup of coffee, a business lunch or a dinner meet-up. Serving wholesome, homemade-style dishes as well as delicious, healthy salads, booster drinks and vegan options, there’s something for everyone."
+        ],
+        "location": "Corner of Al Wasl and Horizon Avenue",
+        "hours": "Daily 06:30–23:30",
+        "imageAlt": "The Daily"
+      },
+      "ar": {
+        "title": "مطعم ذا ديلي",
+        "cuisine": "قهوة، عالمي، برجر، هندي، آسيوي",
+        "teaser": "مكانك الأساسي للتجمع في الحي",
+        "body": [
+          "سواء لتناول الإفطار مع نسيم الصباح، أو غداء عمل أو الاجتماع على العشاء، \"ذا ديلي\" في روڤ مدينة إكسبو هو المكان الأساسي للتجمع في المدينة، المعروف بنكهات دولية رائعة وخدمة ممتازة. أجواءه المحلية المرحة والصديقة تحفذك على العودة دائماً، سواء لفنجان قهوة صباحي مبكر، غداء عمل أو اجتماع عشاء. يقدم أطباق منزلية الصنع وكذلك سلطات صحية لذيذة، مشروبات معززة وخيارات نباتية، هناك شيء للجميع."
+        ],
+        "location": "ملتقى شارع الوصل وشارع الأفق",
+        "hours": "يومياً 06:30–23:30",
+        "imageAlt": "مطعم ذا ديلي"
+      }
+    },
+    {
+      "urlTitle": "albaik",
+      "category": "restaurant",
+      "image": "albaik.jpg",
+      "en": {
+        "title": "Al baik",
+        "cuisine": "Chicken, Fast food",
+        "teaser": "Great value tasty chicken from the beloved Saudi brand",
+        "body": [
+          "Synonymous with delicious food for more than 40 years, AlBaik is a proud, homegrown Saudi brand committed to satisfying the culinary cravings of its guests through a delectable and diverse menu that features its famously addictive fried chicken."
+        ],
+        "location": "Opportunity district opposite Saudi Pavillion",
+        "hours": "Mon–Fri 12:00–02:00; Sat–Sun 10:00–23:30",
+        "imageAlt": "Al baik"
+      },
+      "ar": {
+        "title": "البيك",
+        "cuisine": "دجاج، وجبات سريعة",
+        "teaser": "دجاج لذيذ بأسعار ميسورة من العلامة السعودية الرائعة",
+        "body": [
+          "ألبيك، العلامة السعودية العريقة التي ارتبط اسمها بالطعام اللذيذ لأكثر من 40 عامًا، تفخر بأنها من صميم هذا الوطن وتلتزم بإرضاء رغبات ضيوفها من خلال قائمة شهية ومتنوعة تشتهر بشكل خاص بالدجاج المقلي الذي لا يُقاوم."
+        ],
+        "location": "منطقة الفرص مقابل جناح السعودية",
+        "hours": "الاثنين–الجمعة 12:00–02:00؛ السبت–الأحد 10:00–23:30",
+        "imageAlt": "البيك"
+      }
+    },
+    {
+      "urlTitle": "yamanote-collective",
+      "category": "cafe",
+      "image": "yamanote-collective.jpg",
+      "en": {
+        "title": "Yamanote Collective",
+        "cuisine": "Bakery, Japanese",
+        "teaser": "A simple, elegant Japanese bakery",
+        "body": [
+          "This Japanese bakery and comfort food kitchen concept was curated in Dubai in 2013 and delivers the tastes and cultures of Japan and France through baked goods and a simple, elegant café culture."
+        ],
+        "location": "Al Wasl Dome",
+        "hours": "Mon–Fri 08:00–20:00; Sat–Sun 09:00–20:00",
+        "imageAlt": "Yamanote Collective"
+      },
+      "ar": {
+        "title": "يامانوتي كوليكتيف",
+        "cuisine": "مخبوزات، ياباني",
+        "teaser": "مخبز ياباني بسيط وأنيق",
+        "body": [
+          "تم إنشاء هذا المخبز الياباني ومفهوم مطبخ الطعام المريح في دبي في عام 2013 ويقدم نكهات وثقافات اليابان وفرنسا من خلال المخبوزات وثقافة المقاهي البسيطة والأنيقة."
+        ],
+        "location": "ساحة الوصل",
+        "hours": "الاثنين–الجمعة 08:00–20:00؛ السبت–الأحد 09:00–20:00",
+        "imageAlt": "يامانوتي كوليكتيف"
+      }
+    },
+    {
+      "urlTitle": "pdl",
+      "category": "cafe",
+      "image": "pdl-coffee.jpg",
+      "en": {
+        "title": "PDL Coffee Co.",
+        "cuisine": "Coffee",
+        "teaser": "Speciality coffees and community vibes",
+        "body": [
+          "PDL Coffee Co. was born in 2018 with one simple idea: great coffee brings people together.",
+          "From day one, we set out to be more than just a coffee shop — we became a space for the community. A place where early-morning hustlers, creative minds, post-gym regulars, and weekend loungers all meet over seriously good coffee.",
+          "We serve exceptional single-origin and specialty brews sourced from around the world — roasted with care, crafted with precision, and poured with personality. Whether you’re chasing your daily caffeine ritual or discovering your new favorite cup, we’ve got you covered.",
+          "At PDL, we love two things deeply: a perfect cup of coffee — and the people who drink it."
+        ],
+        "location": "Leadership Pavilion/ Cheval Hotel",
+        "hours": "Daily 07:00–21:00",
+        "imageAlt": "PDL Coffee Co."
+      },
+      "ar": {
+        "title": "بي دي إل كوفي كو.",
+        "cuisine": "قهوة",
+        "teaser": "قهوة مختصة وأجواء مجتمعية",
+        "body": [
+          "بدأت شركة PDL Coffee Co. عام 2018 من فكرة بسيطة: القهوة الجيدة تجمع الناس معاً.",
+          "منذ اليوم الأول، لم نكتفِ بأن نكون مجرد مقهى، بل أصبحنا مساحة للمجتمع. مكان يلتقي فيه المجتهدون في الصباح الباكر، وأصحاب الأفكار الإبداعية، ورواد النادي الرياضي بعد التمرين، ومحبو الاسترخاء في عطلة نهاية الأسبوع، حول فنجان قهوة استثنائي حقاً.",
+          "نقدّم أجود أنواع القهوة أحادية المصدر والمختصة من مصادرها حول العالم — محمّصة بعناية، ومُحضّرة بدقة، وتُقدَّم بلمسة شخصية مميزة. سواء كنت تبحث عن طقسك اليومي مع الكافيين أو تكتشف فنجانك المفضل الجديد، نحن هنا من أجلك.",
+          "في PDL، نحب شيئين بعمق: فنجان القهوة المثالي — والأشخاص الذين يحتسونه."
+        ],
+        "location": "جناح القيادة / فندق شيفال",
+        "hours": "يومياً 07:00–21:00",
+        "imageAlt": "بي دي إل كوفي كو."
+      }
+    },
+    {
+      "urlTitle": "pxb",
+      "category": "cafe",
+      "image": "pxb-cafe.jpg",
+      "en": {
+        "title": "PXB Café",
+        "cuisine": "Vegetarian",
+        "teaser": "Energising wellness with sustainable plant-based delights",
+        "body": [
+          "PXB Café is designed to nourish and energise the body and mind, using sustainable foods served in a casual café style. Serving up a wide range of plant-based hot and cold dishes, PXB's emphasis is on wellness-promoting ingredients."
+        ],
+        "location": "Terra",
+        "hours": "Mon–Fri 08:00–18:00; Sat–Sun 10:00–18:00",
+        "imageAlt": "PXB Café"
+      },
+      "ar": {
+        "title": "مقهى بي إكس بي",
+        "cuisine": "مأكولات نباتية",
+        "teaser": "تعزيز الصحة والنشاط من خلال أشهى المأكولات النباتية المستدامة",
+        "body": [
+          "مقهى بي إكس بي مصمم لتعزيز وتنشيط الجسم والعقل، باستخدام أطعمة مستدامة تُقدم على طراز المقاهي العصرية. يقدم مقهى بي إكس بي تشكيلة واسعة من الأطباق النباتية الساخنة والباردة، مع التركيز على المكونات التي تعزز الصحة. أما جناحه على السطح فيفتح أبوابه يوميًا خلال فصل الشتاء للمناسبات الخاصة والفطور المتأخر، ويوفر إطلالات رائعة على المدينة."
+        ],
+        "location": "تيرّا",
+        "hours": "الاثنين–الجمعة 08:00–18:00؛ السبت–الأحد 10:00–18:00",
+        "imageAlt": "مقهى بي إكس بي"
+      }
+    },
+    {
+      "urlTitle": "rove-lounge",
+      "category": "lounge",
+      "image": "rove-lounge.jpg",
+      "en": {
+        "title": "Rove lounge",
+        "cuisine": "International",
+        "teaser": "Where connections become conversations",
+        "body": [
+          "A relaxed yet refined hotel lounge bar designed for both business and leisure. Perfect for informal meetings after work drinks and a peaceful night cap."
+        ],
+        "location": "Corner of Al Wasl and Horizon Avenue",
+        "hours": "Daily 16:00–00:00",
+        "imageAlt": "Rove lounge"
+      },
+      "ar": {
+        "title": "رُوڤ لاونج",
+        "cuisine": "عالمي",
+        "teaser": "حيث تتحول اللقاءات إلى حوارات",
+        "body": [
+          "بار فندقي أنيق بأجواء مريحة، مصمم للعمل والاسترخاء. المكان المثالي للاجتماعات غير الرسمية أو مشروب بعد العمل أو ختام هادئ لليوم."
+        ],
+        "location": "ملتقى شارع الوصل وشارع الأفق",
+        "hours": "يومياً 16:00–00:00",
+        "imageAlt": "رُوڤ لاونج"
+      }
+    }
+  ],
+  "venues": [
+    {
+      "urlTitle": "terra",
+      "flagship": true,
+      "eventTypes": [
+        "weddings",
+        "meetings",
+        "festivals"
+      ],
+      "capacity": "1,500",
+      "area": "",
+      "image": "venue-terra.jpg",
+      "en": {
+        "title": "Terra",
+        "teaser": "Welcome to Terra, Expo City Dubai’s iconic sustainability destination, our venues offer more than just a place to gather, they provide a setting where ideas, innovation and impact come together.",
+        "body": [
+          "Welcome to Terra, Expo City Dubai’s iconic sustainability destination, our venues offer more than just a place to gather, they provide a setting where ideas, innovation and impact come together. Surrounded by immersive natural landscapes and one of the UAE’s most celebrated examples of sustainable architecture, Terra invites guests to reconnect with nature while engaging in meaningful conversations that shape a better future.",
+          "Choose from licensed rooftop terraces with spectacular skyline views, a fully equipped auditorium, versatile workshop spaces and professional meeting rooms. Whether you're hosting a conference, corporate gathering, leadership retreat, product launch or private celebration, every event is supported by a dedicated operations team to ensure a seamless experience from start to finish."
+        ],
+        "highlights": [
+          "Standing: 1,500",
+          "Outside catering",
+          "Offers catering",
+          "Exclusive",
+          "Outdoor",
+          "Indoor"
+        ],
+        "imageAlt": "Terra"
+      },
+      "ar": {
+        "title": "تيرّا",
+        "teaser": "مرحباً بكم في تيرّا، الوجهة الأيقونية للاستدامة في مدينة إكسبو دبي.",
+        "body": [
+          "مرحباً بكم في تيرّا، الوجهة الأيقونية للاستدامة في مدينة إكسبو دبي. توفر مساحاتنا أكثر من مجرد مكان للتجمع، فهي بيئة تلتقي فيها الأفكار والابتكار والأثر الإيجابي. وبين المناظر الطبيعية الغامرة وأحد أبرز نماذج العمارة المستدامة في دولة الإمارات، تدعو تيرّا ضيوفها إلى إعادة التواصل مع الطبيعة والمشاركة في حوارات هادفة تسهم في رسم ملامح مستقبل أفضل.",
+          "اختاروا من بين تراسات مرخّصة على الأسطح بإطلالات بانورامية خلابة على أفق المدينة، وقاعة محاضرات مجهزة بالكامل، ومساحات متعددة الاستخدامات لورش العمل، وغرف اجتماعات احترافية. سواء كنتم تستضيفون مؤتمراً، أو تجمعاً مؤسسياً، أو خلوة للقيادات، أو إطلاق منتج، أو احتفالاً خاصاً، يرافقكم فريق عمليات متخصص لضمان تجربة سلسة ومتكاملة من البداية وحتى النهاية."
+        ],
+        "highlights": [
+          "وقوف: 1,500",
+          "الضيافة الخارجية",
+          "خدمات الضيافة متوفرة",
+          "حصريّ",
+          "الهواء الطلق",
+          "داخلي"
+        ],
+        "imageAlt": "تيرّا"
+      }
+    },
+    {
+      "urlTitle": "c3",
+      "flagship": true,
+      "eventTypes": [
+        "meetings",
+        "festivals"
+      ],
+      "capacity": "2,000",
+      "area": "3,750 m²",
+      "image": "venue-c3.jpg",
+      "en": {
+        "title": "Connect Conference Centre | C3",
+        "teaser": "Outdoor hexagonal multi-purpose venue spanning 3,750 sqm.",
+        "body": [
+          "Outdoor hexagonal multi-purpose venue spanning 3,750 sqm. Ideal for concerts, performances, markets and sports events. Capacity: 5,000 standing, 2,750 banquet (seated), 3,300 cocktail, 3,750 theatre (seated). Industrial power sockets on site. Additional tech specifications available on request."
+        ],
+        "highlights": [
+          "Standing: 2,000",
+          "Outdoor",
+          "Indoor",
+          "Offers catering",
+          "Outside catering"
+        ],
+        "imageAlt": "Connect Conference Centre | C3"
+      },
+      "ar": {
+        "title": "مركز المؤتمرات للتواصل",
+        "teaser": "مساحة خارجية متعددة الاستخدامات بتصميم سداسي تمتد على مساحة 3,750 مترًا مربعًا.",
+        "body": [
+          "مساحة خارجية متعددة الاستخدامات بتصميم سداسي تمتد على مساحة 3,750 مترًا مربعًا. تُعد مثالية للحفلات الموسيقية والعروض الفنية والأسواق والفعاليات الرياضية. السعة: 5,000 شخص وقوفًا، و2,750 شخصًا للمآدب (جلوس)، و3,300 شخص لاستقبالات الكوكتيل، و3,750 شخصًا بتنسيق المسرح (جلوس). مزودة بمقابس طاقة صناعية في الموقع. تتوفر مواصفات تقنية إضافية عند الطلب."
+        ],
+        "highlights": [
+          "وقوفاً: 2,000",
+          "الهواء الطلق",
+          "داخلي",
+          "خدمات الضيافة متوفرة",
+          "الضيافة الخارجية"
+        ],
+        "imageAlt": "مركز المؤتمرات للتواصل"
+      }
+    },
+    {
+      "urlTitle": "nexus",
+      "flagship": true,
+      "eventTypes": [
+        "meetings"
+      ],
+      "capacity": "",
+      "area": "",
+      "image": "venue-nexus.jpg",
+      "en": {
+        "title": "Nexus",
+        "teaser": "Located in the heart of the Opportunity District, The Nexus aims to drive collaborative partnerships to tackle some of the greatest challenges and opportunities of our time, and offers a number of versatile venues.",
+        "body": [
+          "Located in the heart of the Opportunity District, The Nexus aims to drive collaborative partnerships to tackle some of the greatest challenges and opportunities of our time, and offers a number of versatile venues."
+        ],
+        "highlights": [
+          "Indoor",
+          "Offers catering",
+          "Outside catering",
+          "Exclusive"
+        ],
+        "imageAlt": "Nexus"
+      },
+      "ar": {
+        "title": "ذا نكسس",
+        "teaser": "يقع \"نيكسوس\" في قلب منطقة الفرص، ويهدف إلى تعزيز الشراكات التعاونية لمواجهة بعض أكبر التحديات والفرص في عصرنا، ويوفر عددًا من الأماكن متعددة الاستخدامات.",
+        "body": [
+          "يقع \"نيكسوس\" في قلب منطقة الفرص، ويهدف إلى تعزيز الشراكات التعاونية لمواجهة بعض أكبر التحديات والفرص في عصرنا، ويوفر عددًا من الأماكن متعددة الاستخدامات."
+        ],
+        "highlights": [
+          "داخلي",
+          "خدمات الضيافة متوفرة",
+          "الضيافة الخارجية",
+          "حصريّ"
+        ],
+        "imageAlt": "ذا نكسس"
+      }
+    },
+    {
+      "urlTitle": "jubilee-park",
+      "flagship": true,
+      "eventTypes": [
+        "weddings",
+        "meetings",
+        "fitness"
+      ],
+      "capacity": "12,000",
+      "area": "",
+      "image": "venue-jubilee-park.jpg",
+      "en": {
+        "title": "Jubilee Park",
+        "teaser": "Discover the charm of Dubai's Jubilee Park, a versatile venue right in the heart of the city.",
+        "body": [
+          "Discover the charm of Dubai's Jubilee Park, a versatile venue right in the heart of the city. With a capacity of up to 12,000 attendees, this location is perfect for large-scale events such as corporate retreats, grand weddings, or massive product launches. Jubilee Park showcases the true spirit of Dubai with its unique mix of modern amenities and traditional Arabian touches. The venue promises an unforgettable event experience with its state-of-the-art sound and lighting systems and a dedicated event support team ready to cater to your every need. Imagine hosting your next event in the backdrop of Dubai's stunning skyline."
+        ],
+        "highlights": [
+          "From AED 10,000",
+          "Seated: 6,000",
+          "Standing: 12,000",
+          "Outdoor"
+        ],
+        "imageAlt": "Jubilee Park"
+      },
+      "ar": {
+        "title": "حديقة اليوبيل",
+        "teaser": "اكتشف سحر حديقة اليوبيل في مدينة إكسبو دبي، وهي وجهة متعددة الاستخدامات تقع في قلب المدينة.",
+        "body": [
+          "اكتشف سحر حديقة اليوبيل في مدينة إكسبو دبي، وهي وجهة متعددة الاستخدامات تقع في قلب المدينة. تتسع الحديقة لما يصل إلى 12,000 ضيف وقوفاً، ما يجعلها الخيار الأمثل لاستضافة الفعاليات الكبرى، مثل اللقاءات المؤسسية، وحفلات الزفاف الكبيرة، وإطلاق المنتجات على نطاق واسع. وتُجسد حديقة اليوبيل روح دبي الحقيقية من خلال مزيجها الفريد من المرافق العصرية واللمسات العربية الأصيلة.",
+          "توفر الوجهة تجربة استثنائية للفعاليات بفضل أنظمة الصوت والإضاءة المتطورة، إلى جانب فريق متخصص لدعم الفعاليات يحرص على تلبية مختلف المتطلبات. تخيّل إقامة فعاليتك المقبلة على خلفية أفق دبي المذهل، في أجواء تجمع بين الإبداع والتميّز."
+        ],
+        "highlights": [
+          "ابتداءً من 10,000 د.إ",
+          "جلوس: 6,000",
+          "وقوف: 12,000",
+          "الهواء الطلق"
+        ],
+        "imageAlt": "حديقة اليوبيل"
+      }
+    },
+    {
+      "urlTitle": "terra-rooftop",
+      "flagship": false,
+      "eventTypes": [
+        "weddings",
+        "meetings",
+        "festivals"
+      ],
+      "capacity": "100",
+      "area": "",
+      "image": "venue-terra-rooftop.jpg",
+      "en": {
+        "title": "Terra Rooftop",
+        "teaser": "Create memorable moments above the city skyline at this exclusive rooftop venue, where sweeping views of Expo City Dubai provide a spectacular backdrop for every occasion.",
+        "body": [
+          "Create memorable moments above the city skyline at this exclusive rooftop venue, where sweeping views of Expo City Dubai provide a spectacular backdrop for every occasion. Featuring a private licensed bar and an elegant open-air setting, the space is ideal for cocktail receptions, networking events, gala dinners and VIP gatherings that leave a lasting impression. Whether you're celebrating, connecting or entertaining, this versatile venue offers the atmosphere, flexibility and wow factor event planners look for."
+        ],
+        "highlights": [
+          "From AED 25,000",
+          "Seated: 80",
+          "Standing: 100",
+          "Exclusive",
+          "Outdoor",
+          "Outside catering",
+          "Offers catering"
+        ],
+        "imageAlt": "Terra Rooftop"
+      },
+      "ar": {
+        "title": "سطح تيرّا",
+        "teaser": "اصنعوا لحظات لا تُنسى فوق أفق المدينة في هذه الوجهة الحصرية على السطح، حيث تشكل الإطلالات البانورامية الخلابة على مدينة إكسبو دبي خلفية استثنائية لكل مناسبة.",
+        "body": [
+          "اصنعوا لحظات لا تُنسى فوق أفق المدينة في هذه الوجهة الحصرية على السطح، حيث تشكل الإطلالات البانورامية الخلابة على مدينة إكسبو دبي خلفية استثنائية لكل مناسبة. وتضم المساحة باراً خاصاً مرخصاً وأجواءً أنيقة في الهواء الطلق، ما يجعلها مثالية لحفلات الاستقبال، وفعاليات التواصل، وحفلات العشاء الرسمية، والتجمعات الحصرية لكبار الشخصيات التي تترك انطباعاً يدوم.",
+          "سواء كنتم تحتفلون، أو تتواصلون، أو تستضيفون ضيوفكم، توفر هذه الوجهة متعددة الاستخدامات الأجواء المميزة والمرونة وعناصر الإبهار التي يبحث عنها منظمو الفعاليات."
+        ],
+        "highlights": [
+          "ابتداءً من 25,000 د.إ",
+          "جلوس: 80",
+          "وقوف: 100",
+          "حصريّ",
+          "الهواء الطلق",
+          "الضيافة الخارجية",
+          "خدمات الضيافة متوفرة"
+        ],
+        "imageAlt": "سطح تيرّا"
+      }
+    },
+    {
+      "urlTitle": "terra-auditorium",
+      "flagship": false,
+      "eventTypes": [
+        "meetings",
+        "festivals"
+      ],
+      "capacity": "300",
+      "area": "",
+      "image": "venue-terra-auditorium.jpg",
+      "en": {
+        "title": "Terra Auditorium",
+        "teaser": "Equipped with modern audiovisual systems, including wall-mounted screens, integrated audio, and high-speed Wi-Fi, the auditorium ensures seamless content delivery and a comfortable experience for both speakers and attendees.",
+        "body": [
+          "Equipped with modern audiovisual systems, including wall-mounted screens, integrated audio, and high-speed Wi-Fi, the auditorium ensures seamless content delivery and a comfortable experience for both speakers and attendees. Its flexible layout supports various formats such as theatre-style seating or moderated forums, making it suitable for corporate, educational, or community-focused events."
+        ],
+        "highlights": [
+          "From AED 20,000",
+          "Seated: 159",
+          "Standing: 300"
+        ],
+        "imageAlt": "Terra Auditorium"
+      },
+      "ar": {
+        "title": "مدرج تيرّا",
+        "teaser": "وتضم القاعة تجهيزات سمعية وبصرية حديثة، تشمل شاشات مثبتة على الجدران، وأنظمة صوتية مدمجة، وخدمة واي فاي عالية السرعة، ما يضمن تقديم المحتوى بسلاسة ويوفر تجربة مريحة للمتحدثين والحضور على حد سواء.",
+        "body": [
+          "وتضم القاعة تجهيزات سمعية وبصرية حديثة، تشمل شاشات مثبتة على الجدران، وأنظمة صوتية مدمجة، وخدمة واي فاي عالية السرعة، ما يضمن تقديم المحتوى بسلاسة ويوفر تجربة مريحة للمتحدثين والحضور على حد سواء. كما يتيح تصميمها المرن استيعاب مجموعة متنوعة من الفعاليات، بما في ذلك الجلسات المسرحية والمنتديات الحوارية، ما يجعلها خياراً مثالياً للفعاليات المؤسسية والتعليمية والمجتمعية."
+        ],
+        "highlights": [
+          "ابتداءً من 20,000 د.إ",
+          "جلوس: 159",
+          "وقوف: 300"
+        ],
+        "imageAlt": "مدرج تيرّا"
+      }
+    },
+    {
+      "urlTitle": "c3-hall",
+      "flagship": false,
+      "eventTypes": [
+        "weddings",
+        "meetings",
+        "festivals"
+      ],
+      "capacity": "280",
+      "area": "266 m²",
+      "image": "venue-c3-hall.jpg",
+      "en": {
+        "title": "C3 Hall",
+        "teaser": "The Connect Conference Centre Hall is a flexible, technology-enabled venue designed to deliver seamless corporate events, conferences and professional gatherings.",
+        "body": [
+          "The Connect Conference Centre Hall is a flexible, technology-enabled venue designed to deliver seamless corporate events, conferences and professional gatherings. Featuring four divisible spaces within a 266 m² footprint, the hall accommodates up to 280 guests theatre-style, 200 for banquets or 100 in a classroom setup, offering the versatility to host everything from conventions and training sessions to product launches and exhibitions. Supported by modern event infrastructure, comfortable furnishings and turnkey event solutions, the venue provides a polished and adaptable environment for impactful experiences of any scale."
+        ],
+        "highlights": [
+          "From AED 47,500",
+          "Seated: 200",
+          "Standing: 280",
+          "Indoor",
+          "Offers catering",
+          "Outside catering",
+          "Accessible"
+        ],
+        "imageAlt": "C3 Hall"
+      },
+      "ar": {
+        "title": "قاعة C3",
+        "teaser": "تُعد قاعة مركز مؤتمرات كونكت مساحة مرنة ومجهزة بأحدث التقنيات، صُممت لاستضافة الفعاليات المؤسسية والمؤتمرات واللقاءات المهنية بسلاسة وكفاءة.",
+        "body": [
+          "تُعد قاعة مركز مؤتمرات كونكت مساحة مرنة ومجهزة بأحدث التقنيات، صُممت لاستضافة الفعاليات المؤسسية والمؤتمرات واللقاءات المهنية بسلاسة وكفاءة. وتضم القاعة أربع مساحات قابلة للتقسيم ضمن مساحة إجمالية تبلغ 266 متراً مربعاً، وتتسع لما يصل إلى 280 ضيفاً بأسلوب المسرح، أو 200 ضيف لحفلات العشاء، أو 100 مشارك ضمن إعدادات الفصول الدراسية، ما يوفر مرونة لاستضافة مختلف الفعاليات، بدءاً من المؤتمرات والدورات التدريبية وصولاً إلى إطلاق المنتجات والمعارض.",
+          "وتتكامل هذه المساحة مع بنية تحتية حديثة للفعاليات، وأثاث مريح، وحلول متكاملة لتنظيم الفعاليات، لتوفر بيئة احترافية قابلة للتكيف تسهم في تقديم تجارب مؤثرة بمختلف الأحجام."
+        ],
+        "highlights": [
+          "ابتداءً من 47,500 د.إ",
+          "جلوس: 200",
+          "وقوف: 280",
+          "داخلي",
+          "خدمات الضيافة متوفرة",
+          "الضيافة الخارجية",
+          "مناسبة لأصحاب الهمم"
+        ],
+        "imageAlt": "قاعة C3"
+      }
+    },
+    {
+      "urlTitle": "innovation-gallery",
+      "flagship": false,
+      "eventTypes": [
+        "weddings",
+        "meetings"
+      ],
+      "capacity": "150",
+      "area": "",
+      "image": "venue-innovation-gallery.jpg",
+      "en": {
+        "title": "Innovation Gallery",
+        "teaser": "The Innovation Gallery at Terra is an engaging and adaptable space designed to showcase creative concepts, immersive installations and interactive experiences.",
+        "body": [
+          "The Innovation Gallery at Terra is an engaging and adaptable space designed to showcase creative concepts, immersive installations and interactive experiences. Accommodating between 30 and 150 guests depending on the configuration, the gallery features abundant natural light, flexible furnishings and modern AV infrastructure, making it ideal for exhibitions, product showcases, technology demonstrations and intimate presentations. With its contemporary design, energy-efficient features and seamless blend of innovation and purpose, the Innovation Gallery provides an inspiring setting for events that spark curiosity, creativity and meaningful dialogue."
+        ],
+        "highlights": [
+          "From AED 15,000",
+          "Seated: 140",
+          "Standing: 150",
+          "Indoor"
+        ],
+        "imageAlt": "Innovation Gallery"
+      },
+      "ar": {
+        "title": "معرض الابتكار",
+        "teaser": "يقع معرض الابتكار في جناح تيرّا، جناح الاستدامة في مدينة إكسبو دبي، وهو مساحة تفاعلية ومرنة مصممة لعرض المفاهيم الإبداعية، والتركيبات الغامرة، والعروض التقديمية الصغيرة.",
+        "body": [
+          "يقع معرض الابتكار في جناح تيرّا، جناح الاستدامة في مدينة إكسبو دبي، وهو مساحة تفاعلية ومرنة مصممة لعرض المفاهيم الإبداعية، والتركيبات الغامرة، والعروض التقديمية الصغيرة. تمتد المساحة على نطاق مرن يستوعب من 30 إلى 150 ضيفاً حسب نمط الإعداد، وتغمرها الإضاءة الطبيعية، كما تضم أثاثاً قابلاً للتعديل يناسب المعارض، والعروض التقنية، والتجارب التفاعلية. ويتميز المعرض ببنية سمعية وبصرية حديثة تشمل شاشات مثبتة على الجدران، وأنظمة صوت مدمجة، وشبكة واي فاي عالية السرعة، بما يتيح تقديم المحتوى بسلاسة وتأثير. تنسجم المساحة مع سردية الاستدامة في جناح تيرّا، إذ تربط بين الابتكار والوعي البيئي، وتبرز فيها المواد الصديقة للبيئة، والإضاءة الموفرة للطاقة، والخطوط المعمارية النقية."
+        ],
+        "highlights": [
+          "ابتداءً من 15,000 د.إ",
+          "جلوس: 140",
+          "وقوف: 150",
+          "داخلي"
+        ],
+        "imageAlt": "معرض الابتكار"
+      }
+    },
+    {
+      "urlTitle": "terra-terrace",
+      "flagship": false,
+      "eventTypes": [
+        "weddings",
+        "fitness",
+        "festivals"
+      ],
+      "capacity": "500",
+      "area": "51.5 m²",
+      "image": "venue-terra-terrace.jpg",
+      "en": {
+        "title": "Terra Terrace",
+        "teaser": "The Terra Terrace at Expo City Dubai is a serene, open-air platform nestled atop the Sustainability Pavilion, offering breathtaking panoramic views of the pavilion’s iconic canopy and the surrounding Expo City.",
+        "body": [
+          "The Terra Terrace at Expo City Dubai is a serene, open-air platform nestled atop the Sustainability Pavilion, offering breathtaking panoramic views of the pavilion’s iconic canopy and the surrounding Expo City. Spanning approximately 51.5 m², it provides an intimate yet versatile space perfect for small gatherings, breakout sessions, relaxed receptions, or informal networking events.",
+          "Shaded by the pavilion’s distinctive photovoltaic canopy and framed by native flora, the terrace offers a light-filled environment that blends architecture with nature. Equipped with subtle integrated lighting and weather-resistant furnishings, it supports a range of uses—from morning coffee meetups to evening cocktail receptions under the stars.",
+          "Its eco-conscious design draws on Terra’s ethos, using sustainable materials that harmonize with the greenery and promote outdoor connection. Accessible directly via indoor spaces, the Terra Terrace encourages fluid indoor-outdoor transitions, ideal for hybrid events, interactive workshops, or social moments infused with fresh air and inspiration.",
+          "This space invites guests to pause, connect, and reflect within Expo City’s green, innovation-driven landscape."
+        ],
+        "highlights": [
+          "From AED 40,000",
+          "Seated: 450",
+          "Standing: 500",
+          "Exclusive",
+          "Offers catering",
+          "Outside catering",
+          "Outdoor"
+        ],
+        "imageAlt": "Terra Terrace"
+      },
+      "ar": {
+        "title": "تراس تيرّا",
+        "teaser": "يوفر تراس تيرّا في مدينة إكسبو دبي مساحة هادئة في الهواء الطلق تعلو جناح الاستدامة، وتتميز بإطلالات بانورامية خلابة على المظلة الأيقونية للجناح والمناطق المحيطة في مدينة إكسبو دبي.",
+        "body": [
+          "يوفر تراس تيرّا في مدينة إكسبو دبي مساحة هادئة في الهواء الطلق تعلو جناح الاستدامة، وتتميز بإطلالات بانورامية خلابة على المظلة الأيقونية للجناح والمناطق المحيطة في مدينة إكسبو دبي. وتمتد هذه المساحة على نحو 51.5 متراً مربعاً، لتوفر أجواءً حميمية ومرنة تناسب التجمعات الصغيرة، والجلسات الجانبية، وحفلات الاستقبال غير الرسمية، وفعاليات التواصل.",
+          "وتظلل التراس المظلة الكهروضوئية المميزة للجناح، فيما تحيط به النباتات المحلية، ليشكل بيئة مضيئة تجمع بين روعة العمارة والطبيعة. كما يضم إضاءة مدمجة أنيقة وأثاثاً خارجياً مصمماً لتحمل مختلف الظروف الجوية، ما يجعله مناسباً لمجموعة متنوعة من الاستخدامات، بدءاً من لقاءات القهوة الصباحية وصولاً إلى حفلات الكوكتيل المسائية تحت النجوم.",
+          "ويجسد التراس رؤية تيرّا القائمة على الاستدامة، من خلال استخدام مواد مستدامة تنسجم مع المساحات الخضراء وتعزز التواصل مع البيئة الخارجية. كما يتيح الوصول المباشر إليه من المساحات الداخلية انتقالاً سلساً بين البيئات الداخلية والخارجية، ما يجعله خياراً مثالياً للفعاليات الهجينة، وورش العمل التفاعلية، واللقاءات الاجتماعية التي تجمع بين الهواء الطلق والإلهام.",
+          "ويدعو هذا المكان ضيوفه إلى التوقف للحظة، والتواصل مع الآخرين، والتأمل في أجواء مدينة إكسبو دبي الخضراء التي تحتفي بالابتكار والاستدامة."
+        ],
+        "highlights": [
+          "ابتداءً من 40,000 د.إ",
+          "جلوس: 450",
+          "وقوف: 500",
+          "حصريّ",
+          "خدمات الضيافة متوفرة",
+          "الضيافة الخارجية",
+          "الهواء الطلق"
+        ],
+        "imageAlt": "تراس تيرّا"
+      }
+    },
+    {
+      "urlTitle": "taqa-island",
+      "flagship": false,
+      "eventTypes": [
+        "weddings"
+      ],
+      "capacity": "30",
+      "area": "",
+      "image": "venue-taqa-island.jpg",
+      "en": {
+        "title": "Taqa Island",
+        "teaser": "Taqa Island is an immersive, child-friendly discovery zone within Terra at Expo City Dubai, bringing science, technology, art, music, and sculpture together in a playful, educational setting.",
+        "body": [
+          "Taqa Island is an immersive, child-friendly discovery zone within Terra at Expo City Dubai, bringing science, technology, art, music, and sculpture together in a playful, educational setting. Designed for families and school groups, the area supports around 30 children at a time and encourages interactive exploration across five thematic zones, each featuring hands-on activities that spark curiosity and creativity.",
+          "The space uses vibrant colors, sensory elements, and open layouts, enabling kids to engage freely with exhibits that link fun to sustainable concepts. The modular design allows for dynamic programming such as workshops, mini-music sessions, and maker activities taught by educators and facilitators. With its engaging installations and eco-conscious messaging, Taqa Island provides a joyful and meaningful play environment."
+        ],
+        "highlights": [
+          "From AED 10,000",
+          "Standing: 30",
+          "Sitting: 30",
+          "Indoor",
+          "Exclusive",
+          "Outside catering",
+          "Offers catering"
+        ],
+        "imageAlt": "Taqa Island"
+      },
+      "ar": {
+        "title": "جزيرة طاقة",
+        "teaser": "تُعد جزيرة طاقة منطقة استكشافية تفاعلية ومناسبة للأطفال داخل تيرّا في مدينة إكسبو دبي، حيث تجمع بين العلوم والتكنولوجيا والفنون والموسيقى والمنحوتات ضمن بيئة تعليمية مرحة.",
+        "body": [
+          "تُعد جزيرة طاقة منطقة استكشافية تفاعلية ومناسبة للأطفال داخل تيرّا في مدينة إكسبو دبي، حيث تجمع بين العلوم والتكنولوجيا والفنون والموسيقى والمنحوتات ضمن بيئة تعليمية مرحة. صُممت المساحة للعائلات والمجموعات المدرسية، وتستوعب نحو 30 طفلاً في الوقت نفسه، وتشجع على الاستكشاف التفاعلي عبر خمس مناطق موضوعية، تضم كل منها أنشطة عملية تُحفّز الفضول والإبداع.",
+          "وتعتمد المساحة على ألوان نابضة بالحياة، وعناصر حسية، وتصاميم مفتوحة تتيح للأطفال التفاعل بحرية مع المعروضات التي تربط بين المرح ومفاهيم الاستدامة. كما يتيح التصميم المرن تنظيم برامج متنوعة، مثل ورش العمل، والجلسات الموسيقية المصغّرة، وأنشطة التصنيع الإبداعي التي يقدمها معلمون ومشرفون متخصصون. وبفضل تجهيزاتها التفاعلية ورسائلها البيئية الهادفة، توفر جزيرة طاقة بيئة لعب ممتعة وذات معنى."
+        ],
+        "highlights": [
+          "ابتداءً من 10,000 د.إ",
+          "وقوف: 30",
+          "جلوس: 30",
+          "داخلي",
+          "حصريّ",
+          "الضيافة الخارجية",
+          "خدمات الضيافة متوفرة"
+        ],
+        "imageAlt": "جزيرة طاقة"
+      }
+    }
+  ],
+  "eventTypes": [
+    {
+      "key": "weddings",
+      "image": "event-type-weddings.jpg",
+      "en": {
+        "title": "Wedding and social event spaces",
+        "text": "Engagements and weddings, anniversaries and vow renewals — every milestone deserves a memorable setting. Our versatile venues, supported by dedicated teams, bring your vision to life, so you can focus on celebrating the moments that matter."
+      },
+      "ar": {
+        "title": "مساحات حفلات الزفاف والمناسبات الاجتماعية",
+        "text": "بدءاً من حفلات الخطوبة والزفاف، وصولاً إلى احتفالات الذكرى وتجديد عهود الزواج، تستحق كل مناسبة مميزة أجواءً لا تُنسى. وتوفر وجهاتنا المتنوعة، إلى جانب الدعم المخصص من فريقنا، كل ما يلزم لتحويل رؤيتكم إلى واقع والاحتفاء باللحظات التي تعني لكم الكثير."
+      }
+    },
+    {
+      "key": "meetings",
+      "image": "event-type-meetings.jpg",
+      "en": {
+        "title": "Meetings & conference spaces",
+        "text": "Every meeting deserves the right setting — whether a boardroom session or large conference. Our adaptable venues, powered by cutting-edge technology and dedicated support keep delegates engaged and events running seamlessly from start to finish."
+      },
+      "ar": {
+        "title": "مساحات الاجتماعات والمؤتمرات",
+        "text": "بدءاً من اجتماعات مجالس الإدارة وصولاً إلى المؤتمرات الكبرى، توفر وجهاتنا المرنة والمجهزة بأحدث التقنيات، والمدعومة بفريق متخصص، تجربة سلسة تضمن تفاعل المشاركين ونجاح فعاليتكم من البداية إلى النهاية."
+      }
+    },
+    {
+      "key": "fitness",
+      "image": "event-type-fitness.jpg",
+      "en": {
+        "title": "Fitness and wellness events",
+        "text": "From high-energy fitness challenges to restorative wellness retreats, movement deserves the right backdrop. Our expansive venues, paired with dedicated support, help you create experiences that energise, inspire, and bring people together."
+      },
+      "ar": {
+        "title": "فعاليات اللياقة البدنية والعافية",
+        "text": "بدءاً من تحديات اللياقة البدنية المفعمة بالحيوية وصولاً إلى خلوات العافية الهادئة، تستحق الأنشطة الحركية المكان المناسب. وتساعدكم وجهاتنا الواسعة، إلى جانب الدعم المتخصص، على تقديم تجارب ملهمة تعزز النشاط والتواصل بين المشاركين."
+      }
+    },
+    {
+      "key": "festivals",
+      "image": "event-type-festivals.jpg",
+      "en": {
+        "title": "Festivals and events",
+        "text": "Bring large-scale experiences to life."
+      },
+      "ar": {
+        "title": "المهرجانات والفعاليات",
+        "text": "بدءاً من الاحتفالات الثقافية وصولاً إلى المهرجانات العامة واسعة النطاق، تستحق كل فعالية منصة تليق بها. وتساعدكم وجهاتنا الداخلية والخارجية المتنوعة، إلى جانب الدعم المتخصص، على تحويل رؤيتكم إلى واقع وصناعة لحظات لا تُنسى."
+      }
+    }
+  ],
+  "faqs": [
+    {
+      "topic": "visiting",
+      "en": {
+        "q": "What are the opening hours?",
+        "a": "Attraction timings are between 10:00 - 18:00 (Last entry 17:15) Al Wasl Plaza is open 24/7 Jubilee Park, Al Forsan Park and the Surreal water feature are all open 24/7"
+      },
+      "ar": {
+        "q": "ما هي أوقات الدخول؟",
+        "a": "مواعيد دخول الأجنحة تبدأ من الساعة 10:00 صباحًا إلى 18:00 مساءً (وآخر موعد للدخول هو 17:15 مساءً) ساحة الوصل مفتوحة على مدار الساعة طوال أيام الأسبوع وبها عروض ضوئية من 18:00 مساءً إلى منتصف الليل حديقة اليوبيل وحديقة الفرسان وشلالات إكسبو مفتوحة على مدار الساعة طوال أيام الأسبوع عرض الأوقات التفصيلية لكل معلم من معالم الجذب"
+      }
+    },
+    {
+      "topic": "tickets",
+      "en": {
+        "q": "Will visitors need tickets enter Expo City Dubai?",
+        "a": "Expo City Dubai is an open city and access to the public areas will not require tickets. Payment and tickets will be required to enter specific attractions."
+      },
+      "ar": {
+        "q": "هل سيحتاج الزوار إلى تذاكر للدخول إلى مدينة إكسبو دبي؟",
+        "a": "مدينة إكسبو دبي مفتوحة للجميع والتذاكر غير ضرورية لدخول الأماكن العامة. لكن هناك تذاكر ورسوم معينة لبعض الوجهات والمعالم."
+      }
+    },
+    {
+      "topic": "visiting",
+      "en": {
+        "q": "Will visitors pass through security screening to enter Expo City Dubai?",
+        "a": "No. Expo City Dubai will welcome all as an open city. Access will not be restricted."
+      },
+      "ar": {
+        "q": "هل يخضع الزوار لتدقيق أمني عند الدخول إلى مدينة إكسبو دبي؟",
+        "a": "لا. مدينة إكسبو دبي مفتوحة وترحّب بالجميع دون قيود."
+      }
+    },
+    {
+      "topic": "getting-here",
+      "en": {
+        "q": "Can I drive my car around site?",
+        "a": "No. Expo City Dubai’s districts are car-free to enhance safety and air quality."
+      },
+      "ar": {
+        "q": "هل يمكنني قيادة سيارتي حول الموقع؟",
+        "a": "لا. مدينة إكسبو دبي مصمّمة بالكامل للمشاة لضمان سلامة الجميع والحفاظ على نظافة الهواء فيها."
+      }
+    },
+    {
+      "topic": "getting-here",
+      "en": {
+        "q": "Where do I park?",
+        "a": "If you’re driving to Expo City Dubai, you can reach here from all surrounding major roads. Follow signs for Opportunity, Mobility and Sustainability parking zones, where you’ll find more than 20,000 parking spaces."
+      },
+      "ar": {
+        "q": "أين يُمكنني إيجاد مواقف السيارات؟",
+        "a": "إذا أردّت زيارة مدينة إكسبو دبي باستخدام سيارتك، يُمكنك الوصول إليها عبر كلّ الطرق الرئيسية. اتّبع اللافتات المؤدّية إلى مواقف الفرص والتنقّل والاستدامة، حيث ستجد أكثر من 20 ألف موقف لركن السيارات. منطقة مواقف التنقّل منطقة مواقف الاستدامة منطقة مواقف الفرص"
+      }
+    },
+    {
+      "topic": "visiting",
+      "en": {
+        "q": "What options are there for outdoor fitness?",
+        "a": "There are 10 km of cycling tracks, a 5 km running track and 45,000 sqm of parks and gardens."
+      },
+      "ar": {
+        "q": "ما الخيارات المتاحة لممارسة الرياضة في الأماكن المفتوحة؟",
+        "a": "تتوفر مسارات دراجات بطول 10 كم، ومسار ركض بطول 5 كم، إضافة إلى مساحة 45 ألف متر مربع من الحدائق والمتنزهات."
+      }
+    },
+    {
+      "topic": "tickets",
+      "en": {
+        "q": "How do I arrange a VIP Experience?",
+        "a": "You can arrange a specialised experience with our VIP Experiences team."
+      },
+      "ar": {
+        "q": "كيف يُمكنني حجز تجربة لكبار الشخصيات؟",
+        "a": "يُمكنك حجز تجربة مخصّصة لكبار الشخصيات عبر التواصل مع فريق تجارب كبار الشخصيات."
+      }
+    },
+    {
+      "topic": "accessibility",
+      "en": {
+        "q": "Is Expo City Dubai fully accessible?",
+        "a": "Yes, Expo City Dubai is proud to be fully accessible, with a range of facilities available for people of determination."
+      },
+      "ar": {
+        "q": "هل الوصول والتنقل في مدينة إكسبو دبي سهل بالكامل؟",
+        "a": "نعم، وهذا أمر تفخر به مدينة إكسبو دبي، وتوفر أيضاً مجموعة من المرافق الخاصة بأصحاب الهمم."
+      }
+    },
+    {
+      "topic": "safety",
+      "en": {
+        "q": "In case of a medical emergency, can Expo City Dubai staff provide First Aid?",
+        "a": "First aid staff are available on site and ambulance services located nearby to support all visitors. In case of an emergency, please call 800 1 2020. For minor medical incidents, please speak to the nearest Expo City staff member."
+      },
+      "ar": {
+        "q": "في حالات الطوارئ الطبية، هل يمكن لموظفي مدينة إكسبو دبي تقديم الإسعافات الأولية؟",
+        "a": "طاقم الإسعافات الأولية وخدمة الإسعاف متوفرة في الموقع لمساعدة جميع الزوار. لأي مساعدة طارئة، يرجى الاتصال على ‎800 1 2020. وللحالات الطبية البسيطة، يرجى التحدّث إلى أقرب موظف في مدينة إكسبو."
+      }
+    },
+    {
+      "topic": "safety",
+      "en": {
+        "q": "What happens if I’m at Expo City Dubai and a Ministry of Interior (MOI) alert sounds?",
+        "a": "Your safety and wellbeing are our highest priority. In the event that an official alert is issued, Expo City teams and security personnel will guide visitors to the nearest designated safe zone within a building, or you may proceed calmly to the nearest open building/attraction within Expo City. Please calmly follow the instructions provided by our staff and remain in the safe area until further updates are given. Once authorities confirm it is safe to resume normal activities, operations will continue as usual."
+      },
+      "ar": {
+        "q": "ما الذي يجب أن أقوم به إذا تلقيت رسالة تحذيرية من المنصة الوطنية للإنذار المبكر أثناء وجودي في مدينة إكسبو دبي؟",
+        "a": "أمن وسلامة الجميع هي أولوية قصوى بالنسبة لنا. في حال صدور تنبيه رسمي، ستتولى فرق مدينة إكسبو وأفراد الأمن توجيه جميع الزوار إلى أقرب منطقة آمنة في الأماكن المخصصة داخل أحد المباني، كما يمكنكم التوجه إلى أقرب مبنى أو وجهة مفتوحة داخل مدينة إكسبو. نرجو منكم تطبيق التعليمات التي يقدمها أفراد فريقنا والتصرف بهدوء والبقاء في المنطقة الآمنة المخصصة في انتظار صدور تعليمات جديدة من الجهات المختصة. وبمجرد تأكيد الجهات المختصة على سلامة الأوضاع يمكنكم بأمان استئناف الأنشطة الاعتيادية بينما تستأنف العمليات في المدينة سيرها المعتاد. تصفحوا دليل الإجراءات العامة بشأن سلامة الزوار"
+      }
+    },
+    {
+      "topic": "accessibility",
+      "en": {
+        "q": "Is Terra accessible to people of determination?",
+        "a": "Yes, Terra is fully accessible to people of determination visitors."
+      },
+      "ar": {
+        "q": "هل يمكن لأصحاب الهمم زيارة جناح تيرّا؟",
+        "a": "نعم، جناح تيرّا سهل الوصول والاستخدام بالكامل للزوار من أصحاب الهمم."
+      }
+    },
+    {
+      "topic": "safety",
+      "en": {
+        "q": "Can I leave my child/children at Terra unattended?",
+        "a": "No, all children must be accompanied by a parent or guardian at all times."
+      },
+      "ar": {
+        "q": "هل يمكنني ترك طفلي/أطفالي في جناح تيرّا بدون مراقبة؟",
+        "a": "لا، يجب أن يبقى كل الأطفال برفقة أهلهم أو أولياء أمورهم في كل الأوقات."
+      }
+    },
+    {
+      "topic": "visiting",
+      "en": {
+        "q": "Are there any facilities such as washrooms, and baby changing rooms in Terra?",
+        "a": "Yes, there are washrooms and baby changing facilities at Terra."
+      },
+      "ar": {
+        "q": "هل هناك مرافق أخرى في جناح تيرّا مثل دورات المياه وغرف غيار الأطفال؟",
+        "a": "نعم، تتوفر دورات المياه وغرف غيار الأطفال في جناح تيرّا."
+      }
+    }
+  ],
+  "pages": {
+    "home": {
+      "heroImage": "home-hero.jpg",
+      "en": {
+        "heroEyebrow": "Discover Expo City Dubai",
+        "heroTitle": "The new centre of Dubai’s future",
+        "heroText": "Leading the way to a cleaner, healthier, brighter future for everyone",
+        "introTitle": "The city of the future is here",
+        "introText": "Discover a 15-minute city where you can live, work and play. An innovative business hub integrated with modern residences, cultural spaces, unique leisure facilities, restaurants and retail outlets all within a sustainable city.",
+        "freeZoneText": "Join an innovative business community of like-minded entities that supports collaboration and growth",
+        "realEstateText": "Make yourself at home in the city of the future"
+      },
+      "ar": {
+        "heroEyebrow": "اكتشف مدينة إكسبو دبي",
+        "heroTitle": "قلب مستقبل دبي",
+        "heroText": "اكتشف وجهة يلتقي فيها كل الناس ويصنعون معاً مستقبلاً أجمل",
+        "introTitle": "هنا مدينة المستقبل",
+        "introText": "مدينة تجد فيها كل احتياجات العيش والعمل والترفيه على بُعد 15 دقيقة. مجتمع أعمال مبتكَر إلى جانب مجمعات سكنية عصرية، ومعالم ثقافية، ومرافق ترفيهية متميزة، ومطاعم ومتاجر وأكثر، ضمن مدينة متكاملة صُمّمت وفق أعلى معايير الاستدامة.",
+        "freeZoneText": "انضم إلى مجتمع أعمال مبتكر من مؤسسات تتشارك في الأهداف وتدعم التعاون والنمو",
+        "realEstateText": "مدينة المستقبل"
+      }
+    },
+    "thingsToDo": {
+      "image": "things-to-do.jpg",
+      "en": {
+        "title": "Things to do",
+        "intro": "With so many things to do at Expo City Dubai, it can be hard to know where to start. Let us help you to plan your perfect day at Expo City Dubai!"
+      },
+      "ar": {
+        "title": "أروع التجارب",
+        "intro": "هل تبحث عن أفضل طريقة لقضاء يوم ممتع في مدينة إكسبو دبي؟ قد يكون من الصعب معرفة كيفية التخطيط ليوم لا يُنسى في مدينة إكسبو دبي، لذا دعنا نساعدك في الاستمتاع بوقتك معنا إلى أقصى الحدود!"
+      }
+    },
+    "attractions": {
+      "image": "attractions.jpg",
+      "en": {
+        "title": "Attractions",
+        "intro": "Looking for the ultimate Dubai experience? Look no further than Expo City Dubai! Check out our must-do activities and make the most of your trip."
+      },
+      "ar": {
+        "title": "المعالم",
+        "intro": "هل تريد اختبار أفضل تجربة في دبي؟ خيارك المثالي هو مدينة إكسبو دبي! قم بزيارة موقعنا للاطلاع على مختلف الأنشطة التي يمكنك القيام بها لقضاء رحلة من العمر."
+      }
+    },
+    "parks": {
+      "image": "parks.jpg",
+      "en": {
+        "title": "Parks & wellness",
+        "intro": "Discover the best parks and wellness centres at Expo City Dubai. Indulge in activities that help you relax and reconnect with nature. Visit today!",
+        "items": [
+          {
+            "title": "Jubilee Park",
+            "text": "Named in honour of the UAE’s 50th anniversary, Jubilee Park is a space built for celebration. You can take a ride on the iconic Garden in the Sky observation tower for a panoramic view of Expo City Dubai."
+          },
+          {
+            "title": "Rashid’s Adventures Playground",
+            "text": "Rashid’s playground, where kids can have fun on whale slides, ocean liners and sharks on springs. Here, kids can also roam around the 3D maze, modelled after the majestic humpback whale."
+          },
+          {
+            "title": "Taqa Island",
+            "text": "Located in Terra, Taqa Island offers Expo City Dubai’s youngest guests the best of science, technology, art, music and sculpture. ‘Taqa’ means ‘energy’ in Arabic, and kids will step into a vibrant and fun-filled island that reacts to their every move, invigorating young hearts and minds through problem-solving and collaboration to keep all the inhabitants of our shared planet healthy and happy."
+          },
+          {
+            "title": "What options are there for outdoor fitness?",
+            "text": "There are 10 km of cycling tracks, a 5 km running track and 45,000 sqm of parks and gardens."
+          }
+        ]
+      },
+      "ar": {
+        "title": "الحدائق والمرافق الرياضية",
+        "intro": "استكشف أفضل الحدائق والمرافق الرياضية في مدينة إكسبو دبي. انغمس في الأنشطة التي تساعدك على الاسترخاء والتواصل من جديد مع بالطبيعة. قم بزيارة اليوم!",
+        "items": [
+          {
+            "title": "حديقة اليوبيل",
+            "text": "سُمّيت حديقة اليوبيل بهذا الاسم احتفالاً بالذكرى الخمسين لتأسيس دولة الإمارات العربية المتحدة، وهي مساحة مخصّصة لإقامة الاحتفالات. ومن أعلى برج المراقبة \"حديقة الثريا\"، يمكنك الاستمتاع بإطلالات بانورامية خلّابة لمدينة إكسبو دبي."
+          },
+          {
+            "title": "ملعب مغامرات راشد",
+            "text": "في ملعب راشد، يمكن للأطفال قضاء أروع الأوقات على منزلقات الحيتان وعابرات المحيطات وزنبركات أسماك القرش. ويمكنهم أيضاً الاستمتاع بالتجوّل داخل متاهة ثلاثية الأبعاد مصمّمة على شكل حوت أحدب ضخم."
+          },
+          {
+            "title": "ملعب جزيرة طاقة",
+            "text": "تقع جزيرة طاقة في تيرّا – جناح الاستدامة، وتقدّم لزوار مدينة إكسبو دبي الصغار أروع التجارب مع العلوم والتكنولوجيا والفنون والموسيقى والمنحوتات. واسم \"جزيرة طاقة\" يعبّر عن مضمونها، إذ توفّر للأطفال أجواء كلها طاقة وحيوية ومرح وتتفاعل مع حركاتهم كلها، ما ينشّط عقولهم وقلوبهم بتحفيز مهارات حل المشاكل والعمل معاً من أجل الحفاظ على صحة وسعادة سكان كوكبنا."
+          },
+          {
+            "title": "ما الخيارات المتاحة لممارسة الرياضة في الأماكن المفتوحة؟",
+            "text": "تتوفر مسارات دراجات بطول 10 كم، ومسار ركض بطول 5 كم، إضافة إلى مساحة 45 ألف متر مربع من الحدائق والمتنزهات."
+          }
+        ]
+      }
+    },
+    "events": {
+      "image": "events.jpg",
+      "en": {
+        "title": "Events & Workshops",
+        "intro": "Looking for the ideal way to spend a day at Expo City Dubai? Check out the on-going activities and upcoming events and workshops at Expo City Dubai."
+      },
+      "ar": {
+        "title": "الفعاليات وورش العمل",
+        "intro": "هل تبحث عن الطريقة المثالية لقضاء يوم استثنائي في مدينة إكسبو دبي؟ اطلع على الفعاليات وورش العمل الحالية والقادمة في مدينة إكسبو دبي واحجز تذكرتك لقضاء أروع رحلة."
+      }
+    },
+    "dining": {
+      "image": "dining.jpg",
+      "en": {
+        "title": "Dining",
+        "intro": "Fancy yourself as a bit of a foodie? Then you’re in for a treat at Expo City Dubai. Discover a diverse selection of world-class restaurants, cafes, and food stalls offering delectable cuisines from around the globe at Expo City Dubai's Eat and Drink zone."
+      },
+      "ar": {
+        "title": "الطعام داخل الصالة",
+        "intro": "هل أنت من عشّاق الأكل والنكهات العالمية؟ إذن مدينة إكسبو دبي هي وجهتك المُثلى. تعرّف على مجموعة متنوعة من المطاعم والمقاهي وأكشاك الطعام ذات المستوى العالمي التي تقدّم المأكولات اللذيذة من جميع أنحاء العالم في منطقة الأطعمة والمشروبات في مدينة إكسبو دبي."
+      }
+    },
+    "planYourVisit": {
+      "image": "plan-your-visit.jpg",
+      "en": {
+        "title": "Plan your visit",
+        "intro": "All the information you need for a seamless and memorable trip to Expo City Dubai. No tickets needed – our city is always open, and exploring is entirely free.",
+        "openingHours": "Attraction timings are between 10:00 - 18:00 (Last entry 17:15). Al Wasl Plaza is open 24/7. Jubilee Park, Al Forsan Park and the Surreal water feature are all open 24/7.",
+        "gettingHere": [
+          {
+            "title": "By metro",
+            "text": "The fastest and most sustainable way to travel here. The Dubai Metro Red Line takes you from various locations in the city to the Expo 2020 station, situated in the heart of Expo City Dubai."
+          },
+          {
+            "title": "By taxi",
+            "text": "Dubai’s taxis and car hires are plentiful. Taxis can be booked by phone, but the simplest way is to download the Careem, Uber or S’hail apps. Through the Careem app, you can also book Hala Taxi, which is Dubai’s most affordable taxi."
+          },
+          {
+            "title": "By car",
+            "text": "If you're driving to Expo City Dubai it is located on Expo Road (E77), which connects to Sheikh Mohammed bin Zayed Road (E311) and Sheikh Zayed bin Hamdan Al Nahyan Street (D54). The journey to Expo City Dubai takes around 30 minutes from Downtown Dubai and around 15 minutes from Al Maktoum International Airport. Parking at Expo City Dubai is free for all visitors, with dedicated spaces for people of determination close to the main entrances. On arrival, follow the signs to the nearest car park."
+          },
+          {
+            "title": "By bus",
+            "text": "There is an RTA public bus stop situated outside the Expo 2020 metro station."
+          }
+        ],
+        "mobility": [
+          {
+            "title": "Yellow taxi buggy service",
+            "text": "Explore the city with ease with our yellow taxi buggies providing a convenient and efficient mode of transportation - ideal for short trips within the city. Our yellow taxi buggy services are available to everyone. Price starts from AED 5 per person per trip. Free of charge for visitors aged 3 and under and people of determination. No cash accepted, credit or debit cards only."
+          },
+          {
+            "title": "Mobility hubs",
+            "text": "These Hubs are strategically located to provide Wheelchair and Stroller Services improving accessibility across the city."
+          },
+          {
+            "title": "Bicycles",
+            "text": "Visitors and tenants can explore the city on bikes, easily available to rent from various locations around Expo City Dubai – or bring your own!"
+          },
+          {
+            "title": "Scooters",
+            "text": "Another simple yet speedy method of moving around Expo City Dubai, scooters are available to rent or you can bring your own."
+          }
+        ],
+        "comboTicket": {
+          "title": "Terra and Vision Combo Ticket",
+          "text": "Experience the ultimate day out with Terra and Vision Combo Ticket. Explore a world of wonder with access to all our flagship attractions!",
+          "price": "From AED 95"
+        }
+      },
+      "ar": {
+        "title": "خطّط زيارتك",
+        "intro": "جميع المعلومات التي تحتاجها لرحلة سلسة لا تُنسى إلى مدينة إكسبو دبي. لا حاجة لتذاكر – مدينتنا مفتوحة دائمًا، والاستكشاف مجاني بالكامل.",
+        "openingHours": "مواعيد دخول الأجنحة تبدأ من الساعة 10:00 صباحًا إلى 18:00 مساءً (وآخر موعد للدخول هو 17:15 مساءً). ساحة الوصل مفتوحة على مدار الساعة طوال أيام الأسبوع وبها عروض ضوئية من 18:00 مساءً إلى منتصف الليل. حديقة اليوبيل وحديقة الفرسان وشلالات إكسبو مفتوحة على مدار الساعة طوال أيام الأسبوع.",
+        "gettingHere": [
+          {
+            "title": "المترو",
+            "text": "الطريقة الأسرع والأكثر استدامة للوصول إلى المدينة. ينقلك الخط الأحمر لمترو دبي من عدة مناطق في دبي إلى محطة مترو إكسبو 2020 الواقعة في قلب مدينة إكسبو دبي."
+          },
+          {
+            "title": "سيارات الأجرة",
+            "text": "سيارات الأجرة والسيارات المستأجرة وفيرة في دبي. يمكنك حجز سيارة أجرة بمكالمة هاتفية. لكن أبسط طريقة هي تنزيل تطبيق كريم أو أوبر أو سهيل. ومع تطبيق كريم، يمكنك أيضاً حجز هلا تاكسي، سيارة الأجرة الأقل تكلفة في دبي."
+          },
+          {
+            "title": "السيارة الخاصة",
+            "text": "إذا كنتم قادمين إلى إكسبو سيتي دبي بالسيارة، ستجدوننا على على طريق إكسبو (E77)، الذي يتصل بشارع الشيخ محمد بن زايد (E311) وشارع الشيخ زايد بن حمدان آل نهيان (D54). تستغرق الرحلة إلى إكسبو سيتي دبي نحو 30 دقيقة من وسط مدينة دبي، ونحو 15 دقيقة من مطار آل مكتوم الدولي. مواقف السيارات في إكسبو سيتي دبي مجانية لجميع الزوّار، وتتوفّر مواقف مخصّصة لأصحاب الهمم قريبة من المداخل الرئيسية. عند الوصول، يمكن اتباع اللوحات الإرشادية المؤدية إلى أقرب موقف."
+          },
+          {
+            "title": "الحافلة",
+            "text": "يوجد موقف حافلة تابع لهيئة الطرق والمواصلات خارج محطة مترو إكسبو 2020."
+          }
+        ],
+        "mobility": [
+          {
+            "title": "خدمة عربات الأجرة",
+            "text": "استكشف المدينة بسهولة مع عربات الأجرة، التي توفر وسيلة نقل مريحة وفعالة، مثالية للرحلات القصيرة داخل المدينة. خدمة عربات الأجرة متاحة للجميع. تبدأ الأسعار من 5 دراهم للشخص الواحد لكل رحلة. الدخول مجاني للأطفال من عمر ثلاث أعوام أو أقل ولأصحاب الهمم الدفع ببطاقات الائتمان أو بطاقات الخصم فقط, لا يُقبل الدفع النقدي."
+          },
+          {
+            "title": "مراكز التنقل",
+            "text": "توفر هذه المراكز ذات المواقع الاستراتيجية خدمات الكراسي المتحركة وعربات الأطفال بهدف تحسين سهولة الوصول في مختلف أنحاء المدينة."
+          },
+          {
+            "title": "الدراجات الهوائية",
+            "text": "يُمكن للزوّار والمُستأجرين الاستمتاع بتجربة تجوّل مثيرة في مدينة إكسبو دبي عبر استئجار درّاجة من أحد المواقع المنتشرة في المدينة، ويُمكنك إحضار درّاجتك الخاصة والاستمتاع برحلة لا تُنسى."
+          },
+          {
+            "title": "السكوتر",
+            "text": "طريقة أخرى بسيطة وممتعة وسريعة للتجول في أنحاء مدينة إكسبو دبي. يمكنك استئجار سكوتر في المدينة أو إحضار السكوتر الخاص بك."
+          }
+        ],
+        "comboTicket": {
+          "title": "تذكرة تيرا وفيجن المجمّعة",
+          "text": "استمتع بيوم استثنائي مع تذكرة تيرا وفيجن المجمّعة. استكشف عالماً من الروائع مع إمكانية الدخول إلى جميع معالمنا الرئيسية!",
+          "price": "ابتداءً من 95 درهماً"
+        }
+      }
+    },
+    "spaces": {
+      "image": "spaces.jpg",
+      "en": {
+        "title": "A city built for iconic events",
+        "intro": "From landmark architecture to flexible indoor and outdoor spaces, Expo City Dubai offers a portfolio of spaces designed to host everything from global summits to intimate gatherings.",
+        "enquiryText": "Speak to a venue advisor to create a tailored solution for your event."
+      },
+      "ar": {
+        "title": "مدينة تحتضن فعالياتكم المميزة",
+        "intro": "من المعالم المعمارية الأيقونية إلى المساحات الداخلية والخارجية المرنة، توفر مدينة إكسبو دبي مجموعة متنوعة من الوجهات المصممة لاستضافة كل شيء، بدءاً من القمم العالمية وصولاً إلى التجمعات الخاصة.",
+        "enquiryText": "تحدثوا إلى أحد مستشاري أماكن الفعاليات لتصميم حل مخصص يلبي احتياجات فعاليتكم."
+      }
+    },
+    "about": {
+      "image": "about.jpg",
+      "en": {
+        "title": "Welcome to Expo City Dubai",
+        "intro": "Leading the way to a cleaner, healthier, brighter future for everyone",
+        "body": [
+          "Discover a 15-minute city where you can live, work and play. An innovative business hub integrated with modern residences, cultural spaces, unique leisure facilities, restaurants and retail outlets all within a sustainable city.",
+          "Expo City integrates environmental, social and economic sustainability at every step, from efficient and accessible building designs and operations, to learning experiences that empower future generations.",
+          "Find out more about Expo 2020 Dubai, the once-in-a-lifetime celebration that welcomed 192 nations and more than 24 million visitors."
+        ],
+        "stats": [
+          {
+            "value": "35,000+",
+            "label": "residents"
+          },
+          {
+            "value": "40,000+",
+            "label": "professionals"
+          },
+          {
+            "value": "192",
+            "label": "nations at Expo 2020 Dubai"
+          },
+          {
+            "value": "24 million+",
+            "label": "Expo 2020 Dubai visitors"
+          },
+          {
+            "value": "45,000 sqm",
+            "label": "of parks and gardens"
+          },
+          {
+            "value": "10 km",
+            "label": "of cycling tracks"
+          },
+          {
+            "value": "20+",
+            "label": "dedicated, flexible event spaces"
+          }
+        ],
+        "masterPlan": "As the centre of Dubai's future growth, Expo City is the pinnacle of urban innovation. Our new master plan sets out our vision of a fully integrated city designed for connectivity, walkability and sustainability. The master plan cements Expo City’s role at the forefront of Dubai's future growth. With homes, offices, events venues and amenities, as well as lots of green spaces, smart transportation and future-proof infrastructure, our city will welcome more than 35,000 residents and 40,000 professionals."
+      },
+      "ar": {
+        "title": "مرحباً بكم في مدينة إكسبو دبي",
+        "intro": "اكتشف وجهة يلتقي فيها كل الناس ويصنعون معاً مستقبلاً أجمل",
+        "body": [
+          "مدينة تجد فيها كل احتياجات العيش والعمل والترفيه على بُعد 15 دقيقة. مجتمع أعمال مبتكَر إلى جانب مجمعات سكنية عصرية، ومعالم ثقافية، ومرافق ترفيهية متميزة، ومطاعم ومتاجر وأكثر، ضمن مدينة متكاملة صُمّمت وفق أعلى معايير الاستدامة.",
+          "تجمع مدينة إكسبو بين الاستدامة البيئية والاجتماعية والاقتصادية في كل مرحلة، من تصميم وتشغيل المباني الفعّالة والمتاحة إلى تجارب تعليمية تمكّن الأجيال القادمة.",
+          "اعرف المزيد عن إكسبو 2020 دبي، الحدث الأروع في العالم الذي جمع 192 دولة ورحّب بأكثر من 24 مليون زائر."
+        ],
+        "stats": [
+          {
+            "value": "+35,000",
+            "label": "مقيم"
+          },
+          {
+            "value": "+40,000",
+            "label": "عامل وموظف"
+          },
+          {
+            "value": "192",
+            "label": "دولة في إكسبو 2020 دبي"
+          },
+          {
+            "value": "+24 مليون",
+            "label": "زائر لإكسبو 2020 دبي"
+          },
+          {
+            "value": "45 ألف متر مربع",
+            "label": "من الحدائق والمتنزهات"
+          },
+          {
+            "value": "10 كم",
+            "label": "من مسارات الدراجات"
+          },
+          {
+            "value": "+20",
+            "label": "مساحة مخصصة ومرنة للفعاليات"
+          }
+        ],
+        "masterPlan": "تقع مدينة إكسبو دبي في قلب مستقبل دبي وتجسد قمة الابتكار الحضري، يحدد المخطط الرئيسي رؤيتنا لمدينة متكاملة مصممة للتواصل وسهولة التنقل والاستدامة. يعزز المخطط الرئيسي دور مدينة إكسبو في طليعة نمو دبي المسقبلي. مع توفير المنازل والمكاتب ومرافق الخدمات والفعاليات بالإضافة إلى المساحات الخضراء والتنقل الذكي والبنى التحتية المستدامة، ستستقبل مدينتنا أكثر من 35,000 مقيم و40,000 عامل وموظف."
+      }
+    },
+    "sustainability": {
+      "image": "sustainability.jpg",
+      "en": {
+        "title": "Safeguarding our future",
+        "intro": "We know that every actor has a role to play in ensuring future generations can enjoy a greener and better world. Expo City Dubai – serving as a blueprint for sustainable urban living – is committed to making this a reality.",
+        "body": [
+          "As an inclusive, innovation-driven, people-centric city committed to maximising its social, environmental and economic benefits, sustainability is embedded into everything we do.",
+          "Net zero by 2050: Expo City Dubai’s decarbonisation roadmap raises the bar on responsible urban development.",
+          "Expo City has received international recognition for best practices in green building design and infrastructure. All buildings are LEED Gold or higher, including 4 LEED Platinum Buildings. Expo City's masterplan has been pre-certified at the Platinum level, the highest rating available. The Expo City Head Office has been certified under LEED Operations and Maintenance with the Platinum Level. Expo City's masterplan has received the 'BREEAM Infrastructure v6 - Strategy' Excellent level. 8 infrastructure projects rated CEEQUAL Excellent."
+        ],
+        "pillars": [
+          {
+            "title": "Community initiatives",
+            "text": "Expo City Dubai engages its community of tenants, visitors, employees, school groups, youth and partners to cultivate a strong sense of personal responsibility in sustainable living."
+          },
+          {
+            "title": "Built environment",
+            "text": "Expo City Dubai advances a model for a sustainable and smart built environment by blending passive strategies with technology-based solutions."
+          },
+          {
+            "title": "Operational environment",
+            "text": "Expo City Dubai integrates environmental and social responsibility into the city’s operations and events."
+          },
+          {
+            "title": "Decarbonisation",
+            "text": "Expo City Dubai is targeting net zero by 2050, with broader decarbonisation goals that raise the bar on responsible urban development."
+          }
+        ]
+      },
+      "ar": {
+        "title": "حماية مستقبلنا",
+        "intro": "نؤمن بأنّه لكلّ جهة فاعلة دورًا تؤديه لتحيا الأجيال القادمة في عالم أفضل أقلّ تلوثًا وأكثر استدامة. وتلتزم مدينة إكسبو دبي بتحقيق ذلك على أرض الواقع، مستفيدة من كونها نموذجًا لبيئة حضرية مُستدامة.",
+        "body": [
+          "بصفتها مدينة تتّسم بالشمول وتحتضن ممارسات مدفوعة بالابتكار وتراعي في صميمها الإنسان وتعمل على تعزيز المزايا المحقّقة من أنشطتها على الصعيد الاجتماعي والبيئي والاقتصادي، فإنّ الاستدامة يشكّل جزءًا لا يتجزأ من الأنشطة التي نؤديها هنا.",
+          "تحقيق صافي انباعاثات صفرية بحلول عام 2050: تمكّنت خارطة طريق إزالة الكربون في مدينة إكسبو دبي من رفع مستوى التوقّعات للتنمية الحضرية المؤثّرة.",
+          "حظيت مدينة إكسبو دبي بتقدير دولي لاعتمادها أفضل الممارسات في تصميم المباني الخضراء والبنية التحتية. وقد حصلت جميع مبانيها على تصنيف LEED الذهبي أو أعلى، بما في ذلك أربعة مبانٍ حاصلة على التصنيف البلاتيني. كما حصل المخطط الرئيسي لمدينة إكسبو دبي على اعتماد مبدئي بالمستوى البلاتيني، وهو أعلى تصنيف متاح. وحصل المقر الرئيسي لمدينة إكسبو دبي على شهادة LEED البلاتينية ضمن فئة التشغيل والصيانة. إضافة إلى ذلك، حصل المخطط الرئيسي للمدينة على تصنيف «ممتاز» ضمن معيار BREEAM Infrastructure v6 – Strategy، فيما حصلت ثمانية مشاريع للبنية التحتية على تصنيف CEEQUAL «ممتاز»."
+        ],
+        "pillars": [
+          {
+            "title": "المبادرات المجتمعية",
+            "text": "تعمل مدينة إكسبو دبي على إشراك مجتمعها الذي يضمّ مستأجرين وزوّار وموظّفين ومجموعات مدرسية وشباب وشركاء في عملية تنمية شعور راسخ بالمسؤولية التي تقع على عاتق كلّ فرد لتحقيق حياة مُستدامة."
+          },
+          {
+            "title": "بيئة عمرانية",
+            "text": "توفّر مدينة إكسبو دبي نموذجًا لبيئة عمرانية تتبنّى ممارسات ذكية ومُستدامة عبر الجمع بين الاستراتيجيات المعتمدة على الموارد الطبيعية والحلول القائمة على التقنيات."
+          },
+          {
+            "title": "بيئة مثالية للعمليات التشغيلية",
+            "text": "تراعي مدينة إكسبو دبي المسؤولية البيئية والمجتمعية في مختلف عمليات المدينة وفعالياتها."
+          },
+          {
+            "title": "إزالة الكربون",
+            "text": "تستهدف مدينة إكسبو دبي تحقيق صافي انبعاثات صفرية بحلول عام 2050، إلى جانب أهداف أشمل لإزالة الكربون ترفع سقف التوقعات للتنمية الحضرية المسؤولة."
+          }
+        ]
+      }
+    },
+    "accessibility": {
+      "image": "accessibility.jpg",
+      "en": {
+        "title": "Accessibility at Expo City Dubai",
+        "intro": "Expo City Dubai has built accessibility into its very fabric to ensure that people of determination – whether residents, working professionals, visitors, or employees – are fully supported",
+        "body": [
+          "In the United Arab Emirates, people with disabilities are officially referred to as people of determination. The term reflects the UAE’s mission to create an inclusive, barrier-free, rights-based society that promotes, protects and ensures the self-determination of everyone with the aim to empower people of determination and their families. As you visit Expo City Dubai and travel around Dubai and the UAE, you may hear people using this term and see signs for facilities or programmes for people of determination.",
+          "Expo City Dubai prioritizes accessibility with well-maintained ramps, tactile guide paths, designated parking, accessible restrooms, and clear signage. We're committed to an inclusive experience for all.",
+          "For visitors with reduced mobility, Expo City Dubai offers accessible pathways, elevators and wheelchairs. Our commitment to inclusivity ensures that everyone can enjoy the city.",
+          "We cater to blind and low-vision visitors with tactile maps, audio guides, and braille signage. Explore Expo City Dubai with confidence, embracing a world of experiences."
+        ]
+      },
+      "ar": {
+        "title": "سهولة الوصول إلى مدينة إكسبو دبي",
+        "intro": "حرصت مدينة إكسبو دبي على تيسير الوصول إلى كل ركن من أركانها، لضمان توفير الدعم الكامل لأصحاب الهمم، سواء أكانوا من المقيمين أو المهنيين العاملين في المدينة أو من الزوار أو الموظفين",
+        "body": [
+          "في دولة الإمارات العربية المتحدة، يُشار رسميا إلى ذوي الاحتياجات الخاصة بأصحاب الهمم. ويعكس هذا الاسم هدف دولة الإمارات العربية المتحدة في بناء مجتمع شامل وخالٍ من العوائق وقائم على الحقوق، يعزز حق تقرير المصير لكل شخص ويحميه ويضمنه، بهدف تمكين أصحاب الهمم وعائلاتهم. أثناء زيارتك لمدينة إكسبو دبي وتنقلك في أرجاء دبي والإمارات العربية المتحدة، ستسمع الناس يستخدمون هذا المصطلح وسترى لافتات تشير إلى مرافق أو برامج مخصصة لأصحاب الهمم.(POD).",
+          "تمنح مدينة إكسبو دبي الأولوية لإمكانية الوصول عبر منحدرات صعود وهبوط، ومسارات توجيه حسي، ومواقف سيارات مخصصة، ودورات مياه يسهل الوصول إليها، ولافتات إخلاء تلك المناطق من أي معوقات. نحن ملتزمون بتوفير تجربة شاملة للجميع.",
+          "توفر مدينة إكسبو دبي للزوار ذوي الإعاقة الحركية على مسارات سهلة الوصول و مهيئة ومصاعد وكراسي متحركة . يضمن التزامنا بالشمول تجربة ممتعة للجميع داخل المدينة.",
+          "نلبي احتياجات الزوار المكفوفين وضعاف البصر عبر خرائط بارزة وأدلة صوتية ولافتات مكتوبة بطريقة برايل. ندعوك لاستكشاف مدينة إكسبو دبي بثقة والاستمتاع بعالم مُفعم بالتجارب الثرية."
+        ]
+      }
+    }
+  },
+  "footer": {
+    "address": "Expo City Dubai, Expo Road (E77), Dubai, United Arab Emirates",
+    "phone": "800 39762489",
+    "email": "connect@expocitydubai.ae",
+    "social": [
+      {
+        "label": "TikTok",
+        "href": "https://www.tiktok.com/@expocitydubai"
+      },
+      {
+        "label": "Instagram",
+        "href": "https://www.instagram.com/expocitydubai/"
+      },
+      {
+        "label": "Facebook",
+        "href": "https://www.facebook.com/ExpoCityDubai/"
+      },
+      {
+        "label": "X",
+        "href": "https://twitter.com/expocitydubai"
+      },
+      {
+        "label": "LinkedIn",
+        "href": "https://www.linkedin.com/company/26639576/"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://www.youtube.com/channel/UCC8tUqoDcsLvkeIGpOgKI3w"
+      }
+    ],
+    "en": {
+      "tagline": "Leading the way to a cleaner, healthier, brighter future for everyone"
+    },
+    "ar": {
+      "tagline": "اكتشف وجهة يلتقي فيها كل الناس ويصنعون معاً مستقبلاً أجمل"
+    }
+  }
+}
