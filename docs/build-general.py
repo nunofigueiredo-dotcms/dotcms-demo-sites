@@ -6,7 +6,8 @@ records: attractions, events, restaurants, venues, FAQs, site settings), an
 "Expo Sections" container, templates, folders and menu, and the pages of the
 Visit, Spaces and Explore areas — every page and every item in English and
 Arabic (the instance's ar-AE language). Then it turns on Content Analytics
-and points UVE at the local frontend (frontend-general, port 3009).
+and points UVE at the deployed frontend on Vercel, with the local one
+(frontend-general, port 3009) as a dev URL.
 
     export DOTCMS_AUTH_TOKEN=...          # an admin token on awesomedemo-dev
     python3 build-general.py
@@ -66,7 +67,9 @@ def upload_with_retry(path):
 ns.api, ns.upload_image = api_with_retry, upload_with_retry
 
 SITE = os.environ.get("GENERAL_SITE", "general.com")
-FRONTEND = os.environ.get("GENERAL_FRONTEND", "http://localhost:3009")
+# The deployed frontend (Vercel). UVE loads pages from it; the local dev
+# server stays available in the editor as a dev URL.
+FRONTEND = os.environ.get("GENERAL_FRONTEND", "https://dotcms-demo-sites-psaq.vercel.app")
 DEV_FRONTENDS = ["http://localhost:3009", "http://general.localhost:3009"]
 SYSTEM_WORKFLOW = "d61a59e1-a49c-46f2-a929-db2b4bfa88b2"
 CONTAINER_TITLE = "Expo Sections"
@@ -470,8 +473,10 @@ def configure_analytics():
         "persistenceMode": {"value": "readwrite"}, "siteAuth": {"value": key},
         "autoPageView": {"value": "true"}, "contentImpression": {"value": "true"},
         "contentClick": {"value": "true"}})
+    # The deployed frontend's domain is an alias for the same reason.
+    aliases = ["general.localhost", FRONTEND.split("://", 1)[-1].rstrip("/")]
     ns.api("PUT", f"/api/v1/site?id={SITE_ID}", {
-        "siteName": SITE, "aliases": "general.localhost", "forceExecution": True})
+        "siteName": SITE, "aliases": "\n".join(aliases), "forceExecution": True})
     return key
 
 
