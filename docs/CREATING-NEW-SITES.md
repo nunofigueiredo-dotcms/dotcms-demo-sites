@@ -22,6 +22,7 @@ instance**, so a new site reuses them rather than defining its own.
 | `forgehub.com` | `3465943d44960cdee2606a7fd248b808` | `~/headless/generaldemos/frontend-forgehub` | 3004 |
 | `sandler.com` | `e817e9c8f1c76b29940ee10be7ebb224` | `~/headless/generaldemos/frontend-sandler` | 3006 |
 | `educationdemo.com` (awesomedemo-dev) | `5875220ead521d2fe31cedd1aad6b594` | `~/headless/generaldemos/frontend-education` | 3008 |
+| `general.com` (awesomedemo-dev, Expo City Dubai, EN + AR) | `2fea4d74f8708e989ace7c9df528de8f` | `~/headless/generaldemos/frontend-general` | 3009 |
 
 The Docker stack lives in `~/headless/generaldemos` (project name pinned to
 `generaldemos` in `docker-compose.yml`). All content is in Docker volumes
