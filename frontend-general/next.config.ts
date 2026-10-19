@@ -6,8 +6,16 @@ import type { NextConfig } from "next";
 const DOTCMS_HOST = process.env.NEXT_PUBLIC_DOTCMS_HOST;
 const DOTCMS_HOSTNAME = DOTCMS_HOST?.replace(/^https?:\/\//, "");
 
+// The site's public address, for canonical links, the sitemap and structured
+// data. On Vercel it defaults to the production domain Vercel provides at
+// build time. Set here so the server and the browser use the same value.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "");
+
 const nextConfig: NextConfig = {
   reactStrictMode: false,
+  env: { NEXT_PUBLIC_SITE_URL: SITE_URL },
   // Content Analytics finds the site from the browser's Origin, so the demo
   // runs at http://general.localhost:3009 (a dotCMS site alias).
   allowedDevOrigins: ["general.localhost"],
