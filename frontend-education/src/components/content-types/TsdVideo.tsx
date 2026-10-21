@@ -19,7 +19,9 @@ type TsdVideoProps = DotCMSBasicContentlet & {
   youtubeUrl?: string;
   /** Hosted file: an .mp4 or .webm, e.g. https://storage.googleapis.com/bucket/video.mp4 */
   videoFileUrl?: string;
-  /** Hosted file: its WebVTT captions. Cross-origin, so the bucket must allow this site (CORS). */
+  /** Hosted file: its WebVTT captions, picked from the media library (a File field). */
+  captionsFile?: string | { identifier?: string } | null;
+  /** Hosted file: a link to captions kept elsewhere. Cross-origin, so their host must allow this site (CORS). */
   captionsUrl?: string;
   poster?: DotCMSImageField;
   /** Checkbox: "captions", "asl", "transcript". */
@@ -41,12 +43,14 @@ export default function TsdVideo(props: TsdVideoProps) {
   const editing = useIsEditing();
   const [playing, setPlaying] = useState(false);
   const hosted = props.videoSource === "file";
-  // Captions from this site's own /api/captions route load from the page's
-  // own origin. Captions elsewhere (e.g. next to the video on Cloud Storage)
-  // load cross-origin, which needs crossOrigin — and that makes the browser
-  // ask for the video with CORS too, so the bucket's CORS rule must allow
-  // this site for both.
-  const captionsPath = captionsUrl?.match(/^https?:\/\/[^/]+(\/api\/captions\/[0-9a-f]{32}\.vtt)$/)?.[1];
+  // A captions file picked from the media library (or a link to this site's
+  // /api/captions route) is served as text/vtt from the page's own origin.
+  // A link to captions elsewhere (e.g. next to the video on Cloud Storage)
+  // loads cross-origin, which needs crossOrigin — and that makes the browser
+  // ask for the video with CORS too, so that host must allow this site.
+  const pickedId = typeof props.captionsFile === "string" ? props.captionsFile : props.captionsFile?.identifier;
+  const linkedPath = captionsUrl?.match(/^https?:\/\/[^/]+(\/api\/captions\/[0-9a-f]{32}\.vtt)$/)?.[1];
+  const captionsPath = pickedId && /^[0-9a-f]{32}$/.test(pickedId) ? `/api/captions/${pickedId}.vtt` : linkedPath;
   const captionsSrc = captionsPath ?? captionsUrl;
   const id = hosted ? undefined : youtubeId(youtubeUrl);
   const posterSrc = imageSrc(props.poster);
@@ -65,7 +69,7 @@ export default function TsdVideo(props: TsdVideoProps) {
             preload="none"
             playsInline
             poster={posterSrc ? `${posterSrc.split("?")[0].replace(/\/[^/]+\.[a-z0-9]+$/i, "")}/1280w/80q` : undefined}
-            crossOrigin={captionsUrl && !captionsPath ? "anonymous" : undefined}
+            crossOrigin={captionsSrc && !captionsPath ? "anonymous" : undefined}
             aria-label={props.title}
           >
             <source src={videoFileUrl} type={videoFileUrl.split("?")[0].toLowerCase().endsWith(".webm") ? "video/webm" : "video/mp4"} />

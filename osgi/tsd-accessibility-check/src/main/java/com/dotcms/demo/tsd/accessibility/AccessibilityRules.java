@@ -4,6 +4,7 @@ import com.dotcms.contenttype.model.field.BinaryField;
 import com.dotcms.contenttype.model.field.Field;
 import com.dotcms.contenttype.model.field.ImageField;
 import com.dotcms.contenttype.model.field.StoryBlockField;
+import com.dotmarketing.business.APILocator;
 import com.dotmarketing.portlets.contentlet.model.Contentlet;
 import com.dotmarketing.util.json.JSONArray;
 import com.dotmarketing.util.json.JSONObject;
@@ -186,13 +187,21 @@ public final class AccessibilityRules {
                 issues.add(new Issue(label, "\"" + file + "\" isn't a video file browsers can play. Use an "
                         + "https link to an .mp4 or .webm file.", true));
             }
+            // Captions: a file picked from the media library, or a link to one elsewhere.
+            String picked = text(content, "captionsFile").trim();
             String captions = text(content, "captionsUrl").trim();
-            if (access.contains("captions") && captions.isEmpty()) {
-                issues.add(new Issue(name(fields, "captionsUrl", "Captions file"), "\"Captions\" is ticked, but "
-                        + "there's no captions file. Add the video's WebVTT (.vtt) file, or untick Captions.", true));
-            } else if (!captions.isEmpty() && !VTT_FILE.matcher(captions).find()) {
-                issues.add(new Issue(name(fields, "captionsUrl", "Captions file"), "\"" + captions + "\" isn't a "
+            String fileLabel = name(fields, "captionsFile", "Captions file");
+            if (!picked.isEmpty() && !isWebVtt(picked)) {
+                issues.add(new Issue(fileLabel, "The captions file isn't a WebVTT (.vtt) file. Pick the "
+                        + "video's .vtt from the media library.", true));
+            }
+            if (!captions.isEmpty() && !VTT_FILE.matcher(captions).find()) {
+                issues.add(new Issue(name(fields, "captionsUrl", "Captions link"), "\"" + captions + "\" isn't a "
                         + "WebVTT file. Use an https link to the .vtt file.", true));
+            }
+            if (access.contains("captions") && picked.isEmpty() && captions.isEmpty()) {
+                issues.add(new Issue(fileLabel, "\"Captions\" is ticked, but there's no captions file. Pick the "
+                        + "video's WebVTT (.vtt) file, or untick Captions.", true));
             }
         } else {
             String url = text(content, "youtubeUrl").trim();
@@ -211,6 +220,17 @@ public final class AccessibilityRules {
         if (access.contains("transcript") && text(content, "transcript").isBlank()) {
             issues.add(new Issue(where, "\"A transcript is provided below\" is ticked, but the Transcript "
                     + "is empty. Add it, or untick the box.", true));
+        }
+    }
+
+    /** A File field holds the picked file's identifier: check that file is a .vtt. */
+    private static boolean isWebVtt(String identifier) {
+        try {
+            Contentlet file = APILocator.getContentletAPI().findContentletByIdentifierAnyLanguage(identifier);
+            String name = file == null ? "" : String.valueOf(file.getStringProperty("fileName"));
+            return name.toLowerCase(Locale.ROOT).endsWith(".vtt");
+        } catch (Exception e) {
+            return false;
         }
     }
 
