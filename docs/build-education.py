@@ -57,7 +57,7 @@ ASSETS = os.path.join(HERE, "education-assets")
 
 SCHOOLS = ["early-learning-center", "elementary", "middle-school", "high-school", "access"]
 FOLDERS = ["/about", "/admissions", "/academics", "/outreach", "/news", "/calendar",
-           "/contact", "/staff", "/resources"] + [f"/academics/{s}" for s in SCHOOLS]
+           "/contact", "/staff", "/resources", "/video-demo"] + [f"/academics/{s}" for s in SCHOOLS]
 # (folder, menu title) in menu order. Academics' school folders form its dropdown.
 MENU = [("about", "About"), ("admissions", "Admissions"), ("academics", "Academics"),
         ("outreach", "Outreach Center"), ("news", "News"), ("calendar", "Calendar"),
@@ -676,6 +676,7 @@ MEDIA = {
                "graduation.jpg": "TSD graduating class",
                "staff-kickoff.jpg": "TSD staff at the start of the school year",
                "elementary.jpg": "Elementary program graphic"},
+    "video": {"big-buck-bunny-poster.jpg": "Big Buck Bunny opening screen"},
     "outreach": {"outreach-team.jpg": "Statewide Outreach Center team",
                  "outreach-banner.jpg": "Statewide Outreach Center banner"},
     "promos": {"promo-170th.jpg": "170th anniversary — Legacy in Action",
@@ -1215,6 +1216,41 @@ def document(name):
     return _media[name]
 
 
+# Requirement 11: a video file hosted on Google Cloud Storage. Its captions
+# live in the media library and are served by the site's /api/captions
+# route (same origin, so the bucket needs no CORS rule).
+DEMO_VIDEO_URL = os.environ.get(
+    "EDUCATION_DEMO_VIDEO", "https://storage.googleapis.com/nuno-video-test/BigBuckBunny_320x180.mp4")
+
+
+def create_video_demo_page(page_tpl):
+    captions = document("big-buck-bunny-captions.vtt")
+    video_demo = page("Video hosted on Google Cloud", "/video-demo", page_tpl,
+                      description="A video file on Google Cloud Storage, played on the site with captions.")
+    fill(video_demo, {
+        1: [banner("Video hosted on Google Cloud", "This video is a file in a Google Cloud Storage "
+                   "bucket, played in the browser's own player with captions — no YouTube.", "Video demo")],
+        2: [create("TsdVideo", title="Big Buck Bunny", eyebrow="Hosted on Google Cloud Storage",
+                   text="A short animated film with no dialogue (Blender Foundation, peach.blender.org, "
+                        "CC BY 3.0).\n\nThe video streams from storage.googleapis.com; its captions file "
+                        "comes from the dotCMS media library. Nothing downloads until you press play.",
+                   videoSource="file", videoFileUrl=DEMO_VIDEO_URL,
+                   captionsUrl=f"{FRONTEND}/api/captions/{captions}.vtt",
+                   poster=image("big-buck-bunny-poster.jpg"), videoAccessibility="captions",
+                   layout="full", theme="white")],
+        3: [create("TsdFeatureGrid", title="Video demo — how it's set up", heading="How it's set up",
+                   layout="steps", theme="mist", items=lines([
+                       "Upload to Google Cloud | Put the video (MP4 or WebM) in a Cloud Storage bucket "
+                       "and make it readable by the public.",
+                       "Add the captions | A WebVTT (.vtt) file, in the same bucket (with a CORS rule for "
+                       "the site) or in the dotCMS media library.",
+                       "Add a TSD Video | Choose Hosted video file, paste the video's link and the captions "
+                       "file, and pick a poster image.",
+                       "Publish | The accessibility check refuses a video without captions or ASL, so every "
+                       "video can be followed by Deaf viewers."]))],
+    })
+
+
 def create_alerts():
     """A live information alert, and a closure alert saved as a draft to
     publish during the demo. No emergency alert is published: visitors would
@@ -1749,6 +1785,7 @@ def main():
     create_resources()
     create_alerts()
     build_pages(home_tpl, page_tpl, detail_id)
+    create_video_demo_page(page_tpl)
     create_settings_type()
     create("TsdSiteSettings", title=f"{SITE} settings", gaMeasurementId="", **SITE_SETTINGS)
     analytics_key = configure_analytics()
