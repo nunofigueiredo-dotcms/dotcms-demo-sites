@@ -17,7 +17,8 @@ is refused the same way, so a page never goes half live.
 | A button with a link needs text, and not "click here", "read more", "here"… | 2.4.4 | yes |
 | Rich text: no Heading 1 (the page title is), no skipped levels, images have alt text, links make sense | 1.3.1, 1.1.1, 2.4.4 | yes |
 | Quick links need meaningful labels | 2.4.4 | yes |
-| A video is captioned or signed in ASL, a promised transcript exists, and the link is a YouTube video | 1.2.2, 1.2.1 | yes |
+| A video is captioned or signed in ASL, and a promised transcript exists | 1.2.2, 1.2.1 | yes |
+| YouTube videos need a YouTube link; hosted files (Google Cloud Storage…) an https .mp4/.webm, and a .vtt captions file when *Captions* is ticked | 1.2.2 | yes |
 | Alt text starting "image of…", alt text over 150 characters, long headings in capitals | — | warning |
 
 Colour contrast, focus, keyboard use and captions of the site's own UI belong
