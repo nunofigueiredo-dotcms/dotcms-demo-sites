@@ -213,7 +213,9 @@ same way as embed videos from youtube."
   which **TSD Video** plays in the browser's own player — no YouTube branding,
   ads, related videos or tracking — with WebVTT captions on by default.
 - TSD Video → *Video source*: **Hosted video file** → *Video file address*
-  (`.mp4`/`.webm`), *Captions file (WebVTT)*, optional *Poster image*.
+  (`.mp4`/`.webm`), *Captions file (WebVTT)* picked from the media library
+  (upload the `.vtt` in Content Drive, or from the field), optional *Poster
+  image*. *Captions link* is only for captions kept elsewhere.
   Nothing downloads until Play (`preload="none"`).
 - The accessibility check covers it: an https `.mp4`/`.webm`/`.m4v` link
   (signed URLs with a query string are fine), captions *or* ASL ticked, and a
@@ -240,11 +242,12 @@ same way as embed videos from youtube."
   with a poster and captions. The film has no dialogue, so its WebVTT says so
   (`docs/education-assets/documents/big-buck-bunny-captions.vtt`).
 - **Two ways to host captions:**
-  - In the **dotCMS media library** (as on `/video-demo`): link it as
-    `https://<site>/api/captions/<file identifier>.vtt`. That route serves it
-    as `text/vtt` (dotCMS sends "unknown" for .vtt) from the site's own
-    domain, so the bucket needs **no CORS rule**.
-  - **Next to the video in the bucket**: the captions load cross-origin, so
+  - **Picked from the media library** with *Captions file* (as on
+    `/video-demo`, recommended): the site serves it through
+    `/api/captions/<file identifier>.vtt` as `text/vtt` (dotCMS sends
+    "unknown" for .vtt) from its own domain, so the bucket needs **no CORS
+    rule**. The accessibility check makes sure the picked file is a `.vtt`.
+  - **Next to the video in the bucket**, via *Captions link*: the captions load cross-origin, so
     the player sets `crossorigin` — and then the browser fetches the *video*
     with CORS too. The bucket's CORS rule (above) must allow the site, or
     **the video itself won't play**. Upload the .vtt with content type

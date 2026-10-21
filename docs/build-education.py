@@ -387,7 +387,7 @@ def create_section_types():
               values=options([("Captions (subtitles) are on the video", "captions"),
                               ("Signed in ASL", "asl"),
                               ("A transcript is provided below", "transcript")]),
-              hint="Required: tick captions or ASL. Hosted files need a captions file for Captions. "
+              hint="Required: tick captions or ASL. Hosted files with Captions need a captions file or link. "
                    "Publishing is refused otherwise."),
         field("ImmutableTextAreaField", "Transcript", "transcript",
               hint="Shown under the video in an expandable panel"),
@@ -402,8 +402,11 @@ def create_section_types():
               hint="YouTube uses the YouTube link; a hosted file plays in the browser's own player"),
         field("ImmutableTextField", "Video file address", "videoFileUrl",
               hint="e.g. https://storage.googleapis.com/your-bucket/video.mp4 (MP4 or WebM, readable by the public)"),
-        field("ImmutableTextField", "Captions file (WebVTT)", "captionsUrl",
-              hint="A .vtt file, e.g. next to the video in the same bucket. Its bucket must allow this site (CORS)."),
+        field("ImmutableFileField", "Captions file (WebVTT)", "captionsFile",
+              hint="Pick or upload the .vtt from the media library (Content Drive). Served by the site, no CORS needed."),
+        field("ImmutableTextField", "Captions link (WebVTT)", "captionsUrl",
+              hint="Only for captions kept elsewhere, e.g. next to the video in the bucket (needs a CORS rule). "
+                   "Otherwise use Captions file."),
         field("ImmutableImageField", "Poster image", "poster",
               hint="Optional: shown before the video plays (hosted files)"),
     ], icon="smart_display")
@@ -1217,8 +1220,8 @@ def document(name):
 
 
 # Requirement 11: a video file hosted on Google Cloud Storage. Its captions
-# live in the media library and are served by the site's /api/captions
-# route (same origin, so the bucket needs no CORS rule).
+# are a file picked from the media library (Captions file), served by the
+# site's /api/captions route (same origin, so the bucket needs no CORS rule).
 DEMO_VIDEO_URL = os.environ.get(
     "EDUCATION_DEMO_VIDEO", "https://storage.googleapis.com/nuno-video-test/BigBuckBunny_320x180.mp4")
 
@@ -1235,7 +1238,7 @@ def create_video_demo_page(page_tpl):
                         "CC BY 3.0).\n\nThe video streams from storage.googleapis.com; its captions file "
                         "comes from the dotCMS media library. Nothing downloads until you press play.",
                    videoSource="file", videoFileUrl=DEMO_VIDEO_URL,
-                   captionsUrl=f"{FRONTEND}/api/captions/{captions}.vtt",
+                   captionsFile=captions,
                    poster=image("big-buck-bunny-poster.jpg"), videoAccessibility="captions",
                    layout="full", theme="white")],
         3: [create("TsdFeatureGrid", title="Video demo — how it's set up", heading="How it's set up",
