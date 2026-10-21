@@ -163,18 +163,46 @@ public final class AccessibilityRules {
     private static final Pattern YOUTUBE = Pattern.compile(
             "^https?://(www\\.|m\\.)?(youtube\\.com/(watch\\?.*v=|embed/|shorts/|live/)|youtu\\.be/)[A-Za-z0-9_-]{11}");
 
+    /** A hosted video file: https, ending in a format browsers play (signed URLs keep their query). */
+    private static final Pattern VIDEO_FILE = Pattern.compile("(?i)^https://[^?#]+\\.(mp4|webm|m4v)([?#].*)?$");
+    private static final Pattern VTT_FILE = Pattern.compile("(?i)^https://[^?#]+\\.vtt([?#].*)?$");
+
     /**
      * A video needs captions or ASL — at a school for the Deaf, an uncaptioned video
-     * leaves out its own community. The editor confirms which, and a promised
-     * transcript must be there.
+     * leaves out its own community. The editor confirms which; a hosted file that claims
+     * captions must come with its WebVTT file, and a promised transcript must be there.
      */
     private static void checkVideo(Contentlet content, Map<String, Field> fields, List<Issue> issues) {
-        String url = text(content, "youtubeUrl").trim();
+        String source = text(content, "videoSource").trim();
         String access = text(content, "videoAccessibility").toLowerCase(Locale.ROOT);
         String where = fields.get("videoAccessibility").name();
-        if (!url.isEmpty() && !YOUTUBE.matcher(url).find()) {
-            issues.add(new Issue(fields.containsKey("youtubeUrl") ? fields.get("youtubeUrl").name() : "Video",
-                    "\"" + url + "\" isn't a YouTube video link. Copy it from the video's Share button.", true));
+        if ("file".equals(source)) {
+            String file = text(content, "videoFileUrl").trim();
+            String label = name(fields, "videoFileUrl", "Video file address");
+            if (file.isEmpty()) {
+                issues.add(new Issue(label, "Add the video file's address, e.g. "
+                        + "https://storage.googleapis.com/your-bucket/video.mp4.", true));
+            } else if (!VIDEO_FILE.matcher(file).find()) {
+                issues.add(new Issue(label, "\"" + file + "\" isn't a video file browsers can play. Use an "
+                        + "https link to an .mp4 or .webm file.", true));
+            }
+            String captions = text(content, "captionsUrl").trim();
+            if (access.contains("captions") && captions.isEmpty()) {
+                issues.add(new Issue(name(fields, "captionsUrl", "Captions file"), "\"Captions\" is ticked, but "
+                        + "there's no captions file. Add the video's WebVTT (.vtt) file, or untick Captions.", true));
+            } else if (!captions.isEmpty() && !VTT_FILE.matcher(captions).find()) {
+                issues.add(new Issue(name(fields, "captionsUrl", "Captions file"), "\"" + captions + "\" isn't a "
+                        + "WebVTT file. Use an https link to the .vtt file.", true));
+            }
+        } else {
+            String url = text(content, "youtubeUrl").trim();
+            String label = name(fields, "youtubeUrl", "YouTube link");
+            if (url.isEmpty()) {
+                issues.add(new Issue(label, "Add the YouTube link, or choose Hosted video file as the source.", true));
+            } else if (!YOUTUBE.matcher(url).find()) {
+                issues.add(new Issue(label, "\"" + url + "\" isn't a YouTube video link. Copy it from the "
+                        + "video's Share button.", true));
+            }
         }
         if (!access.contains("captions") && !access.contains("asl")) {
             issues.add(new Issue(where, "Confirm the video is captioned or signed in ASL. Videos without "
@@ -184,6 +212,11 @@ public final class AccessibilityRules {
             issues.add(new Issue(where, "\"A transcript is provided below\" is ticked, but the Transcript "
                     + "is empty. Add it, or untick the box.", true));
         }
+    }
+
+    private static String name(Map<String, Field> fields, String variable, String fallback) {
+        Field field = fields.get(variable);
+        return field == null ? fallback : field.name();
     }
 
     // ── Rich text (WCAG 1.3.1, 1.1.1, 2.4.4) ───────────────────────────────

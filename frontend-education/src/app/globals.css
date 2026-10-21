@@ -856,8 +856,12 @@
   .video__frame {
     @apply relative aspect-video overflow-hidden rounded-2xl bg-brand-navy shadow-[0_20px_40px_rgb(4_20_54/0.15)];
   }
-  .video__frame iframe {
+  .video__frame iframe,
+  .video__frame video {
     @apply absolute inset-0 h-full w-full;
+  }
+  .video__frame video {
+    @apply bg-black object-contain;
   }
   .video__poster {
     @apply absolute inset-0 h-full w-full cursor-pointer;
