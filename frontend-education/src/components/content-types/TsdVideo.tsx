@@ -7,13 +7,21 @@ import type { DotCMSBasicContentlet } from "@dotcms/types";
 import { EditableText } from "@/components/site/EditableText";
 import { useIsEditing } from "@/hooks/useIsEditing";
 import { isChecked, paragraphs } from "@/utils/content";
+import { imageSrc, type DotCMSImageField } from "@/utils/images";
 import { youtubeId } from "@/utils/youtube";
 
 type TsdVideoProps = DotCMSBasicContentlet & {
   title: string;
   eyebrow?: string;
   text?: string;
+  /** "youtube" (default) or "file": a video file hosted on Google Cloud Storage or any https link. */
+  videoSource?: "youtube" | "file" | "";
   youtubeUrl?: string;
+  /** Hosted file: an .mp4 or .webm, e.g. https://storage.googleapis.com/bucket/video.mp4 */
+  videoFileUrl?: string;
+  /** Hosted file: its WebVTT captions. Cross-origin, so the bucket must allow this site (CORS). */
+  captionsUrl?: string;
+  poster?: DotCMSImageField;
   /** Checkbox: "captions", "asl", "transcript". */
   videoAccessibility?: unknown;
   transcript?: string;
@@ -22,16 +30,19 @@ type TsdVideoProps = DotCMSBasicContentlet & {
 };
 
 /**
- * A YouTube video. Nothing loads from YouTube until the visitor presses play
- * (then from youtube-nocookie.com), so the page stays fast and visitors
- * aren't tracked just for opening it. Badges say whether it's captioned or
- * signed in ASL; publishing is refused unless it's one or the other.
+ * A video from YouTube or a hosted file (Google Cloud Storage, or any https
+ * .mp4/.webm). Nothing loads until the visitor presses play: YouTube then
+ * comes from youtube-nocookie.com; a hosted file plays in the browser's own
+ * player, captions on by default. Badges say whether it's captioned or signed
+ * in ASL; publishing is refused unless it's one or the other.
  */
 export default function TsdVideo(props: TsdVideoProps) {
-  const { eyebrow, youtubeUrl, videoAccessibility, transcript, layout = "split", theme = "white" } = props;
+  const { eyebrow, youtubeUrl, videoFileUrl, captionsUrl, videoAccessibility, transcript, layout = "split", theme = "white" } = props;
   const editing = useIsEditing();
   const [playing, setPlaying] = useState(false);
-  const id = youtubeId(youtubeUrl);
+  const hosted = props.videoSource === "file";
+  const id = hosted ? undefined : youtubeId(youtubeUrl);
+  const posterSrc = imageSrc(props.poster);
   const captions = isChecked(videoAccessibility, "captions");
   const asl = isChecked(videoAccessibility, "asl");
   const light = theme === "navy";
@@ -39,7 +50,26 @@ export default function TsdVideo(props: TsdVideoProps) {
   const video = (
     <div className="video">
       <div className="video__frame">
-        {id && playing ? (
+        {hosted && videoFileUrl ? (
+          // The browser's own player: keyboard and screen-reader accessible, captions
+          // selectable. preload="none" so nothing downloads until Play.
+          <video
+            controls
+            preload="none"
+            playsInline
+            poster={posterSrc ? `${posterSrc.split("?")[0].replace(/\/[^/]+\.[a-z0-9]+$/i, "")}/1280w/80q` : undefined}
+            crossOrigin={captionsUrl ? "anonymous" : undefined}
+            aria-label={props.title}
+          >
+            <source src={videoFileUrl} type={videoFileUrl.split("?")[0].toLowerCase().endsWith(".webm") ? "video/webm" : "video/mp4"} />
+            {captionsUrl && <track kind="captions" src={captionsUrl} srcLang="en" label="English" default />}
+            <p>
+              Your browser can&rsquo;t play this video. <a href={videoFileUrl}>Download it</a>.
+            </p>
+          </video>
+        ) : hosted ? (
+          <p className="video__missing">{editing ? "Add the video file's address to show the video." : "Video unavailable."}</p>
+        ) : id && playing ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0${captions ? "&cc_load_policy=1" : ""}`}
             title={props.title}

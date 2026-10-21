@@ -204,6 +204,45 @@ incident, media statements) was deliberately left out.
 4. Home page → *Follow TSD* → *Show Facebook posts* / *Show Instagram posts*:
    live TSD posts, loaded only with the visitor's consent.
 
+### Videos hosted on Google Cloud (requirement 11)
+TSD asked: "Can videos be hosted via google cloud? I'm assuming it works the
+same way as embed videos from youtube."
+
+- Not quite the same, and better: YouTube embeds YouTube's player; a video on
+  Google Cloud Storage is just a file (`https://storage.googleapis.com/…mp4`),
+  which **TSD Video** plays in the browser's own player — no YouTube branding,
+  ads, related videos or tracking — with WebVTT captions on by default.
+- TSD Video → *Video source*: **Hosted video file** → *Video file address*
+  (`.mp4`/`.webm`), *Captions file (WebVTT)*, optional *Poster image*.
+  Nothing downloads until Play (`preload="none"`).
+- The accessibility check covers it: an https `.mp4`/`.webm`/`.m4v` link
+  (signed URLs with a query string are fine), captions *or* ASL ticked, and a
+  real `.vtt` file whenever *Captions* is ticked.
+- **Google Cloud Storage setup** (once per bucket):
+  1. Make the video and its `.vtt` readable by the public (grant `allUsers`
+     the *Storage Object Viewer* role, or share those objects publicly).
+  2. Captions are loaded cross-origin, so allow this site with CORS:
+     ```json
+     [{"origin": ["https://dotcms-demo-sites-45sr.vercel.app", "http://localhost:3008"],
+       "method": ["GET", "HEAD"], "responseHeader": ["Content-Type", "Range"],
+       "maxAgeSeconds": 3600}]
+     ```
+     `gcloud storage buckets update gs://BUCKET --cors-file=cors.json`.
+     Without it the video plays but the captions don't load.
+  3. Use H.264/AAC MP4 (or WebM) for every browser; captions as WebVTT
+     (`.vtt`, `WEBVTT` header; convert `.srt` if needed).
+- Private buckets need **signed URLs**, which expire: fine for a test, but a
+  page needs a link that keeps working, so use a public object (or a server
+  that signs links per request — not built here).
+- Tested with a public-domain MP4 and WebVTT file: plays on click, captions
+  showing; draft-only, removed afterwards.
+
+**Talk track**
+1. Drag a **TSD Video** onto a page → *Video source: Hosted video file* →
+   paste the Google Cloud link and its `.vtt` → tick *Captions* → Publish.
+2. Remove the `.vtt` and publish again → refused: captions are required.
+3. On the site: the browser's player, captions on, nothing from YouTube.
+
 ### Accessibility enforced in approval (requirement 5)
 - **Java plugin** `osgi/tsd-accessibility-check` (see its README), installed
   by `docs/install-accessibility-check.py`. Its workflow step *Check
