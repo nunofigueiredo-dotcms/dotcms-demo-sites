@@ -41,6 +41,13 @@ export default function TsdVideo(props: TsdVideoProps) {
   const editing = useIsEditing();
   const [playing, setPlaying] = useState(false);
   const hosted = props.videoSource === "file";
+  // Captions from this site's own /api/captions route load from the page's
+  // own origin. Captions elsewhere (e.g. next to the video on Cloud Storage)
+  // load cross-origin, which needs crossOrigin — and that makes the browser
+  // ask for the video with CORS too, so the bucket's CORS rule must allow
+  // this site for both.
+  const captionsPath = captionsUrl?.match(/^https?:\/\/[^/]+(\/api\/captions\/[0-9a-f]{32}\.vtt)$/)?.[1];
+  const captionsSrc = captionsPath ?? captionsUrl;
   const id = hosted ? undefined : youtubeId(youtubeUrl);
   const posterSrc = imageSrc(props.poster);
   const captions = isChecked(videoAccessibility, "captions");
@@ -58,11 +65,11 @@ export default function TsdVideo(props: TsdVideoProps) {
             preload="none"
             playsInline
             poster={posterSrc ? `${posterSrc.split("?")[0].replace(/\/[^/]+\.[a-z0-9]+$/i, "")}/1280w/80q` : undefined}
-            crossOrigin={captionsUrl ? "anonymous" : undefined}
+            crossOrigin={captionsUrl && !captionsPath ? "anonymous" : undefined}
             aria-label={props.title}
           >
             <source src={videoFileUrl} type={videoFileUrl.split("?")[0].toLowerCase().endsWith(".webm") ? "video/webm" : "video/mp4"} />
-            {captionsUrl && <track kind="captions" src={captionsUrl} srcLang="en" label="English" default />}
+            {captionsSrc && <track kind="captions" src={captionsSrc} srcLang="en" label="English" default />}
             <p>
               Your browser can&rsquo;t play this video. <a href={videoFileUrl}>Download it</a>.
             </p>

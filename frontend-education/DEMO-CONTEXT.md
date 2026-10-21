@@ -228,14 +228,29 @@ same way as embed videos from youtube."
        "maxAgeSeconds": 3600}]
      ```
      `gcloud storage buckets update gs://BUCKET --cors-file=cors.json`.
-     Without it the video plays but the captions don't load.
+     Needed only when the captions are in the bucket — see below.
   3. Use H.264/AAC MP4 (or WebM) for every browser; captions as WebVTT
      (`.vtt`, `WEBVTT` header; convert `.srt` if needed).
 - Private buckets need **signed URLs**, which expire: fine for a test, but a
   page needs a link that keeps working, so use a public object (or a server
   that signs links per request — not built here).
-- Tested with a public-domain MP4 and WebVTT file: plays on click, captions
-  showing; draft-only, removed afterwards.
+- **Live example: `/video-demo`** (not in the menu): Big Buck Bunny
+  (Blender Foundation, CC BY 3.0) from
+  `https://storage.googleapis.com/nuno-video-test/BigBuckBunny_320x180.mp4`,
+  with a poster and captions. The film has no dialogue, so its WebVTT says so
+  (`docs/education-assets/documents/big-buck-bunny-captions.vtt`).
+- **Two ways to host captions:**
+  - In the **dotCMS media library** (as on `/video-demo`): link it as
+    `https://<site>/api/captions/<file identifier>.vtt`. That route serves it
+    as `text/vtt` (dotCMS sends "unknown" for .vtt) from the site's own
+    domain, so the bucket needs **no CORS rule**.
+  - **Next to the video in the bucket**: the captions load cross-origin, so
+    the player sets `crossorigin` — and then the browser fetches the *video*
+    with CORS too. The bucket's CORS rule (above) must allow the site, or
+    **the video itself won't play**. Upload the .vtt with content type
+    `text/vtt`.
+- Tested: the bucket serves `video/mp4` with range requests (seeking works);
+  nothing downloads until Play; plays with captions showing.
 
 **Talk track**
 1. Drag a **TSD Video** onto a page → *Video source: Hosted video file* →
