@@ -130,8 +130,8 @@ TsdResourceCollection(query: "${filter(editor)}", limit: 300) {
 }
 `;
 
-// Alert banners. Their start and end times are checked on each request
-// (dotCMS also unpublishes them at the end time).
+// Alert banners. "Show on the site", start and end times are checked on each
+// request (dotCMS also unpublishes them at the end time).
 const alertsQuery = (editor: boolean) => `
 TsdAlertCollection(query: "${filter(editor)}", limit: 20) {
     identifier
@@ -144,6 +144,7 @@ TsdAlertCollection(query: "${filter(editor)}", limit: 20) {
     startDate
     endDate
     scope
+    showOnSite
 }
 `;
 

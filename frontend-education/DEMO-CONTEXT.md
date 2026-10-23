@@ -113,10 +113,17 @@ incident, media statements) was deliberately left out.
 ### Emergency alerts (requirement 10)
 - **TSD Alert**: headline, message, severity — **Emergency** (red),
   **Closure or weather** (amber), **Information** (blue) — link, optional
-  **Watch in ASL** link, start and end times, every page or home page only.
+  **Watch in ASL** link, start and end times, every page or home page only,
+  and a **Show on the site** checkbox (ticked by default).
 - Shown above the header on every page, most severe first. The type's
   publish/expire dates are its start/end, so **dotCMS unpublishes it by
   itself**; the site also checks the times on each request.
+- **Show on the site** is the on/off switch: untick it and Publish to take an
+  alert down at once, tick and Publish to put it back. dotCMS refuses to
+  Unpublish an item whose end date is still ahead, and refuses to publish one
+  whose end date has passed, so the checkbox is the reliable way to pull an
+  alert early. This instance runs on UTC: Starts/Ends are typed in UTC, while
+  the site compares them with Austin time.
 - Emergencies are announced immediately to screen readers (`role="alert"`)
   and can't be dismissed; an information notice can be dismissed for the page
   being viewed — it shows again on the next page or reload (nothing stored).
@@ -137,7 +144,8 @@ incident, media statements) was deliberately left out.
 3. Content → TSD Alert → open the draft "Campus closed…" → set Starts to now
    and Ends to tonight → Publish (Morgan) → every page shows the amber banner
    within seconds. Change the severity to Emergency: red, read out at once by
-   screen readers. Archive it to end it early, or let dotCMS expire it.
+   screen readers. Untick *Show on the site* and Publish to end it early, or
+   let dotCMS expire it.
 
 ### Staff directory and profiles (requirement 8)
 - **TSD Staff** profiles: name, job title, departments, e-mail, voice and

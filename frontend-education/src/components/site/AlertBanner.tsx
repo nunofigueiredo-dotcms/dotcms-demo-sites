@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, CloudSnow, Hand, Info, X } from "lucide-react";
 import { SmartLink } from "@/components/SmartLink";
+import { isChecked } from "@/utils/content";
 import type { SiteAlert } from "@/types/page";
 
 const SEVERITY = {
@@ -42,7 +43,13 @@ export function AlertBanner({ alerts, scheduledNote }: { alerts: SiteAlert[]; sc
                 <span className="sr-only">{label}: </span>
                 <strong>{alert.title}</strong>
                 {alert.message && <span> {alert.message}</span>}
-                {scheduledNote && <em className="alert__scheduled"> (preview: shown on the site only between its start and end times)</em>}
+                {scheduledNote && (
+                  <em className="alert__scheduled">
+                    {isChecked(alert.showOnSite)
+                      ? " (preview: shown on the site only between its start and end times)"
+                      : " (preview: hidden on the site, “Show on the site” is unticked)"}
+                  </em>
+                )}
               </p>
               <span className="alert__links">
                 {alert.ctaText && alert.ctaLink && (

@@ -108,6 +108,8 @@ export interface SiteAlert {
   startDate: string;
   endDate: string;
   scope?: "all" | "home" | null;
+  /** The "Show on the site" checkbox; unticked hides the alert. */
+  showOnSite?: unknown;
 }
 
 /** Site-wide settings (content type `TsdSiteSettings`, one item per site). */
