@@ -4,6 +4,7 @@ import { getDotCMSPage, type PageMode } from "@/utils/getDotCMSPage";
 import type { NewsArticle, Resource, SiteAlert, StaffMember } from "@/types/page";
 import { AlertBanner } from "@/components/site/AlertBanner";
 import { austinNow, parseDate } from "@/utils/dates";
+import { isChecked } from "@/utils/content";
 import { buildPageMetadata } from "@/utils/seo";
 import { Page } from "@/views/Page";
 import Header from "@/components/Header";
@@ -28,14 +29,18 @@ async function pageMode(searchParams: PageProps["searchParams"]): Promise<PageMo
 const SEVERITY_ORDER = { emergency: 0, closure: 1, info: 2 };
 
 /**
- * The alerts to show on this page, most severe first: those running now (by
- * their start and end times, in Austin) for this page. In the editor every
- * alert is shown, so editors can preview one before it starts.
+ * The alerts to show on this page, most severe first: those ticked "Show on
+ * the site" and running now (by their start and end times, in Austin). In the
+ * editor every alert is shown, so editors can preview one before it goes up.
  */
 function activeAlerts(alerts: SiteAlert[], path: string, inEditor: boolean): SiteAlert[] {
   const now = austinNow();
   return alerts
-    .filter((a) => inEditor || ((parseDate(a.startDate) ?? now) <= now && now <= (parseDate(a.endDate) ?? now)))
+    .filter(
+      (a) =>
+        inEditor ||
+        (isChecked(a.showOnSite) && (parseDate(a.startDate) ?? now) <= now && now <= (parseDate(a.endDate) ?? now)),
+    )
     .filter((a) => a.scope !== "home" || path === "/")
     .sort((a, b) => (SEVERITY_ORDER[a.severity] ?? 3) - (SEVERITY_ORDER[b.severity] ?? 3));
 }

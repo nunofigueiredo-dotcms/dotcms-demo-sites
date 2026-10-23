@@ -524,9 +524,13 @@ def create_record_types(news_detail_page, staff_detail_page, resource_detail_pag
 
     create_type("TsdAlert", "TSD Alert",
                 "A site-wide alert banner above the header on every page: emergencies, closures, "
-                "notices. It shows between its start and end times.", [
+                "notices. It shows between its start and end times, while Show on the site is ticked.", [
         site_field(),
         field("ImmutableTextField", "Headline", "title", required=True, listed=True),
+        {**field("ImmutableCheckboxField", "Show on the site", "showOnSite", listed=True,
+                 values=options([("Show this alert on the site", "true")]),
+                 hint="Untick and publish to take the alert down at once; tick and publish to put it back."),
+         "defaultValue": "true"},
         field("ImmutableTextAreaField", "Message", "message"),
         field("ImmutableSelectField", "Severity", "severity", required=True, listed=True,
               values=options([("Emergency (red)", "emergency"), ("Closure or weather (amber)", "closure"),
@@ -1261,7 +1265,8 @@ def create_alerts():
     create("TsdAlert", title="Family Weekend Retreat: registration closes October 30",
            message="Families of deaf and hard of hearing children: join us on campus November 6–8.",
            severity="info", ctaText="See the calendar", ctaLink="/calendar?category=tsd-family",
-           startDate="2026-10-01 00:00:00", endDate="2026-10-31 23:59:00", scope="all")
+           startDate="2026-10-01 00:00:00", endDate="2026-10-31 23:59:00", scope="all",
+           showOnSite="true")
     e = ns._entity(ns.fire({"contentType": "TsdAlert", "site": SITE_ID, "languageId": 1,
                             "title": "Campus closed today due to winter weather",
                             "message": "All classes and activities are cancelled. Residential students "
@@ -1269,7 +1274,7 @@ def create_alerts():
                             "severity": "closure", "ctaText": "Read about weather closures",
                             "ctaLink": "/resources/tsd-resource-weather-closures",
                             "startDate": "2027-01-15 05:00:00", "endDate": "2027-01-15 23:59:00",
-                            "scope": "all"}, action="NEW"), "closure alert draft")
+                            "scope": "all", "showOnSite": "true"}, action="NEW"), "closure alert draft")
     print(f"  alerts: 1 live, 1 draft ({e.get('identifier')})")
 
 
