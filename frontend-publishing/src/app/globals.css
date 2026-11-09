@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* Elsevier-style palette (from elsevier.com). Orange is an accent only:
+   on white it is below 4.5:1, so text and buttons use ink. */
+@theme {
+  --color-orange: #ff551d;
+  --color-orange-dark: #c93a0b;
+  --color-ink: #1c1d22;
+  --color-ink-soft: #403c3b;
+  --color-muted: #5c5f66;
+  --color-blue: #1f40b4;
+  --color-blue-soft: #e8ecfa;
+  --color-warm: #f7f6f2;
+  --color-sand: #f3eee2;
+  --color-line: #e4e2dd;
+  --color-green: #0c8930;
+  --color-green-soft: #e3f3e8;
+  --color-red: #af1d1d;
+  --color-red-soft: #fbe9e9;
+  --color-amber: #8a5300;
+  --color-amber-soft: #fdf1dc;
+  --color-violet: #5b3cc4;
+  --color-violet-soft: #efeafd;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-serif: var(--font-serif4), Georgia, serif;
+}
+
+@layer base {
+html {
+  color: var(--color-ink);
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--color-blue);
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+}
+
+@layer components {
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 50;
+  background: #fff;
+  padding: 0.5rem 1rem;
+}
+
+.container-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: 1.25rem;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.accent-rule {
+  display: block;
+  width: 48px;
+  height: 4px;
+  background: var(--color-orange);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid var(--color-ink);
+  background: var(--color-ink);
+  color: #fff;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--color-ink-soft);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--color-ink);
+}
+.btn-outline:hover {
+  background: var(--color-warm);
+}
+
+/* Article body (block editor) */
+.prose-article {
+  font-family: var(--font-serif);
+  font-size: 1.1875rem;
+  line-height: 1.75;
+}
+.prose-article > * + * {
+  margin-top: 1.1em;
+}
+.prose-article h2 {
+  font-family: var(--font-sans);
+  font-size: 1.625rem;
+  line-height: 1.25;
+  font-weight: 700;
+  margin-top: 2em;
+}
+.prose-article h3 {
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.6em;
+}
+.prose-article ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.prose-article ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.prose-article blockquote {
+  border-left: 4px solid var(--color-orange);
+  padding: 0.25em 0 0.25em 1.25em;
+  font-size: 1.375rem;
+  color: var(--color-ink-soft);
+}
+
+/* Smaller block editor text (messages, key messages) */
+.prose-ui > * + * {
+  margin-top: 0.75em;
+}
+.prose-ui h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.prose-ui h3 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.prose-ui ul {
+  list-style: disc;
+  padding-left: 1.25em;
+}
+.prose-ui li + li {
+  margin-top: 0.35em;
+}
+
+/* In the Universal Visual Editor: show what can be clicked to edit */
+.uve-editable {
+  outline: 2px dashed transparent;
+  outline-offset: 6px;
+  cursor: text;
+  transition: outline-color 0.15s;
+}
+.uve-editable:hover {
+  outline-color: var(--color-orange);
+}
+
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

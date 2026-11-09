@@ -11,7 +11,8 @@
     "frontend-sandler",
     "frontend-vodafone",
     "frontend-education",
-    "frontend-general"
+    "frontend-general",
+    "frontend-publishing"
   ],
   "scripts": {
     "dev:bank": "npm run dev -w dotcms-learning-nextjs",
@@ -23,7 +24,8 @@
     "dev:education": "npm run dev -w education-nextjs",
     "ios:vodafone": "npm --prefix mobile-vodafone run ios",
     "dev:general": "npm run dev -w general-nextjs",
-    "dev:all": "npm run dev:bank & npm run dev:spiritvoice & npm run dev:govconnect & npm run dev:forgehub & npm run dev:sandler & npm run dev:vodafone & npm run dev:education & npm run dev:general & wait"
+    "dev:all": "npm run dev:bank & npm run dev:spiritvoice & npm run dev:govconnect & npm run dev:forgehub & npm run dev:sandler & npm run dev:vodafone & npm run dev:education & npm run dev:general & npm run dev:publishing & wait",
+    "dev:publishing": "npm run dev -w publishing-nextjs"
   },
   "dependencies": {
     "@dotcms/client": "26.9.3-1",
