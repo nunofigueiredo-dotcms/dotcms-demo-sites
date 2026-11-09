@@ -11,7 +11,8 @@ built by the scripts in `../publishing-demo/setup/`; see
 ## How it works
 
 - `src/app/[[...slug]]/page.tsx` renders every dotCMS page and picks a view:
-  `/` → `HomeView`, `/hub` → `HubView`, URL-mapped `PdArticle` → `ArticleView`
+  `/` → `HomeView` (its banner is a `PdHomeBanner` placed in the page's container,
+  rendered by `DotCMSLayoutBody` and editable in place), `/hub` → `HubView`, URL-mapped `PdArticle` → `ArticleView`
   (client component, editable in the Universal Visual Editor), URL-mapped
   `PdMessagingSot` → `TopicView`.
 - `src/lib/dotcms.ts` is the only code that talks to dotCMS. It runs **on the

@@ -1,29 +1,17 @@
 import Link from "next/link";
 import { getArticles } from "@/lib/dotcms";
 import { formatDate, topicName } from "@/lib/format";
+import { HomeLayout } from "@/components/HomeBanner";
+import type { PageResponse } from "@/lib/types";
 
-/** Insights home, in the style of elsevier.com's Academic & Government pages. */
-export async function HomeView() {
+/** Insights home, in the style of elsevier.com's Academic & Government pages. The
+ * banner comes from dotCMS (editable in UVE); the article list fills itself. */
+export async function HomeView({ page }: { page: PageResponse }) {
   const articles = await getArticles();
   const [lead, ...rest] = articles;
   return (
     <>
-      <section className="bg-sand">
-        <div className="container-page grid items-end gap-10 py-16 md:grid-cols-[1.2fr_1fr] md:py-24">
-          <div>
-            <span className="accent-rule" aria-hidden />
-            <p className="eyebrow">Insights for research leaders</p>
-            <h1 className="mt-3 font-serif text-5xl font-semibold leading-[1.05] md:text-6xl">
-              Trusted evidence. <br className="hidden md:block" />
-              Clear decisions.
-            </h1>
-          </div>
-          <p className="text-lg leading-relaxed text-ink-soft">
-            Perspectives for university leaders, librarians, funders and governments on research integrity, open access,
-            responsible AI and the impact of research funding.
-          </p>
-        </div>
-      </section>
+      <HomeLayout page={page} />
 
       <section className="container-page py-16" aria-labelledby="latest">
         <h2 id="latest" className="text-3xl font-bold">Latest insights</h2>

@@ -10,7 +10,8 @@ import {
 import { htmlToPdf } from "./lib/pdf.mjs";
 import { USERS } from "./04-roles-users.mjs";
 import { SCHEME } from "./05-workflow.mjs";
-import { SOURCES, LOCALISED, ARTICLES, NEWSLETTER, ASSET_PACK } from "./content/seed-content.mjs";
+import { pageIds } from "./06-pages.mjs";
+import { SOURCES, LOCALISED, ARTICLES, NEWSLETTER, ASSET_PACK, HOME_BANNER } from "./content/seed-content.mjs";
 
 const email = (role) => USERS.find((u) => u.role === role).email;
 
@@ -156,6 +157,27 @@ export async function run() {
         title: ASSET_PACK.title, description: ASSET_PACK.description, pdf: tempId,
         distributionPartner: ASSET_PACK.distributionPartner, event: ASSET_PACK.event, relatedMessages: rel,
       }, sotWalk, { "Submit for Approval": "Partner pack for OA Week.", Approve: "Approved for partners." });
+    });
+
+    await step("Home banner", async () => {
+      const found = (await existing("PdHomeBanner")).find((c) => c.title === HOME_BANNER.title);
+      ids.homeBanner = found?.identifier;
+      if (found) log(`  "${HOME_BANNER.title}" exists`);
+      else {
+        ids.homeBanner = await create("PdHomeBanner", "marketer", { ...HOME_BANNER }, sotWalk, {
+          "Submit for Approval": "Home page banner.", Approve: "Approved for the website.",
+        });
+      }
+      // Place it in the home page's one container slot, so the editor can select it.
+      const home = (await pageIds(site)).home;
+      const page = DRY ? null : (await api("GET", `/api/v1/page/json/index?host_id=${site}`)).entity;
+      const placed = Object.values(page?.containers?.SYSTEM_CONTAINER?.contentlets?.["uuid-1"] || []).map((c) => c.identifier);
+      if (placed.length === 1 && placed[0] === ids.homeBanner) return log("  on the home page");
+      must(
+        await api("POST", `/api/v1/page/${home}/content`, [{ identifier: "SYSTEM_CONTAINER", uuid: "1", contentletsId: [ids.homeBanner] }]),
+        "home banner placement",
+      );
+      log("  placed on the home page");
     });
   } finally {
     await revoke();

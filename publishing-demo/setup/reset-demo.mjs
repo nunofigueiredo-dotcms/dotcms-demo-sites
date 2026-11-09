@@ -2,6 +2,7 @@
 // users, tokens or the frontend:
 //   - the article's H3 goes back to "How your Organisation can prepare" (through
 //     the workflow, as Hannah and Eleanor), published;
+//   - the home page banner goes back to its original text, published;
 //   - the three localised messages are recreated in their starting states
 //     (DACH in SME Review, Iberia Approved, APAC sent back);
 //   - any other localised message created during the demo is removed.
@@ -10,7 +11,7 @@
 import { api, siteId, search, fireAction, allUsers, forget, loadState, log, step, DRY } from "./lib/api.mjs";
 import { USERS } from "./04-roles-users.mjs";
 import { SCHEME } from "./05-workflow.mjs";
-import { ARTICLES, LOCALISED } from "./content/seed-content.mjs";
+import { ARTICLES, LOCALISED, HOME_BANNER } from "./content/seed-content.mjs";
 import { run as seed } from "./08-seed.mjs";
 
 const site = await siteId();
@@ -39,6 +40,23 @@ try {
     const steps = [["marketer", "Save Draft"], ["marketer", "Submit for Approval"], ["owner", "Approve"], ["owner", "Publish to Web"]];
     for (const [who, name] of steps) {
       const fields = name === "Save Draft" ? { identifier: working.identifier, body, h1: seedArticle.h1, standfirst: seedArticle.standfirst } : { identifier: working.identifier };
+      const r = await fireAction(actions[name], fields, { token: tokens[who], comments: name === "Save Draft" ? undefined : "Reset for the demo" });
+      if (!r.dry && r._status >= 400) throw new Error(`${name}: ${r.message}`);
+    }
+    log("  restored and published");
+  });
+
+  await step("Home banner", async () => {
+    const [working] = await search(`+contentType:PdHomeBanner +conHost:${site} +working:true`, { limit: 1 });
+    const [live] = await search(`+contentType:PdHomeBanner +conHost:${site} +live:true`, { limit: 1 });
+    if (!working) return log("  not there yet; the seed below creates it");
+    const ok = (c) => c && ["eyebrow", "headline", "intro"].every((f) => (c[f] || "") === HOME_BANNER[f]);
+    const status = (await api("GET", `/api/v1/workflow/status/${working.inode}`)).entity?.step?.name;
+    if (ok(working) && ok(live) && status === "Published to Web") return log("  already in its starting state");
+    const steps = [["marketer", "Save Draft"], ["marketer", "Submit for Approval"], ["owner", "Approve"], ["owner", "Publish to Web"]];
+    for (const [who, name] of steps) {
+      const { eyebrow, headline, intro } = HOME_BANNER;
+      const fields = name === "Save Draft" ? { identifier: working.identifier, eyebrow, headline, intro } : { identifier: working.identifier };
       const r = await fireAction(actions[name], fields, { token: tokens[who], comments: name === "Save Draft" ? undefined : "Reset for the demo" });
       if (!r.dry && r._status >= 400) throw new Error(`${name}: ${r.message}`);
     }

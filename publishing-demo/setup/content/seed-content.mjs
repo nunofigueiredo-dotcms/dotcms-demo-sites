@@ -252,3 +252,11 @@ export const ASSET_PACK = {
   related: ["open-access", "research-integrity"],
   pdfName: "open-access-week-2026-partner-pack.pdf",
 };
+
+// The banner on the Insights home page, placed in the page's container.
+export const HOME_BANNER = {
+  title: "Insights home banner",
+  eyebrow: "Insights for research leaders",
+  headline: "Trusted evidence. Clear decisions.",
+  intro: "Perspectives for university leaders, librarians, funders and governments on research integrity, open access, responsible AI and the impact of research funding.",
+};
