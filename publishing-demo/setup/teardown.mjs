@@ -9,7 +9,7 @@
 // Content and pages go with their content types and the site.
 import { api, created, forget, log, search, fireAction, DRY, SITE_NAME, failed } from "./lib/api.mjs";
 
-const TYPES = ["PdNewsletterIssue", "PdAssetPack", "PdArticle", "PdLocalisedMessage", "PdMessagingSot"];
+const TYPES = ["PdHomeBanner", "PdNewsletterIssue", "PdAssetPack", "PdArticle", "PdLocalisedMessage", "PdMessagingSot"];
 
 if (!DRY && !process.argv.includes("--yes")) {
   console.error("Refusing to delete without --yes. Run with --dry-run first to see what would go.");
@@ -74,7 +74,7 @@ await section("Content types", "contenttype", async (t) => {
 if (!DRY) {
   for (let i = 0; i < 40; i++) {
     const left = [];
-    for (const v of ["PdMessagingSot", "PdLocalisedMessage", "PdArticle", "PdNewsletterIssue", "PdAssetPack"]) {
+    for (const v of TYPES) {
       if ((await api("GET", `/api/v1/contenttype/id/${v}`)).entity?.id) left.push(v);
     }
     if (!left.length) break;

@@ -99,3 +99,11 @@ export interface HubUser {
 
 export const first = <T,>(r: Related<T>): T | undefined => (Array.isArray(r) ? r[0] : r ?? undefined);
 export const all = <T,>(r: Related<T>): T[] => (Array.isArray(r) ? r : r ? [r] : []);
+
+/** The banner at the top of the Insights home page. */
+export interface HomeBanner extends Contentlet {
+  title: string;
+  eyebrow?: string;
+  headline: string;
+  intro?: string;
+}

@@ -1,6 +1,6 @@
 # Verification report
 
-Run 2026-11-09 10:31 UTC against https://awesomedemo-dev.dotcms.dev, site `publishing-demo`. Re-run with `node setup/verify.mjs`.
+Run 2026-11-09 14:39 UTC against https://awesomedemo-dev.dotcms.dev, site `publishing-demo`. Re-run with `node setup/verify.mjs`.
 
 **42 of 42 checks passed.**
 
@@ -59,7 +59,7 @@ Audit trail (newest first), from `GET /api/v1/workflow/tasks/history/comments/{i
 |---|---|
 | the live article has the H3 “How your Organisation can prepare” | ✅  |
 | the frontend's read-only token loads the page in EDIT_MODE | ✅  |
-| UVE is configured for the site | ✅ http://localhost:3010 |
+| UVE is configured for the site | ✅ https://frontend-publishing.vercel.app |
 | Content Marketer's inline save on a published article works | ✅ now Draft |
 | the fix is in the new draft | ✅  |
 | the live page keeps the approved text until the draft is approved | ✅  |

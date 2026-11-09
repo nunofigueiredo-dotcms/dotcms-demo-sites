@@ -72,7 +72,7 @@ export default async function CatchAll(props: PageProps) {
   } else if (path === "/hub") {
     body = <HubView q={one(query.q)?.slice(0, 80)} topic={one(query.topic)} signInFailed={one(query.signin) === "failed"} />;
   } else if (path === "/") {
-    body = <HomeView />;
+    body = <HomeView page={page} />;
   } else {
     notFound();
   }
@@ -80,7 +80,7 @@ export default async function CatchAll(props: PageProps) {
   return (
     <>
       <a href="#main" className="skip-link">Skip to content</a>
-      {map?.contentType !== "PdArticle" && <UveBridge page={page} />}
+      {map?.contentType !== "PdArticle" && path !== "/" && <UveBridge page={page} />}
       <Header path={path} userName={user?.name ?? reader} />
       <main id="main" tabIndex={-1}>{body}</main>
       <Footer />

@@ -44,7 +44,7 @@
    `PUBLISHING_FRONTEND=https://<app>.vercel.app node setup/02-site.mjs && PUBLISHING_FRONTEND=https://<app>.vercel.app node setup/09-frontend-env.mjs`
    This updates the UVE configuration and the site alias.
 3. **Check everything:** `node setup/verify.mjs` should end with "all passed". Then open the frontend once as Hannah in UVE (Act 1, steps 1–3) to warm it up.
-4. **After each rehearsal:** `node setup/reset-demo.mjs`. This puts the H3 back to "Organisation", DACH back in SME Review, APAC back to "sent back", and Iberia back to Approved. Users and tokens are untouched.
+4. **After each rehearsal:** `node setup/reset-demo.mjs`. This puts the H3 back to "Organisation", the home banner back to its original text, DACH back in SME Review, APAC back to "sent back", and Iberia back to Approved. Users and tokens are untouched.
 5. **Re-make the PDF from the approved article:**
    `PUBLISHING_FRONTEND=https://<app>.vercel.app ./channels/fetch.sh --upload`
 
@@ -57,7 +57,7 @@
 
 ## Act 1: Edit in context, not in nested components (3:00–11:00), as **Hannah**
 
-1. dotCMS (Hannah) → **Site → Pages** → open **Insights for research leaders**. The Universal Visual Editor (UVE) shows the real page.
+1. dotCMS (Hannah) → **Site → Pages** → open **Insights for research leaders**. The Universal Visual Editor (UVE) shows the real page. Optional: click the banner headline and change it in place. It saves as a draft; the live site keeps the approved banner until it goes through the workflow.
 2. In the editor, click the card **"Open access agreements: what libraries actually need"**. UVE follows the link to the article.
 3. Scroll to the H3 **"How your Organisation can prepare"**. Point out the house style is US spelling. A dashed orange outline appears on hover.
 4. Click the body → the block editor opens **in place**. Change *Organisation* → **Organization**. Click outside the editor; it saves.

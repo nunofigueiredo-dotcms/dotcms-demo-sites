@@ -121,10 +121,22 @@ function types(topicsInode) {
       ],
       relationships: [rel("Related messages", "relatedMessages", "PdMessagingSot", MANY_TO_MANY)],
     },
+    {
+      variable: "PdHomeBanner", name: "Home Banner", icon: "view_day",
+      description: "The banner at the top of the Insights home page. Edited in place in the Universal Visual Editor.",
+      fields: [
+        site(),
+        field("TextField", "Title", "title", { required: true, listed: true, hint: "Internal name, not shown on the page" }),
+        field("TextField", "Eyebrow", "eyebrow", { hint: "Small line above the headline" }),
+        field("TextField", "Headline", "headline", { required: true }),
+        field("TextAreaField", "Intro", "intro"),
+      ],
+      relationships: [],
+    },
   ];
 }
 
-export const TYPE_VARS = ["PdMessagingSot", "PdLocalisedMessage", "PdArticle", "PdNewsletterIssue", "PdAssetPack"];
+export const TYPE_VARS = ["PdMessagingSot", "PdLocalisedMessage", "PdArticle", "PdNewsletterIssue", "PdAssetPack", "PdHomeBanner"];
 
 export async function run() {
   const site = await siteId();

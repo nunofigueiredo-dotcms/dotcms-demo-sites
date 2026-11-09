@@ -247,17 +247,30 @@
       "type": "PdLocalisedMessage"
     },
     {
+      "kind": "contenttype",
+      "key": "PdHomeBanner",
+      "id": "9536fa2f8bc51fc3c4adee5139943186",
+      "at": "2026-11-09T14:36:08.475Z"
+    },
+    {
+      "kind": "content",
+      "key": "PdHomeBanner:Insights home banner",
+      "id": "89c7fc61ee35fffb7c2ebc7ee544b309",
+      "at": "2026-11-09T14:36:14.803Z",
+      "type": "PdHomeBanner"
+    },
+    {
       "kind": "content",
       "key": "PdLocalisedMessage:DACH: Open Access – gerechte Wege zum Publizieren und Lesen",
       "id": "7174f1f16c5916e3df5cc758330c615d",
-      "at": "2026-11-09T10:29:06.707Z",
+      "at": "2026-11-09T14:38:02.109Z",
       "type": "PdLocalisedMessage"
     },
     {
       "kind": "content",
       "key": "PdLocalisedMessage:APAC: Showing what research funding achieves",
       "id": "7ae6b23a1246d5d186907c97b3728804",
-      "at": "2026-11-09T10:29:08.740Z",
+      "at": "2026-11-09T14:38:04.173Z",
       "type": "PdLocalisedMessage"
     }
   ]
