@@ -1,0 +1,264 @@
+{
+  "created": [
+    {
+      "kind": "site",
+      "key": "publishing-demo",
+      "id": "f5d20f78ab492b0c1b8df22b010269d9",
+      "at": "2026-11-09T09:15:25.148Z"
+    },
+    {
+      "kind": "language",
+      "key": "de-de",
+      "id": 4660718,
+      "at": "2026-11-09T10:04:34.232Z"
+    },
+    {
+      "kind": "uve",
+      "key": "publishing-demo",
+      "id": "f5d20f78ab492b0c1b8df22b010269d9",
+      "at": "2026-11-09T10:04:36.935Z"
+    },
+    {
+      "kind": "category",
+      "key": "pdTopics",
+      "id": "3a27cb68ae08ed786a852c01c8065e75",
+      "at": "2026-11-09T10:04:37.383Z"
+    },
+    {
+      "kind": "category",
+      "key": "pdResearchIntegrity",
+      "id": "a03b65479b684cf3d302a02d96113668",
+      "at": "2026-11-09T10:04:37.675Z"
+    },
+    {
+      "kind": "category",
+      "key": "pdOpenAccess",
+      "id": "6014912e20840513781ec67b3ef9a524",
+      "at": "2026-11-09T10:04:37.908Z"
+    },
+    {
+      "kind": "category",
+      "key": "pdAiInResearch",
+      "id": "ee7a7410cb76210685349d673163364e",
+      "at": "2026-11-09T10:04:38.201Z"
+    },
+    {
+      "kind": "category",
+      "key": "pdResearchFundingImpact",
+      "id": "c75117656d55c95a60e01d7a9b9331d0",
+      "at": "2026-11-09T10:04:38.437Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdRoot",
+      "id": "81401f17-a8f2-4c91-85e7-db40d3cfb3f0",
+      "at": "2026-11-09T10:04:38.968Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdContentMarketer",
+      "id": "7de56248-6707-4226-9e80-65d9dbb92c8b",
+      "at": "2026-11-09T10:04:39.244Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdRegionalMarketer",
+      "id": "8cff98aa-af70-4b5e-84fa-e75dc08fb9ab",
+      "at": "2026-11-09T10:04:39.473Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdSmeReviewer",
+      "id": "fd905310-9585-483f-ba25-a73a66b54253",
+      "at": "2026-11-09T10:04:39.774Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdMessagingOwner",
+      "id": "276eb771-4074-4271-a700-1777aed2ecb2",
+      "at": "2026-11-09T10:04:40.003Z"
+    },
+    {
+      "kind": "role",
+      "key": "pdHubReader",
+      "id": "04477d27-946f-4be3-803b-39681f2b13ef",
+      "at": "2026-11-09T10:04:40.294Z"
+    },
+    {
+      "kind": "user",
+      "key": "hannah.clarke@publishing-demo.example",
+      "id": "userid-1f1d4cba-6a77-4dbe-84b5-6a66ee5279f5",
+      "at": "2026-11-09T10:04:44.466Z"
+    },
+    {
+      "kind": "user",
+      "key": "lukas.brandt@publishing-demo.example",
+      "id": "userid-68daf06a-de47-4dce-8630-61687943559c",
+      "at": "2026-11-09T10:04:45.097Z"
+    },
+    {
+      "kind": "user",
+      "key": "priya.raman@publishing-demo.example",
+      "id": "userid-a8d94912-6fc4-4ff3-b018-785bb9a9929c",
+      "at": "2026-11-09T10:04:45.728Z"
+    },
+    {
+      "kind": "user",
+      "key": "eleanor.shaw@publishing-demo.example",
+      "id": "userid-734f3695-91e0-4499-9634-bc743963bbcc",
+      "at": "2026-11-09T10:04:46.364Z"
+    },
+    {
+      "kind": "user",
+      "key": "marco.silva@publishing-demo.example",
+      "id": "userid-139b9a79-a519-47f0-b81a-537c5eb04976",
+      "at": "2026-11-09T10:04:46.998Z"
+    },
+    {
+      "kind": "user",
+      "key": "hub-service@publishing-demo.example",
+      "id": "userid-505eee16-a4aa-49ad-946a-5fb9549fb0e8",
+      "at": "2026-11-09T10:04:47.606Z"
+    },
+    {
+      "kind": "workflow",
+      "key": "Governed Content",
+      "id": "f7c6f0c4-bdd4-8463-4406-51882effdc33",
+      "at": "2026-11-09T10:04:48.279Z"
+    },
+    {
+      "kind": "contenttype",
+      "key": "PdMessagingSot",
+      "id": "91fe57ddd541c435a74300dd8c510948",
+      "at": "2026-11-09T10:05:06.413Z"
+    },
+    {
+      "kind": "contenttype",
+      "key": "PdLocalisedMessage",
+      "id": "1d8252b9983aa05ba471542db9d839d3",
+      "at": "2026-11-09T10:05:07.211Z"
+    },
+    {
+      "kind": "contenttype",
+      "key": "PdArticle",
+      "id": "428e8c2f7e852a31e434303b3b84e660",
+      "at": "2026-11-09T10:05:08.071Z"
+    },
+    {
+      "kind": "contenttype",
+      "key": "PdNewsletterIssue",
+      "id": "481eb91d6c05e2883a40ca975fad4134",
+      "at": "2026-11-09T10:05:08.659Z"
+    },
+    {
+      "kind": "contenttype",
+      "key": "PdAssetPack",
+      "id": "4a81bdc28bed65bef6ba4dff7fc4cdf1",
+      "at": "2026-11-09T10:05:09.178Z"
+    },
+    {
+      "kind": "content",
+      "key": "PdMessagingSot:research-integrity",
+      "id": "edab30ff683bc0c991788bdd9ae20d07",
+      "at": "2026-11-09T10:05:14.026Z",
+      "type": "PdMessagingSot"
+    },
+    {
+      "kind": "content",
+      "key": "PdMessagingSot:open-access-v1",
+      "id": "8f0b140cad4a7d8712686a2735e41177",
+      "at": "2026-11-09T10:05:19.626Z",
+      "type": "PdMessagingSot"
+    },
+    {
+      "kind": "content",
+      "key": "PdMessagingSot:open-access",
+      "id": "ceabb280981b4204ea300e8b47173490",
+      "at": "2026-11-09T10:05:24.740Z",
+      "type": "PdMessagingSot"
+    },
+    {
+      "kind": "content",
+      "key": "PdMessagingSot:ai-in-research",
+      "id": "9949fd7b6a35b25fad8a972bd4483d3a",
+      "at": "2026-11-09T10:05:28.759Z",
+      "type": "PdMessagingSot"
+    },
+    {
+      "kind": "content",
+      "key": "PdMessagingSot:research-funding-impact",
+      "id": "086676ef8bbe4dce2847dbc22514338c",
+      "at": "2026-11-09T10:05:33.815Z",
+      "type": "PdMessagingSot"
+    },
+    {
+      "kind": "content",
+      "key": "PdArticle:integrity-checks-before-peer-review",
+      "id": "34e371a6e27bc273e37075f0cbe5e05a",
+      "at": "2026-11-09T10:05:38.425Z",
+      "type": "PdArticle"
+    },
+    {
+      "kind": "content",
+      "key": "PdArticle:open-access-agreements-what-libraries-need",
+      "id": "80811f9d1606e62c5a5578cfc07a3acb",
+      "at": "2026-11-09T10:05:42.565Z",
+      "type": "PdArticle"
+    },
+    {
+      "kind": "content",
+      "key": "PdArticle:ai-answers-researchers-can-check",
+      "id": "e77e6f8ec78d49d9ab2867c1cc762c7e",
+      "at": "2026-11-09T10:05:47.009Z",
+      "type": "PdArticle"
+    },
+    {
+      "kind": "content",
+      "key": "PdNewsletterIssue:Research Leaders Briefing — November 2026",
+      "id": "22b5c185-55e4-498b-9b62-7e6e100ed77d",
+      "at": "2026-11-09T10:06:01.838Z",
+      "type": "PdNewsletterIssue"
+    },
+    {
+      "kind": "content",
+      "key": "PdAssetPack:Open Access Week 2026 partner pack",
+      "id": "2df97eae8ca6377b06994bef9197e2d5",
+      "at": "2026-11-09T10:06:09.302Z",
+      "type": "PdAssetPack"
+    },
+    {
+      "kind": "apitoken",
+      "key": "hub-reader",
+      "id": "api85a6d641-7764-4f60-9656-b9d7e7bfd414",
+      "at": "2026-11-09T10:06:14.811Z"
+    },
+    {
+      "kind": "content",
+      "key": "FileAsset:open-access-agreements-what-libraries-need.pdf",
+      "id": "7e55376b186d6da535e7480c8e2145f0",
+      "at": "2026-11-09T10:20:45.610Z",
+      "type": "FileAsset"
+    },
+    {
+      "kind": "content",
+      "key": "PdLocalisedMessage:Iberia: IA en la investigación – responsable, citada y verificable",
+      "id": "5fc396740a388760bf5a722970d2b474",
+      "at": "2026-11-09T10:28:24.487Z",
+      "type": "PdLocalisedMessage"
+    },
+    {
+      "kind": "content",
+      "key": "PdLocalisedMessage:DACH: Open Access – gerechte Wege zum Publizieren und Lesen",
+      "id": "7174f1f16c5916e3df5cc758330c615d",
+      "at": "2026-11-09T10:29:06.707Z",
+      "type": "PdLocalisedMessage"
+    },
+    {
+      "kind": "content",
+      "key": "PdLocalisedMessage:APAC: Showing what research funding achieves",
+      "id": "7ae6b23a1246d5d186907c97b3728804",
+      "at": "2026-11-09T10:29:08.740Z",
+      "type": "PdLocalisedMessage"
+    }
+  ]
+}
